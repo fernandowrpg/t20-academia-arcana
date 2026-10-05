@@ -1,0 +1,21 @@
+{
+	"name": "t20-academia-arcana",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Vida acadêmica, matrícula, boletim e compêndio da Academia Arcana para Foundry VTT (Tormenta20).",
+	"type": "module",
+	"license": "MIT",
+	"foundry": {
+		"github": "fernandowrpg/t20-academia-arcana"
+	},
+	"scripts": {
+		"build:packs": "node tools/build-packs.mjs",
+		"build:release": "node tools/build-release.mjs",
+		"build": "npm run build:packs && npm run build:release",
+		"unpack": "node tools/unpack-packs.mjs"
+	},
+	"devDependencies": {
+		"@foundryvtt/foundryvtt-cli": "^1.1.0",
+		"adm-zip": "^0.5.16"
+	}
+}
