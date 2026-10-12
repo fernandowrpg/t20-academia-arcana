@@ -57,6 +57,7 @@
 						<span class="aa-contador" data-tooltip="Aulas em comum">{{total}}</span>
 					</header>
 					{{#if detalhe}}<small>{{detalhe}}</small>{{/if}}
+					{{#if parceiro}}<small class="aa-cal-parceiro" data-tooltip="{{parceiro.beneficio}}"><i class="fa-solid fa-handshake-angle"></i> Parceiro: {{parceiro.rotulo}}</small>{{/if}}
 					<ul>
 						{{#each aulas}}<li>{{nome}} <small>com {{pcs}}</small></li>{{/each}}
 					</ul>

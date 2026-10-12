@@ -1,7 +1,7 @@
 import { GREMIOS, STATUS_SEMESTRE } from "../data/disciplinas.mjs";
-import { concluirAleatorio, descricaoNpc, matricularAleatorio } from "../gerador.mjs";
+import { concluirAleatorio, descricaoNpc, descricaoParceiro, matricularAleatorio, subirNivel } from "../gerador.mjs";
 import { estatisticas, novoAluno, novoSemestre, pendenciasParaEncerrar } from "../logica.mjs";
-import { MODULO, contextoCatalogo, disciplinasDosPersonagens, ehAluno, lerAluno, opcao, salvarAluno, sincronizarPericias } from "../config.mjs";
+import { MODULO, contextoCatalogo, disciplinasDosPersonagens, ehAluno, lerAluno, opcao, salvarAluno, sincronizarFicha } from "../config.mjs";
 import { CalendarioApp } from "./calendario.mjs";
 import { GeradorAlunosApp } from "./gerador.mjs";
 import { VidaAcademicaApp } from "./vida-academica.mjs";
@@ -64,7 +64,7 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 				id: actor.id,
 				nome: actor.name,
 				img: actor.img,
-				npc: descricaoNpc(aluno.npc),
+				npc: [descricaoNpc(aluno.npc), descricaoParceiro(aluno.npc)?.rotulo].filter(Boolean).join(" · "),
 				gremio: GREMIOS[aluno.gremio] ?? null,
 				semestre: atual ? `${atual.numero}º · ${STATUS_SEMESTRE[atual.status]}` : "—",
 				chave: atual?.status ?? "",
@@ -102,7 +102,7 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			if (aluno.situacaoCurso !== "ativo") continue;
 			if (fn(aluno, actor) === false) continue;
 			await salvarAluno(actor, aluno);
-			if (aluno.npc) await sincronizarPericias(actor, aluno);
+			if (aluno.npc) await sincronizarFicha(actor, aluno);
 			alterados++;
 		}
 		ui.notifications.info(game.i18n.format("ACADEMIA.Aviso.Lote", { qtd: alterados }));
@@ -113,11 +113,12 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		const max = opcao("maxSemestres");
 		const { catalogo, ofertas } = contextoCatalogo();
 		const preferidas = disciplinasDosPersonagens();
-		await this.#emLote("Abrir matrículas", "Abrir a matrícula do próximo semestre para todos os alunos ativos com o semestre anterior encerrado? Os NPCs gerados escolhem as disciplinas sozinhos.", (aluno) => {
+		await this.#emLote("Abrir matrículas", "Abrir a matrícula do próximo semestre para todos os alunos ativos com o semestre anterior encerrado? Os NPCs gerados sobem um nível e escolhem as disciplinas sozinhos.", (aluno) => {
 			const atual = aluno.semestres.at(-1);
 			if (atual && atual.status !== "encerrado") return false;
 			if (aluno.semestres.length >= max) return false;
 			aluno.semestres.push(novoSemestre(aluno.semestres.length + 1));
+			if (aluno.npc && aluno.semestres.length > 1) subirNivel(aluno);
 			if (aluno.npc) matricularAleatorio(aluno, { catalogo, ofertas, preferidas, min: opcao("minDisciplinas"), max: opcao("maxDisciplinas") });
 		});
 	}

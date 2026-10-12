@@ -1,5 +1,5 @@
 import { configPadrao, montarCatalogo, novoAluno, periciasDoCatalogo } from "./logica.mjs";
-import { periciasEstudadas } from "./gerador.mjs";
+import { atualizarResumoNpc, periciasEstudadas } from "./gerador.mjs";
 
 export const MODULO = "t20-academia-arcana";
 export const FLAG = "aluno";
@@ -180,6 +180,23 @@ export async function sincronizarPericias(actor, aluno) {
 	const mudancas = {};
 	for (const chave of periciasEstudadas(aluno)) {
 		if (pericias[chave] && !pericias[chave].treinado) mudancas[`system.pericias.${chave}.treinado`] = true;
+	}
+	if (Object.keys(mudancas).length) await actor.update(mudancas);
+}
+
+/* Leva para a ficha do NPC gerado o que mudou no registro: perícias, nível da classe e o resumo na biografia. */
+export async function sincronizarFicha(actor, aluno) {
+	await sincronizarPericias(actor, aluno);
+	if (!aluno.npc) return;
+	const classe = actor.items?.find((i) => i.type === "classe");
+	const subiu = !!classe && classe.system?.niveis !== aluno.npc.nivel;
+	if (subiu) await classe.update({ "system.niveis": aluno.npc.nivel });
+	const mudancas = {};
+	const biografia = atualizarResumoNpc(actor.system?.detalhes?.biography?.value, aluno);
+	if (biografia !== null) mudancas["system.detalhes.biography.value"] = biografia;
+	if (subiu) {
+		mudancas["system.attributes.pv.value"] = actor.system.attributes.pv.max;
+		mudancas["system.attributes.pm.value"] = actor.system.attributes.pm.max;
 	}
 	if (Object.keys(mudancas).length) await actor.update(mudancas);
 }

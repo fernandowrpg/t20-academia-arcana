@@ -1,6 +1,6 @@
 import { DIAS_LETIVOS, TURNOS } from "../data/alunos.mjs";
 import { TOTAL_HORARIOS, choquesDeHorario, colegasDeTurma, distribuirHorarios, montarTurmas, rotuloHorario, semestreVigente } from "../calendario.mjs";
-import { descricaoNpc } from "../gerador.mjs";
+import { descricaoNpc, descricaoParceiro } from "../gerador.mjs";
 import { nomePericia } from "../logica.mjs";
 import { MODULO, contextoCatalogo, ehAluno, lerAluno, opcao } from "../config.mjs";
 import { VidaAcademicaApp } from "./vida-academica.mjs";
@@ -18,6 +18,7 @@ function participantes() {
 				img: actor.img,
 				pc: actor.hasPlayerOwner || (actor.type === "character" && !aluno.npc),
 				detalhe: descricaoNpc(aluno.npc),
+				parceiro: descricaoParceiro(aluno.npc),
 				abre: game.user.isGM || actor.isOwner,
 				aluno
 			};
@@ -112,6 +113,7 @@ export class CalendarioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			id: c.id,
 			nome: c.nome,
 			detalhe: c.detalhe,
+			parceiro: c.parceiro,
 			abre: c.abre,
 			total: c.aulas.length,
 			aulas: c.aulas.map((a) => ({ nome: a.nome, pcs: a.pcs.join(", ") }))

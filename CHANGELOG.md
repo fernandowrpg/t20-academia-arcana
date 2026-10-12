@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0
+
+- Gerador de Alunos: depois da compra aleatória, o aluno recebe +2 no atributo da classe e +1 em outros dois atributos sorteados.
+- Gerador de Alunos: nível e período andam juntos (um nível por semestre). Informe um deles e o outro acompanha; em branco, os dois são sorteados. Ao abrir matrículas em lote, cada NPC gerado sobe um nível.
+- Gerador de Alunos: cada aluno ganha um tipo de parceiro de Tormenta20 conforme a classe (adepto, combatente, médico etc.), que pode acompanhar um personagem de jogador. O grau (iniciante, veterano ou mestre) acompanha o nível do aluno. O parceiro aparece no gerador, na Secretaria, no calendário e na biografia da ficha.
+- A biografia do NPC gerado é atualizada a cada semestre, preservando o que o mestre escreveu fora do bloco do módulo.
+
 ## 1.2.2
 
 - Gerador de Alunos: os atributos também são sorteados (distribuições de 10 pontos da compra de atributos), e o atributo principal da classe é sempre o mais alto. O PV já considera a Constituição sorteada.

@@ -1350,3 +1350,7 @@
 	color: var(--aa-roxo);
 	font-weight: bold;
 }
+
+.academia-arcana .aa-cal-parceiro {
+	display: block;
+}

@@ -1,6 +1,6 @@
 import { ATRIBUTOS, CLASSES, NIVEL_MAXIMO, RACAS } from "../data/alunos.mjs";
 import { GREMIOS } from "../data/disciplinas.mjs";
-import { descricaoNpc, gerarAluno } from "../gerador.mjs";
+import { descricaoNpc, descricaoParceiro, gerarAluno, resumoNpc } from "../gerador.mjs";
 import { nomePericia } from "../logica.mjs";
 import { FLAG, MODULO, contextoCatalogo, disciplinasDosPersonagens, opcao, sincronizarPericias } from "../config.mjs";
 import { CalendarioApp } from "./calendario.mjs";
@@ -17,17 +17,6 @@ function opcoes(mapa, selecionado, rotuloAleatorio) {
 			.map(([valor, d]) => ({ valor, rotulo: d.nome, selecionado: valor === selecionado }))
 			.sort((a, b) => a.rotulo.localeCompare(b.rotulo, "pt-BR"))
 	);
-}
-
-function biografia(g) {
-	const atual = g.aluno.semestres.at(-1);
-	const pericias = g.pericias.map((p) => nomePericia(p)).sort((a, b) => a.localeCompare(b, "pt-BR"));
-	return [
-		`<p><strong>Aluno da Academia Arcana.</strong> ${RACAS[g.raca].nome}, ${CLASSES[g.classe].nome} de ${g.nivel}º nível (${CLASSES[g.classe].livro}).</p>`,
-		`<p><strong>Período:</strong> ${g.periodo}º semestre · <strong>Grêmio:</strong> ${GREMIOS[g.aluno.gremio]?.nome ?? "—"}${g.aluno.bolsista ? " · bolsista" : ""}</p>`,
-		`<p><strong>Perícias estudadas:</strong> ${pericias.join(", ") || "—"}</p>`,
-		`<p><strong>Disciplinas em curso ao ser gerado:</strong> ${atual?.disciplinas.map((d) => d.nome).join(", ") || "—"}</p>`
-	].join("");
 }
 
 export class GeradorAlunosApp extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -60,7 +49,7 @@ export class GeradorAlunosApp extends HandlebarsApplicationMixin(ApplicationV2) 
 		corpo: { template: `modules/${MODULO}/templates/gerador.hbs`, scrollable: [".aa-conteudo"] }
 	};
 
-	escolhas = { quantidade: 1, nivel: 1, raca: "", classe: "", periodo: "" };
+	escolhas = { quantidade: 1, nivel: "", raca: "", classe: "", periodo: "" };
 
 	gerados = [];
 
@@ -90,7 +79,7 @@ export class GeradorAlunosApp extends HandlebarsApplicationMixin(ApplicationV2) 
 		const inteiro = (nome, max) => Math.max(1, Math.min(max, Math.round(Number(campo(nome))) || 1));
 		this.escolhas = {
 			quantidade: inteiro("quantidade", MAX_POR_VEZ),
-			nivel: inteiro("nivel", NIVEL_MAXIMO),
+			nivel: campo("nivel") === "" ? "" : inteiro("nivel", NIVEL_MAXIMO),
 			raca: campo("raca"),
 			classe: campo("classe"),
 			periodo: campo("periodo")
@@ -127,9 +116,9 @@ export class GeradorAlunosApp extends HandlebarsApplicationMixin(ApplicationV2) 
 				type: "character",
 				folder: pasta?.id ?? null,
 				system: {
-					atributos: Object.fromEntries(Object.entries(g.atributos).map(([chave, valor]) => [chave, { base: valor }])),
+					atributos: Object.fromEntries(Object.keys(ATRIBUTOS).map((chave) => [chave, { base: g.atributos.base[chave], racial: g.atributos.bonus[chave] }])),
 					attributes: { pv: { value: g.pv, max: g.pv }, pm: { value: g.pm, max: g.pm } },
-					detalhes: { raca: RACAS[g.raca].nome, biography: { value: biografia(g) } }
+					detalhes: { raca: RACAS[g.raca].nome, biography: { value: resumoNpc(g.aluno) } }
 				},
 				/* No sistema Tormenta20, nível, PV e PM do personagem vêm do item de classe. */
 				items: [
@@ -149,7 +138,9 @@ export class GeradorAlunosApp extends HandlebarsApplicationMixin(ApplicationV2) 
 				nome: g.nome,
 				descricao: descricaoNpc(g.aluno.npc),
 				periodo: g.periodo,
-				atributos: Object.entries(g.atributos).map(([chave, valor]) => ({ sigla: chave.toUpperCase(), valor, foco: chave === CLASSES[g.classe].foco, nome: ATRIBUTOS[chave] })),
+				parceiro: descricaoParceiro(g.aluno.npc),
+				nivel: g.nivel,
+				atributos: Object.entries(g.atributos.total).map(([chave, valor]) => ({ sigla: chave.toUpperCase(), valor, foco: chave === CLASSES[g.classe].foco, nome: ATRIBUTOS[chave] })),
 				gremio: GREMIOS[g.aluno.gremio] ?? null,
 				pericias: g.pericias.map((p) => nomePericia(p)).sort((a, b) => a.localeCompare(b, "pt-BR")),
 				disciplinas: g.aluno.semestres.at(-1)?.disciplinas.map((d) => d.nome) ?? []

@@ -4,7 +4,7 @@
 			<legend><i class="fa-solid fa-dice-d20"></i> Novo aluno (personagem do mestre)</legend>
 			<div class="aa-gerador-campos">
 				<label>Nível
-					<input type="number" name="aa-nivel" value="{{nivel}}" min="1" max="{{nivelMaximo}}" step="1">
+					<input type="number" name="aa-nivel" value="{{nivel}}" min="1" max="{{nivelMaximo}}" step="1" placeholder="pelo período">
 				</label>
 				<label>Quantidade
 					<input type="number" name="aa-quantidade" value="{{quantidade}}" min="1" max="{{maxPorVez}}" step="1">
@@ -19,7 +19,7 @@
 					<select name="aa-periodo">{{#each periodos}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>
 				</label>
 			</div>
-			<p class="aa-dica">Escolha o nível; o que ficar em <em>Aleatório</em> é sorteado: nome, raça, classe, atributos (o mais alto é sempre o da classe), período, grêmio, histórico de disciplinas e notas. As fichas são personagens sem jogador dono, com token neutro, e vão para a pasta <strong>{{pasta}}</strong>, com as perícias das disciplinas aprovadas e em curso marcadas como treinadas.</p>
+			<p class="aa-dica">Nível e período andam juntos: informe um deles e o outro acompanha (um nível por semestre); em branco, os dois são sorteados. O que ficar em <em>Aleatório</em> é sorteado: nome, raça, classe, atributos (compra aleatória, +2 no atributo da classe e +1 em outros dois), tipo de parceiro, período, grêmio, histórico de disciplinas e notas. As fichas são personagens sem jogador dono, com token neutro, e vão para a pasta <strong>{{pasta}}</strong>, com as perícias das disciplinas aprovadas e em curso marcadas como treinadas.</p>
 			<div class="aa-botoes">
 				<button type="button" data-action="gerar"><i class="fa-solid fa-wand-sparkles"></i> Gerar</button>
 				<button type="button" data-action="calendario"><i class="fa-solid fa-calendar-week"></i> Calendário</button>
@@ -42,6 +42,7 @@
 						</span>
 					</header>
 					<p class="aa-gerados-atributos">{{#each atributos}}<span class="{{#if foco}}foco{{/if}}" data-tooltip="{{nome}}">{{sigla}} <strong>{{valor}}</strong></span>{{/each}}</p>
+					{{#if parceiro}}<p class="aa-dica"><i class="fa-solid fa-handshake-angle"></i> Parceiro: <strong>{{parceiro.rotulo}}</strong> ({{parceiro.beneficio}})</p>{{/if}}
 					<p class="aa-gerados-pericias">{{#each pericias}}<span class="aa-pilula">{{this}}</span>{{else}}—{{/each}}</p>
 					<p class="aa-dica"><i class="fa-solid fa-book"></i> Cursando: {{#each disciplinas}}{{this}}{{#unless @last}}, {{/unless}}{{else}}—{{/each}}</p>
 				</li>

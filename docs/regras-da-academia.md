@@ -147,10 +147,23 @@ O Teste do Fogo costuma ser feito no último semestre. Em Tormenta20, o mestre a
 
 ## 7. Alunos NPC
 
-- O mestre pode gerar colegas pelo **Gerador de Alunos**: escolhe o nível, e o módulo sorteia nome, raça, classe, atributos (o mais alto é sempre o da classe), período, grêmio e histórico. A ficha é um personagem controlado pelo mestre. (Módulo)
+- O mestre pode gerar colegas pelo **Gerador de Alunos**, que sorteia nome, raça, classe, atributos, período, grêmio e histórico. A ficha é um personagem controlado pelo mestre. (Módulo)
+- **Atributos:** compra aleatória com o maior valor no atributo da classe, mais +2 nesse atributo e +1 em outros dois. (Módulo)
+- **Nível:** acompanha o período, um nível por semestre. Um aluno do 6º semestre é de 6º nível, e sobe um nível a cada novo semestre. (Módulo)
+- **Parceiro:** cada colega tem um tipo de parceiro de Tormenta20 conforme a classe e pode acompanhar um personagem de jogador pelas regras de parceiros do livro básico. (Módulo)
 - Os NPCs se matriculam sozinhos quando o mestre abre as matrículas em lote e tendem a escolher disciplinas que os personagens cursam. (Módulo)
 - Ao encerrar o semestre em lote, cada NPC recebe notas sorteadas: a aptidão do aluno (entre 5,5 e 8,5) mais ou menos 2,5 pontos. Nota 6 ou mais aprova; abaixo disso, reprova. (Módulo)
 - As perícias das disciplinas aprovadas ou em curso ficam treinadas na ficha do NPC. (Módulo)
+
+### Grau do parceiro
+
+| Nível do aluno | Grau | Fonte |
+| --- | --- | --- |
+| 1º ao 4º | Iniciante | Mesa |
+| 5º ao 10º | Veterano | Mesa |
+| 11º em diante | Mestre | Mesa |
+
+O livro básico deixa o grau do parceiro a critério do mestre; a tabela acima é a que o módulo usa.
 
 ## 8. Resumo rápido para o jogador
 

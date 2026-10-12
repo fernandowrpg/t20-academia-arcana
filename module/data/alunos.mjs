@@ -42,38 +42,38 @@ const T20 = "Tormenta20";
 const HEROIS = "Heróis de Arton";
 const DEUSES = "Deuses de Arton";
 
-/* foco: atributo principal da classe; pv: [inicial, por nível]; pm: por nível. Classes variantes herdam os valores da classe básica quando o livro manda. */
+/* foco: atributo principal da classe; parceiros: tipos de parceiro que o aluno pode ser; pv: [inicial, por nível]; pm: por nível. Classes variantes herdam os valores da classe básica quando o livro manda. */
 export const CLASSES = {
-	arcanista: { nome: "Arcanista", foco: "int", pv: [8, 2], pm: 6, peso: 30, arcana: true, livro: T20 },
-	barbaro: { nome: "Bárbaro", foco: "for", pv: [24, 6], pm: 3, peso: 1, livro: T20 },
-	bardo: { nome: "Bardo", foco: "car", pv: [12, 3], pm: 4, peso: 6, arcana: true, livro: T20 },
-	bucaneiro: { nome: "Bucaneiro", foco: "des", pv: [16, 4], pm: 3, peso: 3, livro: T20 },
-	cacador: { nome: "Caçador", foco: "des", pv: [16, 4], pm: 4, peso: 3, livro: T20 },
-	cavaleiro: { nome: "Cavaleiro", foco: "for", pv: [20, 5], pm: 3, peso: 2, livro: T20 },
-	clerigo: { nome: "Clérigo", foco: "sab", pv: [16, 4], pm: 5, peso: 5, livro: T20 },
-	druida: { nome: "Druida", foco: "sab", pv: [16, 4], pm: 4, peso: 3, livro: T20 },
-	guerreiro: { nome: "Guerreiro", foco: "for", pv: [20, 5], pm: 3, peso: 3, livro: T20 },
-	inventor: { nome: "Inventor", foco: "int", pv: [12, 3], pm: 4, peso: 5, livro: T20 },
-	ladino: { nome: "Ladino", foco: "des", pv: [12, 3], pm: 4, peso: 3, livro: T20 },
-	lutador: { nome: "Lutador", foco: "for", pv: [20, 5], pm: 3, peso: 2, livro: T20 },
-	nobre: { nome: "Nobre", foco: "car", pv: [16, 4], pm: 4, peso: 4, livro: T20 },
-	paladino: { nome: "Paladino", foco: "car", pv: [20, 5], pm: 3, peso: 2, livro: T20 },
-	treinador: { nome: "Treinador", foco: "car", pv: [12, 3], pm: 4, peso: 2, livro: HEROIS },
-	alquimista: { nome: "Alquimista", foco: "int", pv: [12, 3], pm: 4, peso: 4, livro: HEROIS },
-	atleta: { nome: "Atleta", foco: "for", pv: [20, 5], pm: 3, peso: 1, livro: HEROIS },
-	burgues: { nome: "Burguês", foco: "car", pv: [12, 3], pm: 4, peso: 2, livro: HEROIS },
-	duelista: { nome: "Duelista", foco: "des", pv: [16, 4], pm: 3, peso: 2, livro: HEROIS },
-	ermitao: { nome: "Ermitão", foco: "sab", pv: [12, 3], pm: 4, peso: 1, livro: HEROIS },
-	inovador: { nome: "Inovador", foco: "int", pv: [20, 5], pm: 3, peso: 1, livro: HEROIS },
-	"machado-de-pedra": { nome: "Machado de Pedra", foco: "for", pv: [24, 6], pm: 3, peso: 1, livro: HEROIS },
-	magimarcialista: { nome: "Magimarcialista", foco: "int", pv: [16, 4], pm: 4, peso: 4, arcana: true, livro: HEROIS },
-	necromante: { nome: "Necromante", foco: "int", pv: [8, 2], pm: 6, peso: 4, arcana: true, livro: HEROIS },
-	santo: { nome: "Santo", foco: "car", pv: [20, 5], pm: 4, peso: 1, livro: HEROIS },
-	seteiro: { nome: "Seteiro", foco: "des", pv: [16, 4], pm: 4, peso: 1, livro: HEROIS },
-	usurpador: { nome: "Usurpador", foco: "car", pv: [16, 4], pm: 5, peso: 1, livro: HEROIS },
-	vassalo: { nome: "Vassalo", foco: "for", pv: [20, 5], pm: 3, peso: 1, livro: HEROIS },
-	ventanista: { nome: "Ventanista", foco: "des", pv: [12, 3], pm: 4, peso: 2, livro: HEROIS },
-	frade: { nome: "Frade", foco: "sab", pv: [12, 3], pm: 6, peso: 3, livro: DEUSES }
+	arcanista: { nome: "Arcanista", foco: "int", parceiros: ["adepto", "destruidor", "magivocador"], pv: [8, 2], pm: 6, peso: 30, arcana: true, livro: T20 },
+	barbaro: { nome: "Bárbaro", foco: "for", parceiros: ["fortao"], pv: [24, 6], pm: 3, peso: 1, livro: T20 },
+	bardo: { nome: "Bardo", foco: "car", parceiros: ["ajudante"], pv: [12, 3], pm: 4, peso: 6, arcana: true, livro: T20 },
+	bucaneiro: { nome: "Bucaneiro", foco: "des", parceiros: ["combatente"], pv: [16, 4], pm: 3, peso: 3, livro: T20 },
+	cacador: { nome: "Caçador", foco: "des", parceiros: ["perseguidor", "atirador"], pv: [16, 4], pm: 4, peso: 3, livro: T20 },
+	cavaleiro: { nome: "Cavaleiro", foco: "for", parceiros: ["guardiao"], pv: [20, 5], pm: 3, peso: 2, livro: T20 },
+	clerigo: { nome: "Clérigo", foco: "sab", parceiros: ["medico"], pv: [16, 4], pm: 5, peso: 5, livro: T20 },
+	druida: { nome: "Druida", foco: "sab", parceiros: ["medico", "perseguidor"], pv: [16, 4], pm: 4, peso: 3, livro: T20 },
+	guerreiro: { nome: "Guerreiro", foco: "for", parceiros: ["combatente"], pv: [20, 5], pm: 3, peso: 3, livro: T20 },
+	inventor: { nome: "Inventor", foco: "int", parceiros: ["destruidor"], pv: [12, 3], pm: 4, peso: 5, livro: T20 },
+	ladino: { nome: "Ladino", foco: "des", parceiros: ["assassino"], pv: [12, 3], pm: 4, peso: 3, livro: T20 },
+	lutador: { nome: "Lutador", foco: "for", parceiros: ["fortao"], pv: [20, 5], pm: 3, peso: 2, livro: T20 },
+	nobre: { nome: "Nobre", foco: "car", parceiros: ["ajudante"], pv: [16, 4], pm: 4, peso: 4, livro: T20 },
+	paladino: { nome: "Paladino", foco: "car", parceiros: ["combatente", "guardiao"], pv: [20, 5], pm: 3, peso: 2, livro: T20 },
+	treinador: { nome: "Treinador", foco: "car", parceiros: ["perseguidor", "vigilante"], pv: [12, 3], pm: 4, peso: 2, livro: HEROIS },
+	alquimista: { nome: "Alquimista", foco: "int", parceiros: ["destruidor", "medico"], pv: [12, 3], pm: 4, peso: 4, livro: HEROIS },
+	atleta: { nome: "Atleta", foco: "for", parceiros: ["fortao"], pv: [20, 5], pm: 3, peso: 1, livro: HEROIS },
+	burgues: { nome: "Burguês", foco: "car", parceiros: ["ajudante"], pv: [12, 3], pm: 4, peso: 2, livro: HEROIS },
+	duelista: { nome: "Duelista", foco: "des", parceiros: ["combatente"], pv: [16, 4], pm: 3, peso: 2, livro: HEROIS },
+	ermitao: { nome: "Ermitão", foco: "sab", parceiros: ["medico", "vigilante"], pv: [12, 3], pm: 4, peso: 1, livro: HEROIS },
+	inovador: { nome: "Inovador", foco: "int", parceiros: ["combatente"], pv: [20, 5], pm: 3, peso: 1, livro: HEROIS },
+	"machado-de-pedra": { nome: "Machado de Pedra", foco: "for", parceiros: ["fortao"], pv: [24, 6], pm: 3, peso: 1, livro: HEROIS },
+	magimarcialista: { nome: "Magimarcialista", foco: "int", parceiros: ["destruidor", "combatente"], pv: [16, 4], pm: 4, peso: 4, arcana: true, livro: HEROIS },
+	necromante: { nome: "Necromante", foco: "int", parceiros: ["adepto", "magivocador"], pv: [8, 2], pm: 6, peso: 4, arcana: true, livro: HEROIS },
+	santo: { nome: "Santo", foco: "car", parceiros: ["guardiao", "medico"], pv: [20, 5], pm: 4, peso: 1, livro: HEROIS },
+	seteiro: { nome: "Seteiro", foco: "des", parceiros: ["atirador"], pv: [16, 4], pm: 4, peso: 1, livro: HEROIS },
+	usurpador: { nome: "Usurpador", foco: "car", parceiros: ["adepto", "medico"], pv: [16, 4], pm: 5, peso: 1, livro: HEROIS },
+	vassalo: { nome: "Vassalo", foco: "for", parceiros: ["guardiao"], pv: [20, 5], pm: 3, peso: 1, livro: HEROIS },
+	ventanista: { nome: "Ventanista", foco: "des", parceiros: ["assassino", "vigilante"], pv: [12, 3], pm: 4, peso: 2, livro: HEROIS },
+	frade: { nome: "Frade", foco: "sab", parceiros: ["medico", "ajudante"], pv: [12, 3], pm: 6, peso: 3, livro: DEUSES }
 };
 
 export const ATRIBUTOS = { for: "Força", des: "Destreza", con: "Constituição", int: "Inteligência", sab: "Sabedoria", car: "Carisma" };
@@ -89,6 +89,24 @@ export const DISTRIBUICOES = [
 ];
 
 export const NIVEL_MAXIMO = 20;
+
+export const GRAUS_PARCEIRO = ["iniciante", "veterano", "mestre"];
+
+/* Tipos de parceiro de Tormenta20 (capítulo 6), com o benefício resumido de cada grau. */
+export const PARCEIROS = {
+	adepto: { nome: "Adepto", graus: ["magias de 1º círculo custam –1 PM", "magias de 1º e 2º círculos custam –1 PM", "como veterano, e a redução acumula com outras"] },
+	ajudante: { nome: "Ajudante", graus: ["+2 em duas perícias", "+2 em três perícias", "+4 em três perícias"] },
+	assassino: { nome: "Assassino", graus: ["Ataque Furtivo +1d6", "Ataque Furtivo +1d6 e bônus por flanquear contra um inimigo por rodada", "Ataque Furtivo +2d6 e bônus por flanquear"] },
+	atirador: { nome: "Atirador", graus: ["+1d6 em um dano à distância por rodada", "+1d10 em um dano à distância por rodada", "+2d8 em um dano à distância por rodada"] },
+	combatente: { nome: "Combatente", graus: ["+2 em testes de ataque", "+3 em testes de ataque", "+4 em testes de ataque e ataque extra por 5 PM"] },
+	destruidor: { nome: "Destruidor", graus: ["1 PM: 2d6 de dano elemental em alcance curto", "como iniciante, ou 2 PM: 4d6 de dano", "como veterano, ou 4 PM: 6d6 em área de 6m de raio"] },
+	fortao: { nome: "Fortão", graus: ["+1d8 em um dano corpo a corpo por rodada", "+1d12 em um dano corpo a corpo por rodada", "+3d6 em um dano corpo a corpo por rodada"] },
+	guardiao: { nome: "Guardião", graus: ["+2 na Defesa", "+3 na Defesa", "+4 na Defesa e +2 em testes de resistência"] },
+	magivocador: { nome: "Magivocador", graus: ["+1 dado de dano nas magias", "+1 dado de dano e +1 na CD das magias", "+2 dados de dano e +2 na CD das magias"] },
+	medico: { nome: "Médico", graus: ["1 PM: cura 1d8+1 PV", "como iniciante, ou 3 PM: cura 3d8+3 PV ou remove uma condição", "como veterano, ou 5 PM: cura 6d8+6 PV"] },
+	perseguidor: { nome: "Perseguidor", graus: ["+2 em Percepção e Sobrevivência", "Sentidos Aguçados", "Percepção às Cegas"] },
+	vigilante: { nome: "Vigilante", graus: ["+2 em Percepção e Iniciativa", "Esquiva Sobrenatural", "Olhos nas Costas"] }
+};
 
 export const DIAS_LETIVOS = ["1º dia", "2º dia", "3º dia", "4º dia", "5º dia"];
 

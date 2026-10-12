@@ -1,6 +1,6 @@
-import { ATRIBUTOS, CLASSES, DISTRIBUICOES, NIVEL_MAXIMO, NOMES, RACAS } from "./data/alunos.mjs";
+import { ATRIBUTOS, CLASSES, DISTRIBUICOES, GRAUS_PARCEIRO, NIVEL_MAXIMO, NOMES, PARCEIROS, RACAS } from "./data/alunos.mjs";
 import { GREMIOS, OFICIO_LIVRE, OFICIOS_T20 } from "./data/disciplinas.mjs";
-import { avaliarDisciplina, novoAluno, novoSemestre, pendenciasParaEncerrar, periciaEfetiva, preRequisitos } from "./logica.mjs";
+import { avaliarDisciplina, nomePericia, novoAluno, novoSemestre, pendenciasParaEncerrar, periciaEfetiva, preRequisitos } from "./logica.mjs";
 
 const NOTA_MINIMA = 6;
 const SITUACOES_ESTUDADAS = new Set(["aprovado", "cursando", "recuperacao"]);
@@ -38,15 +38,64 @@ export function descricaoNpc(npc) {
 	return `${RACAS[npc.raca]?.nome ?? npc.raca} · ${CLASSES[npc.classe]?.nome ?? npc.classe} ${npc.nivel}`;
 }
 
-/* O atributo de foco da classe recebe o valor mais alto; os demais são embaralhados. */
+/* Compra aleatória com o maior valor no atributo de foco da classe; depois, +2 no foco e +1 em outros dois. */
 export function sortearAtributos(classe, rng = Math.random) {
 	const [maior, ...resto] = sortear(DISTRIBUICOES, rng);
 	const foco = CLASSES[classe]?.foco ?? "int";
-	const atributos = {};
-	for (const chave of Object.keys(ATRIBUTOS)) {
-		atributos[chave] = chave === foco ? maior : resto.splice(Math.floor(rng() * resto.length), 1)[0];
-	}
-	return atributos;
+	const chaves = Object.keys(ATRIBUTOS);
+	const base = {};
+	for (const chave of chaves) base[chave] = chave === foco ? maior : resto.splice(Math.floor(rng() * resto.length), 1)[0];
+	const outros = chaves.filter((chave) => chave !== foco);
+	const premiados = [outros.splice(Math.floor(rng() * outros.length), 1)[0], outros.splice(Math.floor(rng() * outros.length), 1)[0]];
+	const bonus = Object.fromEntries(chaves.map((chave) => [chave, chave === foco ? 2 : premiados.includes(chave) ? 1 : 0]));
+	const total = Object.fromEntries(chaves.map((chave) => [chave, base[chave] + bonus[chave]]));
+	return { base, bonus, total };
+}
+
+/* O grau do parceiro acompanha o patamar do aluno: até o 4º nível, do 5º ao 10º e do 11º em diante. */
+export function grauParceiro(nivel) {
+	return nivel >= 11 ? 2 : nivel >= 5 ? 1 : 0;
+}
+
+export function descricaoParceiro(npc) {
+	const tipo = PARCEIROS[npc?.parceiro];
+	if (!tipo) return null;
+	const grau = grauParceiro(npc.nivel);
+	return { tipo: tipo.nome, grau: GRAUS_PARCEIRO[grau], beneficio: tipo.graus[grau], rotulo: `${tipo.nome} ${GRAUS_PARCEIRO[grau]}` };
+}
+
+/* O NPC gerado sobe um nível a cada novo semestre. */
+export function subirNivel(aluno) {
+	if (aluno.npc) aluno.npc.nivel = Math.min(NIVEL_MAXIMO, (Number(aluno.npc.nivel) || 0) + 1);
+}
+
+const RESUMO_ABRE = '<section class="aa-resumo-npc">';
+const RESUMO_FECHA = "</section>";
+
+export function resumoNpc(aluno) {
+	const npc = aluno.npc;
+	if (!npc) return "";
+	const atual = aluno.semestres.at(-1);
+	const pericias = periciasEstudadas(aluno).map((p) => nomePericia(p)).sort((a, b) => a.localeCompare(b, "pt-BR"));
+	const parceiro = descricaoParceiro(npc);
+	return [
+		RESUMO_ABRE,
+		`<p><strong>Aluno da Academia Arcana.</strong> ${RACAS[npc.raca]?.nome ?? npc.raca}, ${CLASSES[npc.classe]?.nome ?? npc.classe} de ${npc.nivel}º nível${CLASSES[npc.classe] ? ` (${CLASSES[npc.classe].livro})` : ""}.</p>`,
+		`<p><strong>Período:</strong> ${atual?.numero ?? "—"}º semestre · <strong>Grêmio:</strong> ${GREMIOS[aluno.gremio]?.nome ?? "—"}${aluno.bolsista ? " · bolsista" : ""}</p>`,
+		parceiro ? `<p><strong>Como parceiro:</strong> ${parceiro.rotulo} (${parceiro.beneficio}).</p>` : "",
+		`<p><strong>Perícias estudadas:</strong> ${pericias.join(", ") || "—"}</p>`,
+		`<p><strong>Disciplinas do semestre:</strong> ${atual?.disciplinas.map((d) => d.nome).join(", ") || "—"}</p>`,
+		RESUMO_FECHA
+	].join("");
+}
+
+/* Troca só o bloco gerado pelo módulo, preservando o que o mestre escreveu na biografia. */
+export function atualizarResumoNpc(biografia, aluno) {
+	const texto = String(biografia ?? "");
+	const inicio = texto.indexOf(RESUMO_ABRE);
+	const fim = inicio < 0 ? -1 : texto.indexOf(RESUMO_FECHA, inicio);
+	if (fim < 0) return null;
+	return texto.slice(0, inicio) + resumoNpc(aluno) + texto.slice(fim + RESUMO_FECHA.length);
 }
 
 /* Cada nível rende ao menos 1 PV, como no sistema. */
@@ -111,7 +160,7 @@ export function periciasEstudadas(aluno) {
 }
 
 export function gerarAluno({
-	nivel = 1,
+	nivel = null,
 	raca = null,
 	classe = null,
 	periodo = null,
@@ -124,11 +173,15 @@ export function gerarAluno({
 	semestresRegulares = 8,
 	rng = Math.random
 } = {}) {
-	nivel = Math.max(1, Math.min(NIVEL_MAXIMO, Math.round(Number(nivel)) || 1));
 	if (!RACAS[raca]) raca = sortearPorPeso(Object.keys(RACAS), (r) => RACAS[r].peso, rng);
 	if (!CLASSES[classe]) classe = sortearPorPeso(Object.keys(CLASSES), (c) => CLASSES[c].peso, rng);
+	/* Nível e período andam juntos: o que não for informado é deduzido do outro. */
+	nivel = Math.round(Number(nivel));
 	periodo = Math.round(Number(periodo));
-	if (!(periodo >= 1 && periodo <= semestresRegulares)) periodo = 1 + Math.floor(rng() * semestresRegulares);
+	const temNivel = nivel >= 1;
+	if (temNivel) nivel = Math.min(NIVEL_MAXIMO, nivel);
+	if (!(periodo >= 1 && periodo <= semestresRegulares)) periodo = temNivel ? Math.min(nivel, semestresRegulares) : 1 + Math.floor(rng() * semestresRegulares);
+	if (!temNivel) nivel = periodo;
 
 	const nome = gerarNome(raca, usados, rng);
 	const atributos = sortearAtributos(classe, rng);
@@ -140,6 +193,7 @@ export function gerarAluno({
 		raca,
 		classe,
 		nivel,
+		parceiro: sortear(CLASSES[classe].parceiros, rng),
 		focos: focosDeEstudo(classe, pericias, rng),
 		aptidao: Math.round((5.5 + rng() * 3) * 10) / 10
 	};
@@ -156,5 +210,5 @@ export function gerarAluno({
 			semestre.status = "cursando";
 		}
 	}
-	return { nome, raca, classe, nivel, periodo, atributos, ...pontosDaClasse(classe, nivel, atributos.con), aluno, pericias: periciasEstudadas(aluno) };
+	return { nome, raca, classe, nivel, periodo, atributos, ...pontosDaClasse(classe, nivel, atributos.total.con), aluno, pericias: periciasEstudadas(aluno) };
 }
