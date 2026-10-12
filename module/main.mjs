@@ -9,6 +9,7 @@ import { AtividadesApp } from "./apps/atividades.mjs";
 import { ehConversa, migrarRegistroAntigo, registrarGuardas, registrarSocket, sincronizarPermissoes, totalNaoLidas } from "./correio.mjs";
 import { PainelAlunosApp } from "./apps/painel-alunos.mjs";
 import { PainelAmeacasApp } from "./apps/painel-ameacas.mjs";
+import { PainelPlacarApp } from "./apps/painel-placar.mjs";
 import * as dados from "./data/disciplinas.mjs";
 import * as logica from "./logica.mjs";
 import * as geracao from "./gerador.mjs";
@@ -16,6 +17,7 @@ import { aplicarTema, registrarTema } from "./tema.mjs";
 
 const atualizarPainelAlunos = foundry.utils.debounce(() => PainelAlunosApp.sincronizar(), 100);
 const atualizarPainelAmeacas = foundry.utils.debounce(() => PainelAmeacasApp.sincronizar(), 100);
+const atualizarPainelPlacar = foundry.utils.debounce(() => PainelPlacarApp.sincronizar(), 100);
 
 let cartasPendentes = 0;
 
@@ -43,6 +45,7 @@ Hooks.once("init", () => {
 		CorreioApp.atualizar();
 		AtividadesApp.atualizar();
 		conferirCorreio();
+		atualizarPainelPlacar();
 		atualizarPainelAlunos();
 		atualizarPainelAmeacas();
 	});
@@ -56,6 +59,7 @@ Hooks.once("init", () => {
 		atividades: () => AtividadesApp.abrir(),
 		painelAlunos: () => PainelAlunosApp.sincronizar(),
 		painelAmeacas: () => PainelAmeacasApp.sincronizar(),
+		painelPlacar: () => PainelPlacarApp.sincronizar(),
 		lerAluno,
 		contextoCatalogo,
 		dados,
@@ -74,10 +78,12 @@ Hooks.once("ready", () => {
 	cartasPendentes = totalNaoLidas();
 	PainelAlunosApp.sincronizar();
 	PainelAmeacasApp.sincronizar();
+	PainelPlacarApp.sincronizar();
 });
 
 Hooks.on("updateActor", (actor, mudancas) => {
 	atualizarPainelAlunos();
+	if (foundry.utils.hasProperty(mudancas, `flags.${MODULO}`)) atualizarPainelPlacar();
 	atualizarPainelAmeacas();
 	if ("name" in mudancas) CalendarioApp.atualizar();
 	if ("ownership" in mudancas && ehAluno(actor)) sincronizarPermissoes();
@@ -104,11 +110,13 @@ for (const gancho of ["createJournalEntryPage", "updateJournalEntryPage", "delet
 
 Hooks.on("createActor", (actor) => {
 	if (!ehAluno(actor)) return;
+	atualizarPainelPlacar();
 	SecretariaApp.atualizar();
 	CalendarioApp.atualizar();
 });
 
 Hooks.on("deleteActor", () => {
+	atualizarPainelPlacar();
 	SecretariaApp.atualizar();
 	CalendarioApp.atualizar();
 	atualizarPainelAlunos();

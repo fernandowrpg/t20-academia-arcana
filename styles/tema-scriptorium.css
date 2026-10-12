@@ -403,3 +403,7 @@ body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana .aa-correio-balao {
 body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana .aa-correio-contato strong {
 	font-family: var(--aa-fonte-titulo);
 }
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-bandeiras strong {
+	font-family: var(--aa-fonte-titulo);
+}

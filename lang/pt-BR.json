@@ -41,6 +41,26 @@
 				"Nome": "Exibir o painel de ameaças",
 				"Dica": "Painel flutuante com vida, mana, ND, Defesa e condições das ameaças enquanto houver um combate em andamento."
 			},
+			"painelPlacar": {
+				"Nome": "Exibir o placar dos grêmios",
+				"Dica": "Painel flutuante pequeno, sempre visível, com uma bandeira por grêmio que se enche conforme o grêmio pontua."
+			},
+			"pontosAprovacao": {
+				"Nome": "Placar: pontos por aprovação",
+				"Dica": "Quantos pontos o grêmio ganha a cada disciplina em que um aluno seu é aprovado."
+			},
+			"pontosAtividade": {
+				"Nome": "Placar: pontos por atividade extracurricular",
+				"Dica": "Quantos pontos o grêmio ganha a cada atividade extracurricular concluída por um aluno seu."
+			},
+			"metaPlacar": {
+				"Nome": "Placar: pontos para encher a bandeira",
+				"Dica": "Com esta pontuação a bandeira fica cheia. Se um grêmio passar da meta, as bandeiras passam a ser medidas pelo líder."
+			},
+			"placarNpcs": {
+				"Nome": "Placar: NPCs gerados pontuam",
+				"Dica": "Desmarcado, só contam para o placar os alunos que não foram criados pelo Gerador de Alunos."
+			},
 			"ameacasJogadores": {
 				"Nome": "Painel de ameaças para jogadores",
 				"Dica": "Define o que os jogadores veem no painel de ameaças. O mestre sempre vê os valores completos.",

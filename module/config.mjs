@@ -64,6 +64,29 @@ export function registrarConfiguracoes(CatalogoApp) {
 
 	painel("painelAlunos");
 	painel("painelAmeacas");
+	painel("painelPlacar");
+
+	numero("pontosAprovacao", 10, 0, 1000);
+	numero("pontosAtividade", 15, 0, 1000);
+	numero("metaPlacar", 100, 1, 100000);
+
+	game.settings.register(MODULO, "placarNpcs", {
+		name: "ACADEMIA.Config.placarNpcs.Nome",
+		hint: "ACADEMIA.Config.placarNpcs.Dica",
+		scope: "world",
+		config: true,
+		type: Boolean,
+		default: false,
+		onChange: notificar
+	});
+
+	game.settings.register(MODULO, "placar", {
+		scope: "world",
+		config: false,
+		type: Object,
+		default: { base: {}, ajustes: {}, historico: [] },
+		onChange: notificar
+	});
 
 	game.settings.register(MODULO, "ameacasJogadores", {
 		name: "ACADEMIA.Config.ameacasJogadores.Nome",

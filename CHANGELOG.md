@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.11.0
+
+- Placar dos grêmios: cada aprovação e cada atividade extracurricular concluída rende pontos ao grêmio do aluno (valores configuráveis), além de pontos avulsos do mestre.
+- Painel pequeno e sempre visível com uma bandeira por grêmio, que se enche de brilho conforme o grêmio pontua; a líder ganha uma coroa.
+- Secretaria: quadro do placar com o detalhe por grêmio e o botão para encerrar o placar do semestre, que registra pontos e campeões, anuncia no chat e recomeça a contagem.
+
 ## 1.10.0
 
 - Atividades extracurriculares: cada missão pode ter uma recompensa extra configurada pelo mestre, usada em uma cena: perícia (fica treinado pela cena, ou +2 se já for), poder geral ou outra vantagem descrita livremente.

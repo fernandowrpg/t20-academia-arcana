@@ -1889,3 +1889,135 @@
 	flex: 0 0 auto;
 	cursor: pointer;
 }
+
+.academia-arcana.aa-painel-placar {
+	width: 212px;
+}
+
+.aa-painel .aa-bandeiras {
+	display: flex;
+	justify-content: space-around;
+	gap: 0.25rem;
+	list-style: none;
+	margin: 0;
+	padding: 0.5rem 0.4rem 0.35rem;
+}
+
+.aa-painel .aa-bandeiras li {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.15rem;
+	margin: 0;
+}
+
+/* Flâmula com a ponta em V; o brilho sobe de baixo para cima conforme os pontos. */
+.aa-painel .aa-bandeira {
+	position: relative;
+	display: block;
+	width: 38px;
+	height: 72px;
+	clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+	background: color-mix(in srgb, var(--aa-cor) 28%, #1d1230);
+	box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--aa-cor) 70%, #fff);
+}
+
+.aa-painel .aa-bandeira > i {
+	position: absolute;
+	top: 9px;
+	left: 0;
+	right: 0;
+	text-align: center;
+	font-size: 0.95rem;
+	color: #fff;
+	text-shadow: 0 1px 3px #000;
+}
+
+.aa-painel .aa-bandeira-brilho {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: var(--aa-nivel, 0%);
+	overflow: hidden;
+	background: linear-gradient(to top, var(--aa-cor), color-mix(in srgb, var(--aa-cor) 55%, #fff6c9));
+	box-shadow: 0 -1px 6px 1px rgba(255, 255, 255, 0.75);
+	transition: height 0.9s ease;
+}
+
+.aa-painel .aa-bandeira-brilho::before,
+.aa-painel .aa-bandeira-brilho::after {
+	content: "";
+	position: absolute;
+	inset: -34px 0 0;
+	background-image: radial-gradient(circle, #fff 0 1px, transparent 1.6px), radial-gradient(circle, #ffe9a3 0 1px, transparent 1.6px), radial-gradient(circle, #fff 0 0.6px, transparent 1.1px);
+	background-size: 13px 17px, 19px 34px, 7px 8.5px;
+	background-position: 2px 3px, 9px 12px, 4px 1px;
+	animation: aa-glitter 3.4s linear infinite;
+}
+
+.aa-painel .aa-bandeira-brilho::after {
+	background-size: 11px 34px, 17px 17px, 5px 8.5px;
+	background-position: 6px 20px, 1px 9px, 2px 5px;
+	animation-duration: 5.1s;
+	animation-direction: reverse;
+	opacity: 0.7;
+}
+
+@keyframes aa-glitter {
+	0% {
+		transform: translateY(0);
+		opacity: 0.55;
+	}
+	50% {
+		opacity: 1;
+	}
+	100% {
+		transform: translateY(34px);
+		opacity: 0.55;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.aa-painel .aa-bandeira-brilho::before,
+	.aa-painel .aa-bandeira-brilho::after {
+		animation: none;
+	}
+}
+
+.aa-painel .aa-bandeiras strong {
+	font-variant-numeric: tabular-nums;
+}
+
+.aa-painel .aa-bandeiras li.lider strong {
+	color: var(--aa-ouro);
+}
+
+.aa-painel .aa-bandeira-coroa {
+	position: absolute;
+	top: -9px;
+	font-size: 0.7rem;
+	color: var(--aa-ouro);
+	filter: drop-shadow(0 1px 1px #000);
+}
+
+.aa-painel .aa-placar-ultimo {
+	padding: 0.25rem 0.5rem 0.35rem;
+	border-top: 1px solid var(--aa-linha);
+	text-align: center;
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-tabela-placar input {
+	width: 4.5rem;
+}
+
+.academia-arcana .aa-placar-historico {
+	margin-top: 0.5rem;
+}
+
+.academia-arcana .aa-placar-historico small {
+	display: block;
+	color: var(--aa-texto-suave);
+}

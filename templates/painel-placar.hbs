@@ -1,0 +1,25 @@
+<div class="aa-painel-conteudo">
+	<header class="aa-painel-topo" data-tooltip="Arraste para mover; clique duplo para voltar à posição padrão">
+		<i class="fa-solid fa-flag"></i>
+		<strong>Grêmios</strong>
+		<span class="aa-painel-acoes">
+			{{#if gm}}<a data-action="secretaria" data-tooltip="Placar na Secretaria"><i class="fa-solid fa-building-columns"></i></a>{{/if}}
+			<a data-action="recolher" data-tooltip="{{#if recolhido}}Mostrar o último campeão{{else}}Mostrar só as bandeiras{{/if}}"><i class="fa-solid {{#if recolhido}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i></a>
+		</span>
+	</header>
+	<ul class="aa-bandeiras">
+		{{#each gremios}}
+		<li class="{{#if lider}}lider{{/if}}" style="--aa-cor: {{cor}}; --aa-nivel: {{nivel}}%" data-tooltip="{{dica}}">
+			<span class="aa-bandeira">
+				<span class="aa-bandeira-brilho"></span>
+				<i class="{{icone}}"></i>
+			</span>
+			<strong>{{pontos}}</strong>
+			{{#if lider}}<i class="fa-solid fa-crown aa-bandeira-coroa"></i>{{/if}}
+		</li>
+		{{/each}}
+	</ul>
+	<div class="aa-painel-detalhe aa-placar-ultimo">
+		{{#if ultimo}}<i class="fa-solid fa-trophy"></i> {{ultimo.rotulo}}: <strong>{{ultimo.campeoes}}</strong>{{else}}Nenhum semestre encerrado ainda.{{/if}}
+	</div>
+</div>

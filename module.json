@@ -2,7 +2,7 @@
 	"id": "t20-academia-arcana",
 	"title": "Academia Arcana",
 	"description": "Acompanhe a vida acadêmica dos alunos da Grande Academia Arcana de Arton: ficha do aluno, matrícula por perícia, boletim e um compêndio de referência baseado no Manual do Arcano. Para o sistema Tormenta20.",
-	"version": "1.10.0",
+	"version": "1.11.0",
 	"authors": [
 		{
 			"name": "fernandowrpg"
@@ -82,7 +82,7 @@
 	],
 	"url": "https://github.com/fernandowrpg/t20-academia-arcana",
 	"manifest": "https://github.com/fernandowrpg/t20-academia-arcana/releases/latest/download/module.json",
-	"download": "https://github.com/fernandowrpg/t20-academia-arcana/releases/download/v1.10.0/module.zip",
+	"download": "https://github.com/fernandowrpg/t20-academia-arcana/releases/download/v1.11.0/module.zip",
 	"bugs": "https://github.com/fernandowrpg/t20-academia-arcana/issues",
 	"readme": "https://github.com/fernandowrpg/t20-academia-arcana/blob/main/README.md",
 	"changelog": "https://github.com/fernandowrpg/t20-academia-arcana/blob/main/CHANGELOG.md",

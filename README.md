@@ -67,6 +67,15 @@ Os dois painéis ficam flutuando sobre a mesa. Arraste pelo título para mover (
 - **Alunos**: lista os alunos ativos ou com o curso trancado. O mestre vê todos; o jogador vê os personagens em que tem permissão de observador ou dono. Cada aluno mostra PV, PM, o semestre mais recente com notas (média, aprovações, reprovações, pendências e, ao clicar, as disciplinas) e o botão **Matrícula**, que abre direto a aba de matrícula e fica destacado enquanto a matrícula está aberta.
 - **Ameaças**: aparece quando o combate é iniciado e some quando ele termina. Lista os combatentes sem jogador dono cujo token não é amistoso, na ordem de iniciativa, com destaque para quem está na vez. Clicar no nome centraliza o token; clicar no retrato abre a ficha. Por padrão só o mestre vê; em **Painel de ameaças para jogadores** ele pode liberar o estado aproximado (sem números) ou os valores completos. Ameaças ocultas nunca aparecem para jogadores.
 
+### Placar dos grêmios
+
+Um painel pequeno, sempre visível, mostra uma bandeira por grêmio. Cada bandeira se enche de brilho conforme o grêmio pontua, e a líder ganha uma coroa. Passe o mouse para ver o detalhe; como os outros painéis, ele pode ser arrastado, recolhido e desligado por usuário.
+
+- **O que pontua**: cada disciplina aprovada (10 pontos) e cada atividade extracurricular concluída (15 pontos) por um aluno do grêmio, mais os **pontos avulsos** que o mestre lança na Secretaria para torneios, façanhas e punições. Os valores e a meta que enche a bandeira (100 pontos) são configuráveis.
+- **Quem pontua**: os alunos com grêmio definido. Os NPCs do Gerador de Alunos ficam de fora por padrão; a configuração *Placar: NPCs gerados pontuam* os inclui.
+- **Encerrar o semestre**: na Secretaria, **Encerrar o placar do semestre** pede um nome para o período, registra os pontos e os campeões (empates dividem o título), anuncia o resultado no chat e recomeça a contagem do zero. O histórico fica na Secretaria, e o painel mostra o último campeão. Não dá para desfazer um encerramento.
+- A contagem recomeça a partir do que cada aluno já tinha no momento do encerramento: aprovações e atividades anteriores não voltam a pontuar.
+
 ### Corpo docente
 
 Na Secretaria, o quadro **Corpo docente** lista os professores citados no catálogo de disciplinas. Em cada linha, escolha a ficha (ator) daquele professor ou use o botão para criar uma ficha de NPC com o nome dele, na pasta *Professores da Academia*. Disciplinas com dois professores (como *Prática Aventuresca*) contam para os dois.
@@ -151,6 +160,7 @@ api.correio();
 api.atividades();
 api.painelAlunos();
 api.painelAmeacas();
+api.painelPlacar();
 api.lerAluno(actor);
 ```
 

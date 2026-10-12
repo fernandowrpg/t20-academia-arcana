@@ -160,7 +160,21 @@ O aluno decide em que cena usar e avisa a mesa. Depois de usada, a recompensa ac
 - O reitor Talude às vezes deixa um aluno reprovado avançar depois de um bom desempenho no Teste dos Quatro Elementos, por critérios que só ele conhece. (Livro)
 - Turmas com notas baixas podem perder os passes de saída. (Livro)
 
-## 6. Teste de Proficiência dos Quatro Elementos
+## 6. Placar dos Grêmios
+
+Os quatro Grêmios disputam um placar a cada semestre. O livro fala em torneios entre Grêmios, com prêmio no fim do ano letivo para o mais vitorioso; a pontuação abaixo é regra da mesa, e o módulo faz a conta.
+
+| O que pontua | Pontos | Fonte |
+| --- | --- | --- |
+| Disciplina aprovada por um aluno do Grêmio | 10 | Mesa (configurável) |
+| Atividade extracurricular concluída por um aluno do Grêmio | 15 | Mesa (configurável) |
+| Torneios, façanhas e punições | A critério do mestre | Mesa |
+
+- Só conta o que acontece depois do último encerramento do placar.
+- No fim do semestre o mestre **encerra o placar**: os pontos e os campeões ficam registrados e a contagem recomeça do zero. Em caso de empate, os Grêmios empatados são campeões juntos.
+- Pelo livro, ao fim de cada ano letivo cada membro do Grêmio com mais vitórias recebe um item mágico de valor moderado.
+
+## 7. Teste de Proficiência dos Quatro Elementos
 
 Não é obrigatório nem conta para a formatura. É uma situação de risco, real ou simulada, preparada para um aluno ou grupo, e vale um item mágico. (Livro)
 
@@ -173,7 +187,7 @@ Não é obrigatório nem conta para a formatura. É uma situação de risco, rea
 
 O Teste do Fogo costuma ser feito no último semestre. Em Tormenta20, o mestre ajusta o ND à campanha.
 
-## 7. Alunos NPC
+## 8. Alunos NPC
 
 - O mestre pode gerar colegas pelo **Gerador de Alunos**, que sorteia nome, raça, classe, atributos, período, grêmio e histórico. A ficha é um personagem controlado pelo mestre. (Módulo)
 - **Atributos:** compra aleatória com o maior valor no atributo da classe, mais +2 nesse atributo e +1 em outros dois. (Módulo)
@@ -193,11 +207,12 @@ O Teste do Fogo costuma ser feito no último semestre. Em Tormenta20, o mestre a
 
 O livro básico deixa o grau do parceiro a critério do mestre; a tabela acima é a que o módulo usa.
 
-## 8. Resumo rápido para o jogador
+## 9. Resumo rápido para o jogador
 
 - [ ] Escolher de 3 a 6 disciplinas na matrícula, respeitando os pré-requisitos.
 - [ ] Fazer duas provas por disciplina: teste da perícia contra a CD do nível.
 - [ ] Nota da prova: 6 + (resultado − CD) ÷ 2.
 - [ ] Nota final 6 aprova; de 4 a 5,5 vai para recuperação; abaixo de 4 reprova.
 - [ ] Concluir missões dos professores para ganhar vantagens nas provas das disciplinas deles.
+- [ ] Aprovações e missões concluídas somam pontos para o seu Grêmio.
 - [ ] Formar-se em 8 semestres, com limite de 10.

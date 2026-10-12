@@ -6,6 +6,7 @@ import { AtividadesApp } from "./atividades.mjs";
 import { CalendarioApp } from "./calendario.mjs";
 import { CorreioApp } from "./correio.mjs";
 import { GeradorAlunosApp } from "./gerador.mjs";
+import { definirAvulsos, encerrarPlacar, lerPlacar, nomesDosCampeoes, pontuacao } from "../placar.mjs";
 import { VidaAcademicaApp } from "./vida-academica.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
@@ -46,6 +47,7 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			correio: SecretariaApp.#correio,
 			criarFichaProfessor: SecretariaApp.#criarFichaProfessor,
 			atividades: SecretariaApp.#atividades,
+			encerrarPlacar: SecretariaApp.#encerrarPlacar,
 			abrirFichaProfessor: SecretariaApp.#abrirFichaProfessor
 		}
 	};
@@ -94,7 +96,22 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			img: p.actor?.img ?? null,
 			fichas: [{ id: "", nome: "— sem ficha —", selecionado: !p.actor }].concat(fichas.map((a) => ({ id: a.id, nome: a.name, selecionado: a.id === p.actor?.id })))
 		}));
-		return { alunos, candidatos, temCandidatos: candidatos.length > 0, docentes };
+		const registro = lerPlacar();
+		const { gremios, lideres } = pontuacao(registro);
+		const placar = {
+			gremios: gremios.map((g) => ({ ...g, lider: lideres.includes(g.id) })),
+			valores: { aprovacao: opcao("pontosAprovacao"), atividade: opcao("pontosAtividade") },
+			npcs: opcao("placarNpcs"),
+			historico: registro.historico
+				.map((h) => ({
+					rotulo: h.rotulo,
+					data: new Date(h.quando).toLocaleDateString("pt-BR"),
+					campeoes: nomesDosCampeoes(h).join(" e ") || "sem campeão",
+					pontos: gremios.map((g) => `${g.apelido} ${h.pontos?.[g.id] ?? 0}`).join(" · ")
+				}))
+				.reverse()
+		};
+		return { alunos, candidatos, temCandidatos: candidatos.length > 0, docentes, placar };
 	}
 
 	static #abrirAluno(event, alvo) {
@@ -173,6 +190,7 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	async _onRender(context, options) {
 		await super._onRender(context, options);
+		this.element.querySelectorAll("input[data-avulsos]").forEach((el) => el.addEventListener("change", (ev) => definirAvulsos(ev.target.dataset.avulsos, ev.target.value)));
 		this.element.querySelectorAll("select[data-professor]").forEach((el) =>
 			el.addEventListener("change", (ev) => this.#vincular(ev.target.dataset.professor, ev.target.value))
 		);
@@ -197,6 +215,17 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 	static #abrirFichaProfessor(event, alvo) {
 		const nome = alvo.closest("[data-docente]")?.dataset.docente;
 		game.actors.get(vinculosDeProfessores()[nome])?.sheet.render(true);
+	}
+
+	static async #encerrarPlacar() {
+		const rotulo = await DialogV2.prompt({
+			window: { title: "Encerrar o placar do semestre" },
+			content: `<p>Registra os pontos e os campeões, anuncia no chat e recomeça a contagem do zero. Não dá para desfazer.</p><label>Nome do período<input type="text" name="rotulo" maxlength="60" placeholder="1º semestre de 1410" style="width:100%"></label>`,
+			ok: { label: "Encerrar e registrar", callback: (ev, botao) => botao.form.elements.rotulo.value },
+			rejectClose: false
+		});
+		if (typeof rotulo !== "string") return;
+		await encerrarPlacar(rotulo);
 	}
 
 	static #atividades() {
