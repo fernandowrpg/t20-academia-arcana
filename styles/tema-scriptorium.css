@@ -383,3 +383,23 @@ body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel :is(.aa-painel-media strong, 
 body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-item.da-vez {
 	background: rgba(184, 137, 27, 0.2);
 }
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana .aa-correio-escrever button {
+	background: linear-gradient(var(--aa-arcano), #3c2660);
+	border: 1px solid #2a1a45;
+	color: var(--aa-creme);
+	font-family: var(--aa-fonte-titulo);
+	font-size: 0.75rem;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana .aa-correio-balao {
+	background: rgba(255, 255, 255, 0.3);
+	border-radius: 2px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana .aa-correio-contato strong {
+	font-family: var(--aa-fonte-titulo);
+}

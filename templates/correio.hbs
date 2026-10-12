@@ -1,0 +1,95 @@
+<div class="aa-janela aa-correio">
+	<aside class="aa-correio-lado">
+		<header class="aa-correio-eu">
+			{{#if eu}}<img src="{{eu.img}}" alt="" class="aa-mini">{{/if}}
+			{{#if variosRemetentes}}
+			<select name="aa-correio-remetente" aria-label="Escrever como">{{#each remetentes}}<option value="{{id}}" {{#if selecionado}}selected{{/if}}>{{nome}}</option>{{/each}}</select>
+			{{else}}
+			<strong>{{eu.nome}}</strong>
+			{{/if}}
+			{{#if disponivel}}<a data-action="novoGrupo" data-tooltip="Novo grupo"><i class="fa-solid fa-user-group"></i><i class="fa-solid fa-plus"></i></a>{{/if}}
+		</header>
+		<ul class="aa-correio-contatos">
+			{{#each conversas}}
+			<li class="{{#if ativa}}ativo{{/if}}" data-action="abrirConversa" data-conversa="{{id}}">
+				{{#if grupo}}<span class="aa-mini aa-correio-grupo"><i class="fa-solid fa-user-group"></i></span>{{else}}<img src="{{img}}" alt="" class="aa-mini">{{/if}}
+				<span class="aa-correio-contato">
+					<strong>{{nome}}</strong>
+					{{#if previa}}<small>{{previa}}</small>{{/if}}
+				</span>
+				{{#if novas}}<span class="aa-correio-novas" data-tooltip="Mensagens não lidas">{{novas}}</span>{{/if}}
+			</li>
+			{{else}}
+			<li class="aa-dica">Nenhum outro aluno registrado.</li>
+			{{/each}}
+		</ul>
+	</aside>
+
+	<section class="aa-correio-conversa">
+		{{#if aberta}}
+		<header class="aa-correio-topo">
+			{{#if aberta.grupo}}<span class="aa-mini aa-correio-grupo"><i class="fa-solid fa-user-group"></i></span>{{else}}<img src="{{aberta.img}}" alt="" class="aa-mini">{{/if}}
+			<span class="aa-correio-contato">
+				<strong>{{aberta.nome}}</strong>
+				{{#if aberta.membros}}<small data-tooltip="{{aberta.membros}}">{{aberta.membros}}</small>{{/if}}
+			</span>
+			{{#if gm}}<small class="aa-correio-aviso">Você vê o histórico de edições; os jogadores, só quando revelado.</small>{{/if}}
+		</header>
+		<ol class="aa-correio-mensagens">
+			{{#each mensagens}}
+			<li class="aa-correio-mensagem {{#if minha}}minha{{/if}}" data-mensagem="{{id}}">
+				<div class="aa-correio-balao">
+					{{#if texto}}<p>{{texto}}</p>{{/if}}
+					{{#if item}}<p class="aa-correio-item"><img src="{{item.img}}" alt=""> <strong>{{item.nome}}</strong>{{#if item.qtd}} ×{{item.qtd}}{{/if}} <small>entregue{{#if item.para}} a {{item.para}}{{/if}}</small></p>{{/if}}
+					<footer>
+						<span>{{autor}} · {{quando}}</span>
+						{{#if editada}}<span class="aa-correio-editada"><i class="fa-solid fa-pen-nib"></i> editada</span>{{/if}}
+						{{#if @root.gm}}
+						<a data-action="editar" data-tooltip="Editar (o texto anterior fica no histórico)"><i class="fa-solid fa-pen"></i></a>
+						{{#if edicoes.length}}<a data-action="revelar" class="{{#if revelada}}ativo{{/if}}" data-tooltip="{{#if revelada}}Edições reveladas aos jogadores. Clique para ocultar{{else}}Revelar as edições aos jogadores{{/if}}"><i class="fa-solid {{#if revelada}}fa-eye{{else}}fa-eye-slash{{/if}}"></i></a>{{/if}}
+						{{/if}}
+					</footer>
+					{{#if edicoes.length}}
+					<details class="aa-correio-historico">
+						<summary>Histórico de edições ({{edicoes.length}})</summary>
+						<ol>
+							{{#each edicoes}}<li><small>Até {{quando}}{{#if @root.gm}} · alterada por {{por}}{{/if}}</small><p>{{texto}}</p></li>{{/each}}
+						</ol>
+					</details>
+					{{/if}}
+				</div>
+			</li>
+			{{else}}
+			<li class="aa-dica">Nenhuma mensagem ainda. Escreva a primeira.</li>
+			{{/each}}
+		</ol>
+		<footer class="aa-correio-escrever">
+			{{#if disponivel}}
+			<textarea name="aa-correio-texto" rows="2" placeholder="Escreva para {{aberta.nome}}… (Enter envia, Shift+Enter quebra a linha)">{{rascunho}}</textarea>
+			<div class="aa-correio-acoes">
+				{{#if itens.length}}
+				<select name="aa-correio-item" aria-label="Item a enviar" data-tooltip="Enviar um item junto (ou arraste da ficha para cá)">
+					<option value="">Sem item</option>
+					{{#each itens}}<option value="{{id}}" data-qtd="{{qtd}}">{{rotulo}}</option>{{/each}}
+				</select>
+				<input type="number" name="aa-correio-qtd" value="1" min="1" step="1" aria-label="Quantidade" hidden>
+				{{#if destinatarios.length}}
+				<select name="aa-correio-para" aria-label="Quem recebe o item" data-tooltip="Quem recebe o item" hidden>
+					{{#each destinatarios}}<option value="{{id}}">para {{nome}}</option>{{/each}}
+				</select>
+				{{/if}}
+				{{/if}}
+				<button type="button" data-action="enviar"><i class="fa-solid fa-paper-plane"></i> Enviar</button>
+			</div>
+			{{else}}
+			<p class="aa-alerta"><i class="fa-solid fa-triangle-exclamation"></i> O correio só entrega com o mestre conectado.</p>
+			{{/if}}
+		</footer>
+		{{else}}
+		<div class="aa-vazio">
+			<i class="fa-solid fa-envelope-open-text"></i>
+			<p>Escolha um colega ou um grupo para ler ou escrever.</p>
+		</div>
+		{{/if}}
+	</section>
+</div>

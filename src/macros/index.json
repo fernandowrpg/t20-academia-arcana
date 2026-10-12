@@ -4,6 +4,7 @@
 		{ "arquivo": "secretaria.js", "nome": "Secretaria da Academia", "img": "icons/svg/house.svg" },
 		{ "arquivo": "catalogo.js", "nome": "Catálogo de Disciplinas", "img": "icons/svg/book.svg" },
 		{ "arquivo": "calendario.js", "nome": "Calendário do Período Letivo", "img": "icons/svg/clockwork.svg" },
-		{ "arquivo": "gerador.js", "nome": "Gerador de Alunos", "img": "icons/svg/d20-grey.svg" }
+		{ "arquivo": "gerador.js", "nome": "Gerador de Alunos", "img": "icons/svg/d20-grey.svg" },
+		{ "arquivo": "correio.js", "nome": "Correio da Academia", "img": "icons/svg/book.svg" }
 	]
 }

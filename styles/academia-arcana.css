@@ -1354,3 +1354,287 @@
 .academia-arcana .aa-cal-parceiro {
 	display: block;
 }
+
+.academia-arcana .aa-correio {
+	flex-direction: row;
+	container: aa-correio / inline-size;
+}
+
+.academia-arcana .aa-correio-lado {
+	flex: 0 0 240px;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
+	border-right: 1px solid var(--aa-borda);
+}
+
+.academia-arcana .aa-correio-eu,
+.academia-arcana .aa-correio-topo {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem 0.75rem;
+	border-bottom: 1px solid var(--aa-borda);
+}
+
+.academia-arcana .aa-correio-eu select {
+	flex: 1;
+	min-width: 0;
+}
+
+.academia-arcana .aa-correio-topo small {
+	margin-left: auto;
+	text-align: right;
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-correio-contatos {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.academia-arcana .aa-correio-contatos li {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin: 0;
+	padding: 0.4rem 0.75rem;
+	border-bottom: 1px solid var(--aa-borda);
+	border-left: 3px solid transparent;
+	cursor: pointer;
+}
+
+.academia-arcana .aa-correio-contatos li.ativo {
+	border-left-color: var(--aa-roxo);
+	background: var(--aa-roxo-claro);
+}
+
+.academia-arcana .aa-correio-contato {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.academia-arcana .aa-correio-contato > * {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.academia-arcana .aa-correio-contato small {
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-correio-novas {
+	flex: 0 0 auto;
+	min-width: 1.3rem;
+	padding: 0 0.35rem;
+	border-radius: 999px;
+	background: var(--aa-vermelho);
+	color: #fff;
+	font-size: 0.75rem;
+	font-weight: bold;
+	text-align: center;
+}
+
+.academia-arcana .aa-correio-conversa {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
+}
+
+.academia-arcana .aa-correio-mensagens {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	list-style: none;
+	margin: 0;
+	padding: 0.75rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.academia-arcana .aa-correio-mensagem {
+	display: flex;
+	margin: 0;
+}
+
+.academia-arcana .aa-correio-mensagem.minha {
+	justify-content: flex-end;
+}
+
+.academia-arcana .aa-correio-balao {
+	max-width: 80%;
+	min-width: 0;
+	padding: 0.4rem 0.6rem;
+	border: 1px solid var(--aa-borda);
+	border-left: 3px solid var(--aa-ouro);
+	border-radius: 6px;
+	background: var(--aa-roxo-claro);
+}
+
+.academia-arcana .aa-correio-mensagem.minha .aa-correio-balao {
+	border-left: 1px solid var(--aa-borda);
+	border-right: 3px solid var(--aa-roxo);
+}
+
+.academia-arcana .aa-correio-balao p {
+	margin: 0;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
+.academia-arcana .aa-correio-item {
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+	margin-top: 0.25rem;
+}
+
+.academia-arcana .aa-correio-item img {
+	width: 24px;
+	height: 24px;
+	border: 1px solid var(--aa-borda);
+	object-fit: cover;
+}
+
+.academia-arcana .aa-correio-balao footer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.15rem 0.6rem;
+	margin-top: 0.25rem;
+	font-size: 0.72rem;
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-correio-balao footer a {
+	cursor: pointer;
+}
+
+.academia-arcana .aa-correio-balao footer a.ativo,
+.academia-arcana .aa-correio-editada {
+	color: var(--aa-ambar);
+}
+
+.academia-arcana .aa-correio-historico {
+	margin-top: 0.25rem;
+	padding-top: 0.25rem;
+	border-top: 1px dashed var(--aa-borda);
+	font-size: 0.8rem;
+}
+
+.academia-arcana .aa-correio-historico summary {
+	cursor: pointer;
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-correio-historico ol {
+	margin: 0.25rem 0 0;
+	padding-left: 1.1rem;
+}
+
+.academia-arcana .aa-correio-historico p {
+	text-decoration: line-through;
+	opacity: 0.8;
+}
+
+.academia-arcana .aa-correio-escrever {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+	padding: 0.5rem 0.75rem;
+	border-top: 1px solid var(--aa-borda);
+}
+
+.academia-arcana .aa-correio-escrever textarea {
+	width: 100%;
+	min-height: 3rem;
+	resize: vertical;
+}
+
+.academia-arcana .aa-correio-acoes {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem;
+}
+
+.academia-arcana .aa-correio-acoes select {
+	flex: 1 1 140px;
+	min-width: 0;
+}
+
+.academia-arcana .aa-correio-acoes input {
+	flex: 0 0 4rem;
+}
+
+.academia-arcana .aa-correio-acoes button {
+	flex: 0 0 auto;
+	width: auto;
+	margin-left: auto;
+}
+
+.aa-painel .aa-painel-correio sup {
+	margin-left: 1px;
+	color: var(--aa-ambar);
+	font-weight: bold;
+}
+
+@container aa-correio (max-width: 520px) {
+	.academia-arcana .aa-correio-lado {
+		flex-basis: 64px;
+	}
+
+	.academia-arcana .aa-correio-eu select,
+	.academia-arcana .aa-correio-eu strong,
+	.academia-arcana .aa-correio-contato {
+		display: none;
+	}
+
+	.academia-arcana .aa-correio-eu,
+	.academia-arcana .aa-correio-contatos li {
+		justify-content: center;
+		padding-inline: 0.25rem;
+	}
+
+	.academia-arcana .aa-correio-topo small {
+		display: none;
+	}
+}
+
+.academia-arcana .aa-correio-eu a {
+	flex: 0 0 auto;
+	cursor: pointer;
+	color: var(--aa-roxo);
+}
+
+.academia-arcana .aa-correio-eu a .fa-plus {
+	font-size: 0.6em;
+	vertical-align: top;
+}
+
+.academia-arcana .aa-correio-grupo {
+	flex: 0 0 32px;
+	display: grid;
+	place-items: center;
+	background: var(--aa-roxo-claro);
+	color: var(--aa-roxo);
+}
+
+.academia-arcana .aa-correio-topo .aa-correio-contato small {
+	margin: 0;
+	text-align: left;
+}
+
+.academia-arcana .aa-correio-topo .aa-correio-aviso {
+	flex: 0 1 220px;
+}

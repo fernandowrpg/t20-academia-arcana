@@ -2,7 +2,9 @@ import { GREMIOS, SITUACOES, STATUS_SEMESTRE } from "../data/disciplinas.mjs";
 import { formatarNota, recurso, resumoNotas } from "../logica.mjs";
 import { MODULO, ehAluno, ehNpcGerado, lerAluno, opcao } from "../config.mjs";
 import { PainelFlutuante, barra } from "./painel.mjs";
+import { totalNaoLidas } from "../correio.mjs";
 import { CalendarioApp } from "./calendario.mjs";
+import { CorreioApp } from "./correio.mjs";
 import { SecretariaApp } from "./secretaria.mjs";
 import { VidaAcademicaApp } from "./vida-academica.mjs";
 
@@ -31,7 +33,8 @@ export class PainelAlunosApp extends PainelFlutuante {
 			abrirMatricula: PainelAlunosApp.#abrirMatricula,
 			alternarNotas: PainelAlunosApp.#alternarNotas,
 			secretaria: PainelAlunosApp.#secretaria,
-			calendario: PainelAlunosApp.#calendario
+			calendario: PainelAlunosApp.#calendario,
+			correio: PainelAlunosApp.#correio
 		}
 	};
 
@@ -83,7 +86,7 @@ export class PainelAlunosApp extends PainelFlutuante {
 				}
 			};
 		});
-		return { gm, usarNotas, calendario: gm || opcao("calendarioJogadores"), recolhido: this.recolhido, alunos };
+		return { gm, usarNotas, calendario: gm || opcao("calendarioJogadores"), correio: gm || opcao("correioJogadores"), cartas: totalNaoLidas(), recolhido: this.recolhido, alunos };
 	}
 
 	#ator(alvo) {
@@ -115,5 +118,9 @@ export class PainelAlunosApp extends PainelFlutuante {
 
 	static #calendario() {
 		CalendarioApp.abrir();
+	}
+
+	static #correio() {
+		CorreioApp.abrir();
 	}
 }

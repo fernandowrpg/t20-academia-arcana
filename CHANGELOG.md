@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0
+
+- Correio da Academia: os alunos trocam mensagens em conversas com histórico. Cada jogador escreve pelos seus personagens; o mestre lê tudo e escreve como qualquer aluno, inclusive os NPCs gerados.
+- Grupos: qualquer aluno pode abrir uma conversa em grupo com dois ou mais colegas. Em grupo, o item enviado vai para o colega escolhido.
+- O mestre pode editar qualquer mensagem. O texto anterior fica guardado no histórico da mensagem, que só o mestre vê até decidir revelar as edições aos jogadores.
+- Envio de itens pelo correio: a mensagem pode levar um item do inventário do remetente (com quantidade), que passa para a ficha do destinatário.
+- Aviso de correspondência nova e contador de mensagens não lidas no painel de alunos.
+
 ## 1.4.0
 
 - Tema Scriptorium: aparência de escola de magia com janelas em pergaminho, hastes de madeira com ponteiras de latão, tinta sépia, roxo arcano e dourado divino. Cada usuário escolhe em *Tema Scriptorium* se aplica ao Foundry inteiro, só às janelas do módulo ou a nada.

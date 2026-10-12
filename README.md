@@ -67,6 +67,18 @@ Os dois painéis ficam flutuando sobre a mesa. Arraste pelo título para mover (
 - **Alunos**: lista os alunos ativos ou com o curso trancado. O mestre vê todos; o jogador vê os personagens em que tem permissão de observador ou dono. Cada aluno mostra PV, PM, o semestre mais recente com notas (média, aprovações, reprovações, pendências e, ao clicar, as disciplinas) e o botão **Matrícula**, que abre direto a aba de matrícula e fica destacado enquanto a matrícula está aberta.
 - **Ameaças**: aparece quando o combate é iniciado e some quando ele termina. Lista os combatentes sem jogador dono cujo token não é amistoso, na ordem de iniciativa, com destaque para quem está na vez. Clicar no nome centraliza o token; clicar no retrato abre a ficha. Por padrão só o mestre vê; em **Painel de ameaças para jogadores** ele pode liberar o estado aproximado (sem números) ou os valores completos. Ameaças ocultas nunca aparecem para jogadores.
 
+### Correio da Academia
+
+Abre pelo envelope no painel de alunos, pela Secretaria ou pela macro. À esquerda ficam os outros alunos (personagens e NPCs); à direita, a conversa com o histórico completo.
+
+- **Quem escreve**: cada jogador escreve pelos personagens que controla. O mestre escolhe em nome de qual aluno escrever, o que serve para responder como os NPCs, e consegue ler todas as conversas.
+- **Grupos**: o botão ao lado do nome do remetente abre um grupo com nome e dois ou mais colegas. Todos os participantes veem as mensagens. Depois de criado, o grupo não muda de participantes nem pode ser apagado.
+- **Edição pelo mestre**: o lápis em cada mensagem troca o texto. O texto anterior nunca é apagado: vai para o *Histórico de edições* da mensagem. Só o mestre vê esse histórico e a marca de "editada"; o olho ao lado revela (ou volta a ocultar) as edições daquela mensagem para os jogadores.
+- **Itens**: escolha um item do inventário do remetente na lista (ou arraste da ficha para a área de escrita) e, se houver mais de um, a quantidade. Ao enviar, o item sai da ficha do remetente e entra na do destinatário, e a mensagem registra a entrega. Num grupo, você escolhe qual colega recebe. Se o destinatário já tiver um item igual, ele entra como uma linha separada no inventário.
+- **Mestre conectado**: quem grava as mensagens e move os itens é o cliente do mestre. Sem um mestre conectado, o correio abre para leitura, mas não envia.
+- **Privacidade**: a janela só mostra a cada jogador as conversas dos seus personagens, mas o registro fica numa configuração do mundo que todos os clientes recebem. Um jogador que saiba usar o console do navegador consegue ler o registro inteiro, inclusive edições não reveladas.
+- A configuração **Jogadores usam o correio** liga ou desliga o acesso dos jogadores.
+
 ### Tema Scriptorium
 
 O módulo traz um tema de escola de magia: janelas como rolos de pergaminho, cabeçalhos em forma de haste de madeira com ponteiras de latão, tinta sépia, roxo arcano e dourado divino. Em **Configure Settings → Academia Arcana → Tema Scriptorium**, cada usuário escolhe:
@@ -111,6 +123,7 @@ api.secretaria();
 api.catalogo();
 api.calendario();
 api.gerador();
+api.correio();
 api.painelAlunos();
 api.painelAmeacas();
 api.lerAluno(actor);

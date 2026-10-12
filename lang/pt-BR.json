@@ -4,6 +4,7 @@
 		"Secretaria": "Secretaria da Academia",
 		"Calendario": "Calendário do Período Letivo",
 		"Gerador": "Gerador de Alunos",
+		"Correio": "Correio da Academia",
 		"Catalogo": "Catálogo de Disciplinas",
 		"BotaoFicha": "Academia",
 		"Config": {
@@ -57,6 +58,10 @@
 				"Modulo": "Somente as janelas e painéis do módulo",
 				"Desligado": "Desligado"
 			},
+			"correioJogadores": {
+				"Nome": "Jogadores usam o correio",
+				"Dica": "Permite que os jogadores troquem mensagens e itens entre alunos pelo Correio da Academia. O mestre sempre pode ler, escrever como qualquer aluno e editar mensagens."
+			},
 			"catalogoMenu": {
 				"Nome": "Catálogo de disciplinas",
 				"Rotulo": "Editar catálogo",
@@ -67,6 +72,11 @@
 			"SemAtor": "Selecione um token ou defina um personagem para o seu usuário.",
 			"SomenteMestre": "Apenas o mestre pode abrir a secretaria.",
 			"SomenteMestreGerador": "Apenas o mestre pode gerar alunos.",
+			"CorreioRestrito": "O mestre não liberou o correio para os jogadores.",
+			"CorreioSemAluno": "Você precisa de um personagem admitido na Academia para usar o correio.",
+			"CorreioSemMestre": "O correio só entrega com o mestre conectado.",
+			"GrupoPequeno": "Um grupo precisa de você e de pelo menos mais dois alunos.",
+			"CorreioNovo": "Chegou correspondência nova no Correio da Academia.",
 			"CalendarioRestrito": "O mestre não liberou o calendário para os jogadores.",
 			"Gerados": "{qtd} aluno(s) gerado(s) na pasta {pasta}.",
 			"Admitido": "{nome} foi admitido(a) na Academia Arcana.",

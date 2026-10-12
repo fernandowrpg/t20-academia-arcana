@@ -3,6 +3,7 @@ import { concluirAleatorio, descricaoNpc, descricaoParceiro, matricularAleatorio
 import { estatisticas, novoAluno, novoSemestre, pendenciasParaEncerrar } from "../logica.mjs";
 import { MODULO, contextoCatalogo, disciplinasDosPersonagens, ehAluno, lerAluno, opcao, salvarAluno, sincronizarFicha } from "../config.mjs";
 import { CalendarioApp } from "./calendario.mjs";
+import { CorreioApp } from "./correio.mjs";
 import { GeradorAlunosApp } from "./gerador.mjs";
 import { VidaAcademicaApp } from "./vida-academica.mjs";
 
@@ -38,7 +39,8 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			encerrarTodos: SecretariaApp.#encerrarTodos,
 			catalogo: SecretariaApp.#catalogo,
 			gerador: SecretariaApp.#gerador,
-			calendario: SecretariaApp.#calendario
+			calendario: SecretariaApp.#calendario,
+			correio: SecretariaApp.#correio
 		}
 	};
 
@@ -152,6 +154,10 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	static #calendario() {
 		CalendarioApp.abrir();
+	}
+
+	static #correio() {
+		CorreioApp.abrir();
 	}
 
 	static #catalogo() {

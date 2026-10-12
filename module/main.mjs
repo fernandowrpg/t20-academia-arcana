@@ -4,6 +4,8 @@ import { SecretariaApp } from "./apps/secretaria.mjs";
 import { CatalogoApp } from "./apps/catalogo.mjs";
 import { CalendarioApp } from "./apps/calendario.mjs";
 import { GeradorAlunosApp } from "./apps/gerador.mjs";
+import { CorreioApp } from "./apps/correio.mjs";
+import { registrarSocket, totalNaoLidas } from "./correio.mjs";
 import { PainelAlunosApp } from "./apps/painel-alunos.mjs";
 import { PainelAmeacasApp } from "./apps/painel-ameacas.mjs";
 import * as dados from "./data/disciplinas.mjs";
@@ -13,6 +15,16 @@ import { aplicarTema, registrarTema } from "./tema.mjs";
 
 const atualizarPainelAlunos = foundry.utils.debounce(() => PainelAlunosApp.sincronizar(), 100);
 const atualizarPainelAmeacas = foundry.utils.debounce(() => PainelAmeacasApp.sincronizar(), 100);
+
+let cartasPendentes = 0;
+
+/* Avisa quando chega correspondência nova para os alunos do usuário. */
+function conferirCorreio() {
+	if (!game.ready) return;
+	const total = totalNaoLidas();
+	if (total > cartasPendentes) ui.notifications.info(game.i18n.localize("ACADEMIA.Aviso.CorreioNovo"));
+	cartasPendentes = total;
+}
 
 function abrir(actor) {
 	actor ??= canvas?.tokens?.controlled[0]?.actor ?? game.user.character;
@@ -27,6 +39,8 @@ Hooks.once("init", () => {
 		VidaAcademicaApp.atualizarTodas();
 		SecretariaApp.atualizar();
 		CalendarioApp.atualizar();
+		CorreioApp.atualizar();
+		conferirCorreio();
 		atualizarPainelAlunos();
 		atualizarPainelAmeacas();
 	});
@@ -36,6 +50,7 @@ Hooks.once("init", () => {
 		catalogo: () => new CatalogoApp().render({ force: true }),
 		calendario: () => CalendarioApp.abrir(),
 		gerador: () => GeradorAlunosApp.abrir(),
+		correio: (opcoes) => CorreioApp.abrir(opcoes),
 		painelAlunos: () => PainelAlunosApp.sincronizar(),
 		painelAmeacas: () => PainelAmeacasApp.sincronizar(),
 		lerAluno,
@@ -50,6 +65,8 @@ Hooks.once("ready", () => {
 	if (game.system.id !== "tormenta20") {
 		console.warn(`${MODULO} | Este módulo foi feito para o sistema Tormenta20; sistema atual: ${game.system.id}`);
 	}
+	registrarSocket();
+	cartasPendentes = totalNaoLidas();
 	PainelAlunosApp.sincronizar();
 	PainelAmeacasApp.sincronizar();
 });

@@ -98,6 +98,32 @@ export function registrarConfiguracoes(CatalogoApp) {
 		onChange: notificar
 	});
 
+	game.settings.register(MODULO, "correioJogadores", {
+		name: "ACADEMIA.Config.correioJogadores.Nome",
+		hint: "ACADEMIA.Config.correioJogadores.Dica",
+		scope: "world",
+		config: true,
+		type: Boolean,
+		default: true,
+		onChange: notificar
+	});
+
+	game.settings.register(MODULO, "correio", {
+		scope: "world",
+		config: false,
+		type: Object,
+		default: { conversas: {} },
+		onChange: notificar
+	});
+
+	game.settings.register(MODULO, "correioLido", {
+		scope: "client",
+		config: false,
+		type: Object,
+		default: {},
+		onChange: notificar
+	});
+
 	game.settings.register(MODULO, "paineis", {
 		scope: "client",
 		config: false,
