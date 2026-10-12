@@ -5,6 +5,7 @@ import { CatalogoApp } from "./apps/catalogo.mjs";
 import { CalendarioApp } from "./apps/calendario.mjs";
 import { GeradorAlunosApp } from "./apps/gerador.mjs";
 import { CorreioApp } from "./apps/correio.mjs";
+import { AtividadesApp } from "./apps/atividades.mjs";
 import { ehConversa, migrarRegistroAntigo, registrarGuardas, registrarSocket, sincronizarPermissoes, totalNaoLidas } from "./correio.mjs";
 import { PainelAlunosApp } from "./apps/painel-alunos.mjs";
 import { PainelAmeacasApp } from "./apps/painel-ameacas.mjs";
@@ -40,6 +41,7 @@ Hooks.once("init", () => {
 		SecretariaApp.atualizar();
 		CalendarioApp.atualizar();
 		CorreioApp.atualizar();
+		AtividadesApp.atualizar();
 		conferirCorreio();
 		atualizarPainelAlunos();
 		atualizarPainelAmeacas();
@@ -51,6 +53,7 @@ Hooks.once("init", () => {
 		calendario: () => CalendarioApp.abrir(),
 		gerador: () => GeradorAlunosApp.abrir(),
 		correio: (opcoes) => CorreioApp.abrir(opcoes),
+		atividades: () => AtividadesApp.abrir(),
 		painelAlunos: () => PainelAlunosApp.sincronizar(),
 		painelAmeacas: () => PainelAmeacasApp.sincronizar(),
 		lerAluno,

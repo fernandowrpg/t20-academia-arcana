@@ -110,6 +110,24 @@ O livro dá a cada Grêmio +2 em uma perícia nos testes feitos dentro da Academ
 | Falcão (Espíritos Livres) | CB, CN, NB | +2 em Investigação |
 | Serpente (Monstros) | CM, CN, NM | +2 em Enganação |
 
+### Atividades extracurriculares
+
+Fora do horário de aula, um professor pode oferecer uma **missão** a um ou mais alunos: buscar um ingrediente raro, catalogar uma criatura, ajudar numa pesquisa, resolver um problema no campus. Quem conclui ganha uma **vantagem** para usar na avaliação de uma disciplina. (Mesa; o módulo registra as missões e as vantagens.)
+
+| Vantagem | Efeito | Para que tipo de missão |
+| --- | --- | --- |
+| Preparo | +2 no teste de uma prova | Simples: uma cena, pouco risco |
+| Segunda chamada | Refaz uma prova e fica com o melhor resultado | Média: uma sessão, algum risco |
+| Ponto extra | +1 na nota final da disciplina, até o máximo de 10 | Difícil: uma aventura, risco real |
+
+Regras de uso:
+
+- A vantagem vale para **uma disciplina do professor que deu a missão**. Se ele não leciona nenhuma disciplina do catálogo, vale para qualquer uma.
+- **Uma vantagem por disciplina** a cada semestre. O aluno pode guardar a vantagem para um semestre seguinte.
+- O *Ponto extra* é somado depois dos ajustes de participação e faltas, e a nota final não passa de 10.
+- *Preparo* e *Segunda chamada* se usam na hora da prova; o mestre marca a vantagem na disciplina para ela não ser usada duas vezes.
+- Missão que fracassa não dá vantagem nem punição: o aluno só perdeu o tempo.
+
 ## 5. Situação final e notas do período
 
 | Nota final | Situação | O que acontece |
@@ -171,4 +189,5 @@ O livro básico deixa o grau do parceiro a critério do mestre; a tabela acima �
 - [ ] Fazer duas provas por disciplina: teste da perícia contra a CD do nível.
 - [ ] Nota da prova: 6 + (resultado − CD) ÷ 2.
 - [ ] Nota final 6 aprova; de 4 a 5,5 vai para recuperação; abaixo de 4 reprova.
+- [ ] Concluir missões dos professores para ganhar vantagens nas provas das disciplinas deles.
 - [ ] Formar-se em 8 semestres, com limite de 10.

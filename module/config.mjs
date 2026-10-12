@@ -124,6 +124,14 @@ export function registrarConfiguracoes(CatalogoApp) {
 		onChange: notificar
 	});
 
+	game.settings.register(MODULO, "atividades", {
+		scope: "world",
+		config: false,
+		type: Array,
+		default: [],
+		onChange: notificar
+	});
+
 	game.settings.register(MODULO, "professores", {
 		scope: "world",
 		config: false,

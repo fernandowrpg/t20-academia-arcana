@@ -5,6 +5,7 @@
 		"Calendario": "Calendário do Período Letivo",
 		"Gerador": "Gerador de Alunos",
 		"Correio": "Correio da Academia",
+		"Atividades": "Atividades Extracurriculares",
 		"Catalogo": "Catálogo de Disciplinas",
 		"BotaoFicha": "Academia",
 		"Config": {
@@ -76,6 +77,8 @@
 			"CorreioSemAluno": "Você precisa de um personagem admitido na Academia para usar o correio.",
 			"CorreioSemMestre": "Para abrir uma conversa nova, o mestre precisa estar conectado (ou liberar a você a permissão de criar notas).",
 			"CorreioSemApagar": "Só o mestre pode apagar a correspondência.",
+			"SomenteMestreAtividades": "Apenas o mestre gerencia as atividades extracurriculares.",
+			"AtividadeIncompleta": "Dê um título à atividade e escolha ao menos um aluno.",
 			"AvaliacaoEnviada": "{professor} enviou a avaliação a {aluno} pelo correio.",
 			"GrupoVazio": "O grupo precisa de pelo menos mais um participante além de quem o criou.",
 			"GrupoSemMestre": "Para mudar os participantes, o mestre precisa estar conectado.",

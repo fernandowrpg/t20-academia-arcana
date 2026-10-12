@@ -17,6 +17,7 @@ export function novoAluno() {
 		quatroElementos: { vento: false, agua: false, terra: false, fogo: false },
 		anotacoes: "",
 		confirmaLeitura: true,
+		vantagens: [],
 		npc: null
 	};
 }
@@ -141,8 +142,14 @@ export function periciasPredominantes(semestre) {
 	return [...contagem.entries()].filter(([, n]) => n === max).map(([chave]) => chave);
 }
 
+/* Nota que vale para a média: a lançada mais o ponto extra de atividade extracurricular, até 10. */
+export function notaFinal(d) {
+	if (typeof d?.nota !== "number" || !Number.isFinite(d.nota)) return null;
+	return Math.min(10, d.nota + (Number(d.extra) || 0));
+}
+
 function notasValidas(disciplinas) {
-	return disciplinas.map((d) => d.nota).filter((n) => typeof n === "number" && Number.isFinite(n));
+	return disciplinas.map(notaFinal).filter((n) => n !== null);
 }
 
 export function media(disciplinas) {
@@ -208,7 +215,7 @@ export function resumoNotas(aluno) {
 		aprovadas: contar("aprovado"),
 		reprovadas: contar("reprovado"),
 		pendentes: contar("cursando", "recuperacao"),
-		disciplinas: semestre.disciplinas.map((d) => ({ id: d.id, nome: d.nome, nota: d.nota ?? null, situacao: d.situacao }))
+		disciplinas: semestre.disciplinas.map((d) => ({ id: d.id, nome: d.nome, nota: notaFinal(d), situacao: d.situacao }))
 	};
 }
 

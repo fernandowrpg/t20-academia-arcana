@@ -1,0 +1,53 @@
+<div class="aa-janela">
+	<section class="aa-conteudo">
+		<fieldset class="aa-cartao">
+			<legend><i class="fa-solid fa-scroll"></i> Nova atividade extracurricular</legend>
+			<div class="aa-gerador-campos">
+				<label>Título
+					<input type="text" name="aa-atv-titulo" maxlength="80" placeholder="Colher acônito nos jardins">
+				</label>
+				<label>Professor
+					<select name="aa-atv-professor">
+						<option value="">— sem ficha —</option>
+						{{#each professores}}<option value="{{id}}">{{nome}}</option>{{/each}}
+					</select>
+				</label>
+				<label>Vantagem ao concluir
+					<select name="aa-atv-vantagem">{{#each vantagens}}<option value="{{id}}">{{nome}}: {{resumo}} ({{porte}})</option>{{/each}}</select>
+				</label>
+			</div>
+			<label class="aa-atv-descricao">Descrição
+				<textarea name="aa-atv-descricao" rows="2" placeholder="O que o professor pede, prazo, perigos..."></textarea>
+			</label>
+			<div class="aa-atv-alunos">
+				{{#each alunos}}<label><input type="checkbox" name="aa-atv-aluno" value="{{id}}"> {{nome}}{{#if npc}} <small>(NPC)</small>{{/if}}</label>{{else}}<span class="aa-dica">Nenhum aluno registrado.</span>{{/each}}
+			</div>
+			<p class="aa-dica">A vantagem vale para uma disciplina do professor que deu a missão (qualquer disciplina, se ele não tiver ficha ou não lecionar nenhuma). O professor com ficha avisa os alunos pelo correio.</p>
+			<div class="aa-botoes">
+				<button type="button" data-action="criar"><i class="fa-solid fa-plus"></i> Criar atividade</button>
+			</div>
+		</fieldset>
+
+		{{#each atividades}}
+		<fieldset class="aa-cartao aa-atv" data-atividade="{{id}}">
+			<legend><i class="fa-solid fa-person-hiking"></i> {{titulo}}</legend>
+			<p>{{#if professor}}<strong><i class="fa-solid fa-chalkboard-user"></i> {{professor}}</strong> · {{/if}}<span class="aa-pilula especial">{{vantagem.nome}}: {{vantagem.resumo}}</span></p>
+			{{#if descricao}}<p class="aa-atv-texto">{{descricao}}</p>{{/if}}
+			<p class="aa-dica">Vale para: {{alcance}}</p>
+			<ul class="aa-lista-simples">
+				{{#each alunos}}
+				<li class="situacao-{{situacao}}">
+					<span>{{nome}}</span>
+					<select data-situacao="{{id}}">{{#each situacoes}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>
+				</li>
+				{{/each}}
+			</ul>
+			<div class="aa-botoes">
+				<button type="button" class="aa-perigo" data-action="excluir"><i class="fa-solid fa-trash"></i> Excluir atividade</button>
+			</div>
+		</fieldset>
+		{{else}}
+		<p class="aa-dica">Nenhuma atividade criada ainda.</p>
+		{{/each}}
+	</section>
+</div>

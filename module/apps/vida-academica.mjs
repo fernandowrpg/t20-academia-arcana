@@ -6,6 +6,7 @@ import {
 	formatarNota,
 	media,
 	nomePericia,
+	notaFinal,
 	novoAluno,
 	novoSemestre,
 	oficiosDisponiveis,
@@ -15,6 +16,7 @@ import {
 	preRequisitos
 } from "../logica.mjs";
 import { MODULO, contextoCatalogo, corpoDocente, fichasDoProfessor, lerAluno, opcao, podeMatricular, removerAluno, salvarAluno } from "../config.mjs";
+import { SITUACOES_ATIVIDADE, VANTAGENS, aplicarVantagem, lerAtividades, retirarVantagem, vantagensAplicaveis } from "../atividades.mjs";
 import { enviar } from "../correio.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
@@ -76,7 +78,8 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 			rolar: VidaAcademicaApp.#rolar,
 			alternarElemento: VidaAcademicaApp.#alternarElemento,
 			abrirCompendio: VidaAcademicaApp.#abrirCompendio,
-			enviarAvaliacao: VidaAcademicaApp.#enviarAvaliacao
+			enviarAvaliacao: VidaAcademicaApp.#enviarAvaliacao,
+			retirarVantagem: VidaAcademicaApp.#retirarVantagem
 		}
 	};
 
@@ -225,6 +228,24 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 				.filter((g) => g.total > 0)
 		};
 
+		contexto.extracurricular = {
+			atividades: lerAtividades()
+				.filter((a) => this.actor.id in a.alunos)
+				.map((a) => ({
+					titulo: a.titulo,
+					descricao: a.descricao,
+					professor: game.actors.get(a.professor)?.name ?? "",
+					vantagem: VANTAGENS[a.vantagem],
+					chave: a.alunos[this.actor.id],
+					situacao: SITUACOES_ATIVIDADE[a.alunos[this.actor.id]]
+				})),
+			vantagens: (aluno.vantagens ?? []).map((v) => ({
+				...VANTAGENS[v.tipo],
+				titulo: v.titulo,
+				professor: game.actors.get(v.professor)?.name ?? "",
+				usada: v.usada ? `${v.usada.disciplina} (${v.usada.semestre}º semestre)` : ""
+			}))
+		};
 		/* Fichas de professor que podem assinar uma avaliação. */
 		const docentes = [...new Map(corpoDocente().filter((p) => p.actor).map((p) => [p.actor.id, p.actor])).values()].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 		contexto.boletim = aluno.semestres
@@ -250,6 +271,9 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 								? [{ valor: "", rotulo: professor || "—", selecionado: !avaliador }].concat(docentes.map((a) => ({ valor: a.id, rotulo: a.name, selecionado: a.id === avaliador?.id })))
 								: [],
 							podeEnviar: editavel && !!avaliador && d.situacao !== "cursando",
+							vantagem: d.vantagem ? VANTAGENS[d.vantagem.tipo] : null,
+							extra: Number(d.extra) || 0,
+							aplicaveis: editavel ? vantagensAplicaveis(aluno, d).map((v) => ({ id: v.id, rotulo: `${VANTAGENS[v.tipo].nome} (${v.titulo})` })) : [],
 							indice: j,
 							id: d.id,
 							nome: d.nome,
@@ -258,7 +282,7 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 							oficios: opcoesOficio(d.oficio),
 							professor: catalogo.get(d.id)?.professor ?? "",
 							nota: d.nota ?? "",
-							notaTexto: formatarNota(d.nota),
+							notaTexto: formatarNota(notaFinal(d)),
 							situacao: d.situacao,
 							situacaoTexto: SITUACOES[d.situacao] ?? d.situacao,
 							situacoes: opcoes(SITUACOES, d.situacao),
@@ -275,6 +299,12 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 		await super._onRender(context, options);
 		const raiz = this.element;
 		raiz.querySelectorAll("[data-campo]").forEach((el) => el.addEventListener("change", (ev) => this.#alterarCampo(ev)));
+		raiz.querySelectorAll("select[data-vantagem]").forEach((el) =>
+			el.addEventListener("change", (ev) => {
+				const linha = ev.target.closest("[data-semestre]");
+				if (ev.target.value) aplicarVantagem(this.actor, Number(linha.dataset.semestre), Number(linha.dataset.indice), ev.target.value);
+			})
+		);
 		raiz.querySelectorAll("select[data-oficio]").forEach((el) => el.addEventListener("change", (ev) => this.#escolherOficio(ev)));
 		const busca = raiz.querySelector("input[name='aa-filtro']");
 		if (busca) {
@@ -496,6 +526,11 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 		});
 	}
 
+	static async #retirarVantagem(event, alvo) {
+		const linha = alvo.closest("[data-semestre]");
+		await retirarVantagem(this.actor, Number(linha?.dataset.semestre), Number(linha?.dataset.indice));
+	}
+
 	/* O professor que lançou a avaliação escreve o resultado ao aluno pelo correio. */
 	static async #enviarAvaliacao(event, alvo) {
 		if (!game.user.isGM) return;
@@ -505,7 +540,7 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 		const entrada = semestre?.disciplinas[Number(linha?.dataset.indice)];
 		const professor = game.actors.get(entrada?.avaliador);
 		if (!entrada || !professor) return;
-		const nota = opcao("usarNotas") && entrada.nota !== null && entrada.nota !== undefined ? ` Nota: ${formatarNota(entrada.nota)}.` : "";
+		const nota = opcao("usarNotas") && entrada.nota !== null && entrada.nota !== undefined ? ` Nota: ${formatarNota(notaFinal(entrada))}.` : "";
 		const pagina = await enviar({ de: professor.id, para: this.actor.id, texto: `Avaliação de ${entrada.nome} (${semestre.numero}º semestre).${nota} Situação: ${SITUACOES[entrada.situacao] ?? entrada.situacao}.` });
 		if (pagina) ui.notifications.info(game.i18n.format("ACADEMIA.Aviso.AvaliacaoEnviada", { professor: professor.name, aluno: this.actor.name }));
 	}

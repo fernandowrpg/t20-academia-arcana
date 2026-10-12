@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.0
+
+- Atividades extracurriculares: o mestre cria missões dadas por um professor a um ou mais alunos. Concluir a missão rende uma vantagem para a avaliação de uma disciplina daquele professor: *Preparo* (+2 no teste de uma prova), *Segunda chamada* (refaz uma prova) ou *Ponto extra* (+1 na nota final, até 10).
+- A Ficha do Aluno lista as atividades e as vantagens conquistadas; no boletim, o mestre usa a vantagem numa disciplina. O ponto extra entra na média do semestre, no coeficiente e no painel de alunos.
+- O professor com ficha avisa os alunos da missão pelo correio.
+- As regras entraram em `docs/regras-da-academia.md` e na página *Regras dos Semestres* do compêndio.
+
 ## 1.8.0
 
 - Corpo docente: na Secretaria, o mestre vincula uma ficha a cada professor do catálogo (ou cria uma ficha de NPC com um clique).

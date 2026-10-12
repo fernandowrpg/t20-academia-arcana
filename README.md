@@ -75,6 +75,17 @@ Na Secretaria, o quadro **Corpo docente** lista os professores citados no catál
 - **No boletim**: a coluna **Professor** passa a guardar a ficha de quem lançou cada avaliação. Quando o mestre lança a nota ou a situação, o módulo assina com o professor da disciplina que tiver ficha; o mestre pode trocar a ficha. Os jogadores veem o retrato e o nome de quem lançou.
 - **Enviar a avaliação**: com a situação definida e um professor associado, o ícone de envio na linha manda o resultado ao aluno pelo correio, em nome daquele professor.
 
+### Atividades extracurriculares
+
+Na Secretaria, **Atividades extracurriculares** abre a janela de missões. O mestre dá um título e uma descrição, escolhe o professor que oferece a missão, a vantagem e os alunos. Se o professor tiver ficha, ele avisa cada aluno pelo correio.
+
+- **Situação**: em cada missão, o mestre marca cada aluno como *Em andamento*, *Concluída* ou *Fracassou*. Ao concluir, o aluno ganha a vantagem; se a conclusão for desfeita antes do uso, ele a perde.
+- **Vantagens**: *Preparo* (+2 no teste de uma prova), *Segunda chamada* (refaz uma prova e fica com o melhor resultado) e *Ponto extra* (+1 na nota final, até 10).
+- **Uso**: no boletim, as disciplinas em que o aluno pode usar uma vantagem ganham a lista *Usar vantagem…*. Vale uma vantagem por disciplina, e só em disciplinas do professor que deu a missão (qualquer uma, se ele não tiver ficha ou não lecionar nenhuma). O *Ponto extra* é somado sozinho à nota, na média, no coeficiente e no painel de alunos; *Preparo* e *Segunda chamada* ficam marcados na disciplina e o mestre aplica o efeito na rolagem.
+- **Para o jogador**: a Ficha do Aluno mostra as atividades dele e as vantagens conquistadas, disponíveis ou já usadas.
+
+As regras estão na seção *Atividades extracurriculares* de [docs/regras-da-academia.md](docs/regras-da-academia.md).
+
 ### Correio da Academia
 
 Abre pelo envelope no painel de alunos, pela Secretaria ou pela macro. À esquerda ficam os outros alunos (personagens e NPCs); à direita, a conversa com o histórico completo.
@@ -136,6 +147,7 @@ api.catalogo();
 api.calendario();
 api.gerador();
 api.correio();
+api.atividades();
 api.painelAlunos();
 api.painelAmeacas();
 api.lerAluno(actor);

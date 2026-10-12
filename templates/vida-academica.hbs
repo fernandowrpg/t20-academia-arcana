@@ -107,6 +107,33 @@
 		</div>
 
 		<fieldset class="aa-cartao">
+			<legend><i class="fa-solid fa-person-hiking"></i> Atividades extracurriculares</legend>
+			{{#if extracurricular.atividades.length}}
+			<ul class="aa-lista-simples aa-extras">
+				{{#each extracurricular.atividades}}
+				<li class="situacao-{{chave}}">
+					<span><strong>{{titulo}}</strong>{{#if professor}} · Prof. {{professor}}{{/if}}<small>{{#if descricao}}{{descricao}} · {{/if}}Vantagem: {{vantagem.nome}} ({{vantagem.resumo}})</small></span>
+					<span class="aa-pilula">{{situacao}}</span>
+				</li>
+				{{/each}}
+			</ul>
+			{{else}}
+			<p class="aa-dica">Nenhuma atividade no momento. Os professores oferecem missões fora do horário de aula; concluí-las rende vantagens nas avaliações.</p>
+			{{/if}}
+			{{#if extracurricular.vantagens.length}}
+			<p><strong>Vantagens conquistadas</strong></p>
+			<ul class="aa-lista-simples aa-extras">
+				{{#each extracurricular.vantagens}}
+				<li class="{{#if usada}}situacao-trancado{{/if}}">
+					<span><strong>{{nome}}</strong>: {{resumo}}<small>{{titulo}}{{#if professor}} · Prof. {{professor}}{{/if}}</small></span>
+					<span class="aa-pilula {{#unless usada}}especial{{/unless}}">{{#if usada}}usada em {{usada}}{{else}}disponível{{/if}}</span>
+				</li>
+				{{/each}}
+			</ul>
+			{{/if}}
+		</fieldset>
+
+		<fieldset class="aa-cartao">
 			<legend>Anotações</legend>
 			<textarea data-campo="anotacoes" rows="4" {{#unless dono}}disabled{{/unless}} placeholder="Contatos, rivalidades, segredos descobertos no campus...">{{ficha.anotacoes}}</textarea>
 		</fieldset>
@@ -240,7 +267,10 @@
 				<tbody>
 					{{#each disciplinas}}
 					<tr class="situacao-{{situacao}}" data-semestre="{{../indice}}" data-indice="{{indice}}">
-						<td>{{nome}}</td>
+						<td>{{nome}}
+							{{#if vantagem}}<small class="aa-vantagem"><i class="fa-solid fa-star"></i> {{vantagem.nome}}: {{vantagem.resumo}}{{#if ../editavel}} <a data-action="retirarVantagem" data-tooltip="Retirar a vantagem desta disciplina"><i class="fa-solid fa-xmark"></i></a>{{/if}}</small>{{/if}}
+							{{#if aplicaveis.length}}<select data-vantagem data-tooltip="Usar uma vantagem de atividade extracurricular nesta disciplina"><option value="">Usar vantagem…</option>{{#each aplicaveis}}<option value="{{id}}">{{rotulo}}</option>{{/each}}</select>{{/if}}
+						</td>
 						<td>{{#if escolheOficio}}{{#if ../editavel}}<select data-campo="semestres.{{../indice}}.disciplinas.{{indice}}.oficio">{{#each oficios}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>{{else}}{{pericia}}{{/if}}{{else}}{{pericia}}{{/if}}</td>
 						<td class="aa-col-professor">
 							{{#if ../editavel}}{{#if avaliadores.length}}
@@ -250,7 +280,7 @@
 						</td>
 						{{#if @root.usarNotas}}
 						<td class="aa-col-nota">
-							{{#if ../editavel}}<input type="number" step="0.1" min="0" data-tipo="numero" data-campo="semestres.{{../indice}}.disciplinas.{{indice}}.nota" value="{{nota}}">{{else}}{{notaTexto}}{{/if}}
+							{{#if ../editavel}}<input type="number" step="0.1" min="0" data-tipo="numero" data-campo="semestres.{{../indice}}.disciplinas.{{indice}}.nota" value="{{nota}}">{{#if extra}}<small class="aa-vantagem" data-tooltip="Ponto extra de atividade extracurricular. Nota final: {{notaTexto}}">+{{extra}}</small>{{/if}}{{else}}{{notaTexto}}{{/if}}
 						</td>
 						{{/if}}
 						<td class="aa-col-situacao">

@@ -2,6 +2,7 @@ import { GREMIOS, STATUS_SEMESTRE } from "../data/disciplinas.mjs";
 import { concluirAleatorio, descricaoNpc, descricaoParceiro, matricularAleatorio, subirNivel } from "../gerador.mjs";
 import { estatisticas, novoAluno, novoSemestre, pendenciasParaEncerrar } from "../logica.mjs";
 import { MODULO, contextoCatalogo, corpoDocente, disciplinasDosPersonagens, ehAluno, vinculosDeProfessores, lerAluno, opcao, salvarAluno, sincronizarFicha } from "../config.mjs";
+import { AtividadesApp } from "./atividades.mjs";
 import { CalendarioApp } from "./calendario.mjs";
 import { CorreioApp } from "./correio.mjs";
 import { GeradorAlunosApp } from "./gerador.mjs";
@@ -44,6 +45,7 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			calendario: SecretariaApp.#calendario,
 			correio: SecretariaApp.#correio,
 			criarFichaProfessor: SecretariaApp.#criarFichaProfessor,
+			atividades: SecretariaApp.#atividades,
 			abrirFichaProfessor: SecretariaApp.#abrirFichaProfessor
 		}
 	};
@@ -195,6 +197,10 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 	static #abrirFichaProfessor(event, alvo) {
 		const nome = alvo.closest("[data-docente]")?.dataset.docente;
 		game.actors.get(vinculosDeProfessores()[nome])?.sheet.render(true);
+	}
+
+	static #atividades() {
+		AtividadesApp.abrir();
 	}
 
 	static #correio() {
