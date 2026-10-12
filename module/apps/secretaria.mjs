@@ -1,6 +1,9 @@
 import { GREMIOS, STATUS_SEMESTRE } from "../data/disciplinas.mjs";
+import { concluirAleatorio, descricaoNpc, matricularAleatorio } from "../gerador.mjs";
 import { estatisticas, novoAluno, novoSemestre, pendenciasParaEncerrar } from "../logica.mjs";
-import { MODULO, ehAluno, lerAluno, opcao, salvarAluno } from "../config.mjs";
+import { MODULO, contextoCatalogo, disciplinasDosPersonagens, ehAluno, lerAluno, opcao, salvarAluno, sincronizarPericias } from "../config.mjs";
+import { CalendarioApp } from "./calendario.mjs";
+import { GeradorAlunosApp } from "./gerador.mjs";
 import { VidaAcademicaApp } from "./vida-academica.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
@@ -33,7 +36,9 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			abrirMatriculas: SecretariaApp.#abrirMatriculas,
 			iniciarTodos: SecretariaApp.#iniciarTodos,
 			encerrarTodos: SecretariaApp.#encerrarTodos,
-			catalogo: SecretariaApp.#catalogo
+			catalogo: SecretariaApp.#catalogo,
+			gerador: SecretariaApp.#gerador,
+			calendario: SecretariaApp.#calendario
 		}
 	};
 
@@ -59,6 +64,7 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 				id: actor.id,
 				nome: actor.name,
 				img: actor.img,
+				npc: descricaoNpc(aluno.npc),
 				gremio: GREMIOS[aluno.gremio] ?? null,
 				semestre: atual ? `${atual.numero}º · ${STATUS_SEMESTRE[atual.status]}` : "—",
 				chave: atual?.status ?? "",
@@ -96,6 +102,7 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			if (aluno.situacaoCurso !== "ativo") continue;
 			if (fn(aluno, actor) === false) continue;
 			await salvarAluno(actor, aluno);
+			if (aluno.npc) await sincronizarPericias(actor, aluno);
 			alterados++;
 		}
 		ui.notifications.info(game.i18n.format("ACADEMIA.Aviso.Lote", { qtd: alterados }));
@@ -104,11 +111,14 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	static async #abrirMatriculas() {
 		const max = opcao("maxSemestres");
-		await this.#emLote("Abrir matrículas", "Abrir a matrícula do próximo semestre para todos os alunos ativos com o semestre anterior encerrado?", (aluno) => {
+		const { catalogo, ofertas } = contextoCatalogo();
+		const preferidas = disciplinasDosPersonagens();
+		await this.#emLote("Abrir matrículas", "Abrir a matrícula do próximo semestre para todos os alunos ativos com o semestre anterior encerrado? Os NPCs gerados escolhem as disciplinas sozinhos.", (aluno) => {
 			const atual = aluno.semestres.at(-1);
 			if (atual && atual.status !== "encerrado") return false;
 			if (aluno.semestres.length >= max) return false;
 			aluno.semestres.push(novoSemestre(aluno.semestres.length + 1));
+			if (aluno.npc) matricularAleatorio(aluno, { catalogo, ofertas, preferidas, min: opcao("minDisciplinas"), max: opcao("maxDisciplinas") });
 		});
 	}
 
@@ -122,9 +132,10 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	static async #encerrarTodos() {
 		const ignorados = [];
-		await this.#emLote("Encerrar semestre", "Encerrar o semestre de todos os alunos cujas disciplinas já têm situação final?", (aluno, actor) => {
+		await this.#emLote("Encerrar semestre", "Encerrar o semestre de todos os alunos cujas disciplinas já têm situação final? Os NPCs gerados recebem notas sorteadas nas disciplinas pendentes.", (aluno, actor) => {
 			const atual = aluno.semestres.at(-1);
 			if (atual?.status !== "cursando") return false;
+			if (aluno.npc) concluirAleatorio(aluno, atual);
 			if (pendenciasParaEncerrar(atual).length) {
 				ignorados.push(actor.name);
 				return false;
@@ -132,6 +143,14 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			atual.status = "encerrado";
 		});
 		if (ignorados.length) ui.notifications.warn(game.i18n.format("ACADEMIA.Aviso.Ignorados", { lista: ignorados.join(", ") }));
+	}
+
+	static #gerador() {
+		GeradorAlunosApp.abrir();
+	}
+
+	static #calendario() {
+		CalendarioApp.abrir();
 	}
 
 	static #catalogo() {

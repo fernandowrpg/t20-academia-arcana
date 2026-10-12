@@ -67,6 +67,27 @@ Os dois painéis ficam flutuando sobre a mesa. Arraste pelo título para mover (
 - **Alunos**: lista os alunos ativos ou com o curso trancado. O mestre vê todos; o jogador vê os personagens em que tem permissão de observador ou dono. Cada aluno mostra PV, PM, o semestre mais recente com notas (média, aprovações, reprovações, pendências e, ao clicar, as disciplinas) e o botão **Matrícula**, que abre direto a aba de matrícula e fica destacado enquanto a matrícula está aberta.
 - **Ameaças**: aparece quando o combate é iniciado e some quando ele termina. Lista os combatentes sem jogador dono cujo token não é amistoso, na ordem de iniciativa, com destaque para quem está na vez. Clicar no nome centraliza o token; clicar no retrato abre a ficha. Por padrão só o mestre vê; em **Painel de ameaças para jogadores** ele pode liberar o estado aproximado (sem números) ou os valores completos. Ameaças ocultas nunca aparecem para jogadores.
 
+### Gerador de Alunos
+
+Na Secretaria, **Gerar alunos (NPC)** cria colegas para povoar a Academia. O mestre escolhe o **nível** (e, se quiser, raça, classe e período); o que ficar em *Aleatório* é sorteado, junto com nome, grêmio, histórico de disciplinas e notas.
+
+- As fichas são do tipo NPC, com token **neutro**, e vão para a pasta de atores *Alunos da Academia*.
+- A ficha recebe raça, ND igual ao nível (no sistema Tormenta20 o nível do NPC vem do ND), PV e PM da classe (sem modificador de atributo) e um resumo na biografia. As perícias das disciplinas aprovadas e em curso ficam marcadas como treinadas.
+- Nomes: Tabela 1-24 de *Heróis de Arton*. Raças sem tabela própria usam a tabela humana (eiradaan usa a élfica; meio-elfo, a humana ou a élfica; lefou, qualquer uma).
+- Classes: as 14 de *Tormenta20*, o treinador e as 14 variantes de *Heróis de Arton* e o frade de *Deuses de Arton*. Arcanistas são os mais comuns.
+- Os NPCs tendem a se matricular nas disciplinas que os personagens cursam. Ao **abrir matrículas** em lote eles escolhem as disciplinas sozinhos, e ao **encerrar o semestre** em lote recebem notas sorteadas nas disciplinas pendentes.
+
+### Calendário do Período Letivo
+
+Abre pela Secretaria, pelo ícone de calendário no painel de alunos ou pela macro. Mostra a semana letiva (5 dias, 3 turnos) com uma aula por disciplina e quem está em cada turma: personagens em destaque e NPCs ao lado. Abaixo da grade, a lista **Colegas de turma** resume quais NPCs dividem aula com quais personagens.
+
+- O filtro alterna entre as aulas dos personagens, as de um personagem só e todas as aulas da Academia.
+- Os horários são distribuídos evitando choque entre as aulas de um mesmo aluno e ficam salvos no mundo. O mestre muda o horário de uma turma no próprio cartão ou usa **Redistribuir**.
+- A grade se adapta à largura da janela: cinco colunas quando há espaço, um dia por linha em janelas médias e uma lista em janelas estreitas.
+- A configuração **Jogadores veem o calendário** controla o acesso dos jogadores.
+
+As regras de matrícula e avaliação estão em [docs/regras-da-academia.md](docs/regras-da-academia.md), em Markdown compatível com o Notion.
+
 ### API
 
 ```js
@@ -74,6 +95,8 @@ const api = game.modules.get("t20-academia-arcana").api;
 api.abrir(actor);
 api.secretaria();
 api.catalogo();
+api.calendario();
+api.gerador();
 api.painelAlunos();
 api.painelAmeacas();
 api.lerAluno(actor);

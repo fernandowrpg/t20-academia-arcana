@@ -1,0 +1,165 @@
+import { CLASSES, NIVEL_MAXIMO, RACAS } from "../data/alunos.mjs";
+import { GREMIOS } from "../data/disciplinas.mjs";
+import { descricaoNpc, gerarAluno } from "../gerador.mjs";
+import { nomePericia } from "../logica.mjs";
+import { FLAG, MODULO, contextoCatalogo, disciplinasDosPersonagens, opcao, sincronizarPericias } from "../config.mjs";
+import { CalendarioApp } from "./calendario.mjs";
+import { VidaAcademicaApp } from "./vida-academica.mjs";
+
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+const PASTA = "Alunos da Academia";
+const MAX_POR_VEZ = 20;
+
+function opcoes(mapa, selecionado, rotuloAleatorio) {
+	return [{ valor: "", rotulo: rotuloAleatorio, selecionado: !selecionado }].concat(
+		Object.entries(mapa)
+			.map(([valor, d]) => ({ valor, rotulo: d.nome, selecionado: valor === selecionado }))
+			.sort((a, b) => a.rotulo.localeCompare(b.rotulo, "pt-BR"))
+	);
+}
+
+function biografia(g) {
+	const atual = g.aluno.semestres.at(-1);
+	const pericias = g.pericias.map((p) => nomePericia(p)).sort((a, b) => a.localeCompare(b, "pt-BR"));
+	return [
+		`<p><strong>Aluno da Academia Arcana.</strong> ${RACAS[g.raca].nome}, ${CLASSES[g.classe].nome} de ${g.nivel}º nível (${CLASSES[g.classe].livro}).</p>`,
+		`<p><strong>Período:</strong> ${g.periodo}º semestre · <strong>Grêmio:</strong> ${GREMIOS[g.aluno.gremio]?.nome ?? "—"}${g.aluno.bolsista ? " · bolsista" : ""}</p>`,
+		`<p><strong>Perícias estudadas:</strong> ${pericias.join(", ") || "—"}</p>`,
+		`<p><strong>Disciplinas em curso ao ser gerado:</strong> ${atual?.disciplinas.map((d) => d.nome).join(", ") || "—"}</p>`
+	].join("");
+}
+
+export class GeradorAlunosApp extends HandlebarsApplicationMixin(ApplicationV2) {
+	static instancia = null;
+
+	static abrir() {
+		if (!game.user.isGM) {
+			ui.notifications.warn(game.i18n.localize("ACADEMIA.Aviso.SomenteMestreGerador"));
+			return null;
+		}
+		this.instancia ??= new this();
+		this.instancia.render({ force: true });
+		return this.instancia;
+	}
+
+	static DEFAULT_OPTIONS = {
+		id: "academia-arcana-gerador",
+		classes: ["academia-arcana", "aa-gerador-app"],
+		window: { title: "ACADEMIA.Gerador", icon: "fa-solid fa-dice-d20", resizable: true },
+		position: { width: 560, height: 640 },
+		actions: {
+			gerar: GeradorAlunosApp.#gerar,
+			abrirFicha: GeradorAlunosApp.#abrirFicha,
+			abrirVida: GeradorAlunosApp.#abrirVida,
+			calendario: GeradorAlunosApp.#calendario
+		}
+	};
+
+	static PARTS = {
+		corpo: { template: `modules/${MODULO}/templates/gerador.hbs`, scrollable: [".aa-conteudo"] }
+	};
+
+	escolhas = { quantidade: 1, nivel: 1, raca: "", classe: "", periodo: "" };
+
+	gerados = [];
+
+	async _onClose(options) {
+		await super._onClose(options);
+		GeradorAlunosApp.instancia = null;
+	}
+
+	async _prepareContext() {
+		const regulares = opcao("semestresRegulares");
+		const periodos = [{ valor: "", rotulo: "Aleatório", selecionado: !this.escolhas.periodo }];
+		for (let n = 1; n <= regulares; n++) periodos.push({ valor: n, rotulo: `${n}º semestre`, selecionado: Number(this.escolhas.periodo) === n });
+		return {
+			...this.escolhas,
+			nivelMaximo: NIVEL_MAXIMO,
+			maxPorVez: MAX_POR_VEZ,
+			racas: opcoes(RACAS, this.escolhas.raca, "Aleatória"),
+			classes: opcoes(CLASSES, this.escolhas.classe, "Aleatória"),
+			periodos,
+			pasta: PASTA,
+			gerados: this.gerados
+		};
+	}
+
+	#lerEscolhas() {
+		const campo = (nome) => this.element.querySelector(`[name='aa-${nome}']`)?.value ?? "";
+		const inteiro = (nome, max) => Math.max(1, Math.min(max, Math.round(Number(campo(nome))) || 1));
+		this.escolhas = {
+			quantidade: inteiro("quantidade", MAX_POR_VEZ),
+			nivel: inteiro("nivel", NIVEL_MAXIMO),
+			raca: campo("raca"),
+			classe: campo("classe"),
+			periodo: campo("periodo")
+		};
+		return this.escolhas;
+	}
+
+	static async #gerar(event, alvo) {
+		if (!game.user.isGM) return;
+		const { quantidade, nivel, raca, classe, periodo } = this.#lerEscolhas();
+		alvo.disabled = true;
+		const { catalogo, ofertas } = contextoCatalogo();
+		const usados = new Set(game.actors.map((a) => a.name));
+		const preferidas = disciplinasDosPersonagens();
+		const pasta = game.folders.find((f) => f.type === "Actor" && f.name === PASTA) ?? (await Folder.create({ name: PASTA, type: "Actor" }));
+		const tipo = game.documentTypes?.Actor?.includes("npc") ? "npc" : "character";
+		const novos = [];
+		for (let i = 0; i < quantidade; i++) {
+			const g = gerarAluno({
+				nivel,
+				raca,
+				classe,
+				periodo,
+				usados,
+				catalogo,
+				ofertas,
+				preferidas,
+				min: opcao("minDisciplinas"),
+				max: opcao("maxDisciplinas"),
+				semestresRegulares: opcao("semestresRegulares")
+			});
+			usados.add(g.nome);
+			const actor = await Actor.implementation.create({
+				name: g.nome,
+				type: tipo,
+				folder: pasta?.id ?? null,
+				system: {
+					attributes: { nd: String(g.nivel), pv: { value: g.pv, max: g.pv }, pm: { value: g.pm, max: g.pm } },
+					detalhes: { raca: RACAS[g.raca].nome, biography: { value: biografia(g) } }
+				},
+				prototypeToken: { name: g.nome, disposition: CONST.TOKEN_DISPOSITIONS.NEUTRAL, actorLink: true },
+				flags: { [MODULO]: { [FLAG]: g.aluno } }
+			});
+			if (!actor) continue;
+			await sincronizarPericias(actor, g.aluno);
+			novos.push({
+				id: actor.id,
+				nome: g.nome,
+				descricao: descricaoNpc(g.aluno.npc),
+				periodo: g.periodo,
+				gremio: GREMIOS[g.aluno.gremio] ?? null,
+				pericias: g.pericias.map((p) => nomePericia(p)).sort((a, b) => a.localeCompare(b, "pt-BR")),
+				disciplinas: g.aluno.semestres.at(-1)?.disciplinas.map((d) => d.nome) ?? []
+			});
+		}
+		this.gerados = [...novos, ...this.gerados];
+		ui.notifications.info(game.i18n.format("ACADEMIA.Aviso.Gerados", { qtd: novos.length, pasta: PASTA }));
+		this.render();
+	}
+
+	static #abrirFicha(event, alvo) {
+		game.actors.get(alvo.closest("[data-actor]")?.dataset.actor)?.sheet.render(true);
+	}
+
+	static #abrirVida(event, alvo) {
+		VidaAcademicaApp.abrir(game.actors.get(alvo.closest("[data-actor]")?.dataset.actor));
+	}
+
+	static #calendario() {
+		CalendarioApp.abrir();
+	}
+}

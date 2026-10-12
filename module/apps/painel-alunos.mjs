@@ -1,7 +1,8 @@
 import { GREMIOS, SITUACOES, STATUS_SEMESTRE } from "../data/disciplinas.mjs";
 import { formatarNota, recurso, resumoNotas } from "../logica.mjs";
-import { MODULO, ehAluno, lerAluno, opcao } from "../config.mjs";
+import { MODULO, ehAluno, ehNpcGerado, lerAluno, opcao } from "../config.mjs";
 import { PainelFlutuante, barra } from "./painel.mjs";
+import { CalendarioApp } from "./calendario.mjs";
 import { SecretariaApp } from "./secretaria.mjs";
 import { VidaAcademicaApp } from "./vida-academica.mjs";
 
@@ -9,7 +10,7 @@ const FORA_DO_PAINEL = new Set(["formado", "desligado"]);
 
 function alunosVisiveis() {
 	return game.actors
-		.filter((a) => ehAluno(a) && a.testUserPermission(game.user, "OBSERVER") && !FORA_DO_PAINEL.has(lerAluno(a).situacaoCurso))
+		.filter((a) => ehAluno(a) && !ehNpcGerado(a) && a.testUserPermission(game.user, "OBSERVER") && !FORA_DO_PAINEL.has(lerAluno(a).situacaoCurso))
 		.sort((a, b) => a.name.localeCompare(b.name));
 }
 
@@ -29,7 +30,8 @@ export class PainelAlunosApp extends PainelFlutuante {
 			abrirVida: PainelAlunosApp.#abrirVida,
 			abrirMatricula: PainelAlunosApp.#abrirMatricula,
 			alternarNotas: PainelAlunosApp.#alternarNotas,
-			secretaria: PainelAlunosApp.#secretaria
+			secretaria: PainelAlunosApp.#secretaria,
+			calendario: PainelAlunosApp.#calendario
 		}
 	};
 
@@ -81,7 +83,7 @@ export class PainelAlunosApp extends PainelFlutuante {
 				}
 			};
 		});
-		return { gm, usarNotas, recolhido: this.recolhido, alunos };
+		return { gm, usarNotas, calendario: gm || opcao("calendarioJogadores"), recolhido: this.recolhido, alunos };
 	}
 
 	#ator(alvo) {
@@ -109,5 +111,9 @@ export class PainelAlunosApp extends PainelFlutuante {
 
 	static #secretaria() {
 		SecretariaApp.abrir();
+	}
+
+	static #calendario() {
+		CalendarioApp.abrir();
 	}
 }

@@ -3,6 +3,7 @@
 		<i class="fa-solid fa-hat-wizard"></i>
 		<strong>Alunos</strong>
 		<span class="aa-painel-acoes">
+			{{#if calendario}}<a data-action="calendario" data-tooltip="Calendário do período letivo"><i class="fa-solid fa-calendar-week"></i></a>{{/if}}
 			{{#if gm}}<a data-action="secretaria" data-tooltip="Secretaria da Academia"><i class="fa-solid fa-building-columns"></i></a>{{/if}}
 			<a data-action="recolher" data-tooltip="{{#if recolhido}}Mostrar as notas{{else}}Mostrar só vida, mana e matrícula{{/if}}"><i class="fa-solid {{#if recolhido}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i></a>
 		</span>

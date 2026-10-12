@@ -2,10 +2,13 @@ import { MODULO, aoMudarConfiguracao, contextoCatalogo, ehAluno, lerAluno, regis
 import { VidaAcademicaApp } from "./apps/vida-academica.mjs";
 import { SecretariaApp } from "./apps/secretaria.mjs";
 import { CatalogoApp } from "./apps/catalogo.mjs";
+import { CalendarioApp } from "./apps/calendario.mjs";
+import { GeradorAlunosApp } from "./apps/gerador.mjs";
 import { PainelAlunosApp } from "./apps/painel-alunos.mjs";
 import { PainelAmeacasApp } from "./apps/painel-ameacas.mjs";
 import * as dados from "./data/disciplinas.mjs";
 import * as logica from "./logica.mjs";
+import * as geracao from "./gerador.mjs";
 
 const atualizarPainelAlunos = foundry.utils.debounce(() => PainelAlunosApp.sincronizar(), 100);
 const atualizarPainelAmeacas = foundry.utils.debounce(() => PainelAmeacasApp.sincronizar(), 100);
@@ -20,6 +23,7 @@ Hooks.once("init", () => {
 	aoMudarConfiguracao(() => {
 		VidaAcademicaApp.atualizarTodas();
 		SecretariaApp.atualizar();
+		CalendarioApp.atualizar();
 		atualizarPainelAlunos();
 		atualizarPainelAmeacas();
 	});
@@ -27,12 +31,15 @@ Hooks.once("init", () => {
 		abrir,
 		secretaria: () => SecretariaApp.abrir(),
 		catalogo: () => new CatalogoApp().render({ force: true }),
+		calendario: () => CalendarioApp.abrir(),
+		gerador: () => GeradorAlunosApp.abrir(),
 		painelAlunos: () => PainelAlunosApp.sincronizar(),
 		painelAmeacas: () => PainelAmeacasApp.sincronizar(),
 		lerAluno,
 		contextoCatalogo,
 		dados,
-		logica
+		logica,
+		geracao
 	};
 });
 
@@ -47,13 +54,22 @@ Hooks.once("ready", () => {
 Hooks.on("updateActor", (actor, mudancas) => {
 	atualizarPainelAlunos();
 	atualizarPainelAmeacas();
+	if ("name" in mudancas) CalendarioApp.atualizar();
 	if (!foundry.utils.hasProperty(mudancas, `flags.${MODULO}`)) return;
 	VidaAcademicaApp.atualizar(actor);
 	SecretariaApp.atualizar();
+	CalendarioApp.atualizar();
+});
+
+Hooks.on("createActor", (actor) => {
+	if (!ehAluno(actor)) return;
+	SecretariaApp.atualizar();
+	CalendarioApp.atualizar();
 });
 
 Hooks.on("deleteActor", () => {
 	SecretariaApp.atualizar();
+	CalendarioApp.atualizar();
 	atualizarPainelAlunos();
 });
 
@@ -80,7 +96,7 @@ Hooks.on("updateToken", (token, mudancas) => {
 
 Hooks.on("getActorSheetHeaderButtons", (sheet, botoes) => {
 	const actor = sheet.actor ?? sheet.document;
-	if (!actor || actor.type !== "character") return;
+	if (!actor || (actor.type !== "character" && !ehAluno(actor))) return;
 	if (!game.user.isGM && !ehAluno(actor)) return;
 	botoes.unshift({
 		label: game.i18n.localize("ACADEMIA.BotaoFicha"),
@@ -92,7 +108,7 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, botoes) => {
 
 Hooks.on("getHeaderControlsActorSheetV2", (sheet, controles) => {
 	const actor = sheet.document;
-	if (!actor || actor.type !== "character") return;
+	if (!actor || (actor.type !== "character" && !ehAluno(actor))) return;
 	if (!game.user.isGM && !ehAluno(actor)) return;
 	controles.unshift({
 		label: "ACADEMIA.BotaoFicha",

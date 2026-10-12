@@ -1007,3 +1007,334 @@
 	font-size: 0.72rem;
 	color: var(--aa-texto-suave);
 }
+
+.academia-arcana .aa-gerador-campos {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+	gap: 0.5rem;
+}
+
+.academia-arcana .aa-gerador-campos label {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	font-weight: bold;
+}
+
+.academia-arcana .aa-gerador-campos input,
+.academia-arcana .aa-gerador-campos select {
+	width: 100%;
+	font-weight: normal;
+}
+
+.academia-arcana .aa-gerados {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.academia-arcana .aa-gerados > li {
+	padding: 0.5rem;
+	border: 1px solid var(--aa-borda);
+	border-left: 4px solid var(--aa-roxo);
+	border-radius: 6px;
+}
+
+.academia-arcana .aa-gerados header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.25rem 0.6rem;
+}
+
+.academia-arcana .aa-gerados p {
+	margin: 0.35rem 0 0;
+}
+
+.academia-arcana .aa-gerados-pericias {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+}
+
+.academia-arcana .aa-gerados-acoes {
+	margin-left: auto;
+	display: flex;
+	gap: 0.25rem;
+}
+
+.academia-arcana .aa-gerados-acoes button {
+	width: 2rem;
+}
+
+.academia-arcana .aa-cal-topo {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem 0.75rem;
+	padding: 0.5rem 0.75rem;
+	border-bottom: 1px solid var(--aa-borda);
+}
+
+.academia-arcana .aa-cal-topo button {
+	width: auto;
+	flex: 0 0 auto;
+	margin-left: auto;
+}
+
+.academia-arcana .aa-cal-filtro {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	flex: 1 1 220px;
+	min-width: 0;
+	max-width: 360px;
+}
+
+.academia-arcana .aa-cal-filtro select {
+	flex: 1;
+	min-width: 0;
+}
+
+.academia-arcana .aa-cal-resumo {
+	color: var(--aa-texto-suave);
+	font-size: 0.85rem;
+}
+
+.academia-arcana .aa-cal-legenda {
+	display: flex;
+	gap: 0.3rem;
+}
+
+/* O calendário se adapta à largura da janela (container), não à da tela. */
+.academia-arcana .aa-cal .aa-conteudo {
+	container: aa-cal / inline-size;
+}
+
+.academia-arcana .aa-cal-grade {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+}
+
+.academia-arcana .aa-cal-dia {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+	min-width: 0;
+}
+
+.academia-arcana .aa-cal-dia > h3 {
+	margin: 0;
+	padding: 0.3rem 0.5rem;
+	border: none;
+	border-radius: 6px;
+	background: linear-gradient(120deg, #5b3a8c 0%, #2d1b4e 100%);
+	color: #f4ecff;
+	font-size: 1rem;
+	text-align: center;
+}
+
+.academia-arcana .aa-cal-turno {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+	min-width: 0;
+	padding: 0.4rem;
+	border: 1px dashed var(--aa-borda);
+	border-radius: 6px;
+}
+
+.academia-arcana .aa-cal-turno.vazio {
+	display: none;
+}
+
+.academia-arcana .aa-cal-turno-nome {
+	font-size: 0.7rem;
+	font-weight: bold;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-cal-livre {
+	margin: 0;
+	text-align: center;
+	font-style: italic;
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-cal-turma {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	min-width: 0;
+	padding: 0.4rem 0.5rem;
+	border: 1px solid var(--aa-borda);
+	border-left: 4px solid var(--aa-borda);
+	border-radius: 6px;
+	background: var(--aa-roxo-claro);
+}
+
+.academia-arcana .aa-cal-turma.com-pc {
+	border-left-color: var(--aa-ouro);
+}
+
+.academia-arcana .aa-cal-turma.choque {
+	border-left-color: var(--aa-vermelho);
+}
+
+.academia-arcana .aa-cal-turma > strong {
+	overflow-wrap: anywhere;
+	line-height: 1.2;
+}
+
+.academia-arcana .aa-cal-turma > small {
+	color: var(--aa-texto-suave);
+	overflow-wrap: anywhere;
+}
+
+.academia-arcana .aa-cal-turma select {
+	width: 100%;
+	min-width: 0;
+	height: 1.6rem;
+	font-size: 0.75rem;
+}
+
+.academia-arcana .aa-cal-alunos {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.2rem;
+}
+
+.academia-arcana .aa-cal-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	max-width: 100%;
+	padding: 0.05rem 0.45rem;
+	border: 1px solid var(--aa-borda);
+	border-radius: 999px;
+	font-size: 0.75rem;
+	line-height: 1.4;
+	overflow-wrap: anywhere;
+}
+
+.academia-arcana .aa-cal-chip.pc {
+	border-color: var(--aa-ouro);
+	background: color-mix(in srgb, var(--aa-ouro) 28%, transparent);
+	font-weight: bold;
+}
+
+.academia-arcana .aa-cal-chip.destaque {
+	outline: 2px solid var(--aa-roxo);
+}
+
+.academia-arcana .aa-cal-chip img {
+	width: 16px;
+	height: 16px;
+	border: none;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.academia-arcana a.aa-cal-chip[data-action],
+.academia-arcana a.aa-cal-colega-nome[data-action] {
+	cursor: pointer;
+}
+
+.academia-arcana .aa-cal-aviso {
+	margin: 0;
+	font-size: 0.75rem;
+	color: var(--aa-vermelho);
+}
+
+.academia-arcana .aa-cal-colegas {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+	gap: 0.5rem;
+}
+
+.academia-arcana .aa-cal-colegas > li {
+	min-width: 0;
+	padding: 0.4rem 0.5rem;
+	border: 1px solid var(--aa-borda);
+	border-radius: 6px;
+}
+
+.academia-arcana .aa-cal-colegas header {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5rem;
+	font-weight: bold;
+}
+
+.academia-arcana .aa-cal-colegas small {
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-cal-colegas ul {
+	margin: 0.25rem 0 0;
+	padding-left: 1.1rem;
+	font-size: 0.85rem;
+}
+
+@container aa-cal (min-width: 520px) {
+	.academia-arcana .aa-cal-dia {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		align-items: start;
+	}
+
+	.academia-arcana .aa-cal-dia > h3,
+	.academia-arcana .aa-cal-dia > .aa-cal-livre {
+		grid-column: 1 / -1;
+	}
+
+	.academia-arcana .aa-cal-dia > h3 {
+		text-align: left;
+	}
+
+	.academia-arcana .aa-cal-turno.vazio {
+		display: flex;
+		opacity: 0.55;
+	}
+
+	.academia-arcana .aa-cal-dia.vazio .aa-cal-turno {
+		display: none;
+	}
+}
+
+@container aa-cal (min-width: 940px) {
+	.academia-arcana .aa-cal-grade {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		grid-template-rows: auto repeat(3, auto);
+		gap: 0.4rem;
+	}
+
+	.academia-arcana .aa-cal-dia {
+		grid-row: 1 / span 4;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: subgrid;
+		align-items: stretch;
+	}
+
+	.academia-arcana .aa-cal-dia > h3 {
+		text-align: center;
+	}
+
+	.academia-arcana .aa-cal-dia.vazio .aa-cal-turno {
+		display: flex;
+	}
+
+	.academia-arcana .aa-cal-dia > .aa-cal-livre {
+		display: none;
+	}
+}

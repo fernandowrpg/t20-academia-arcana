@@ -11,6 +11,15 @@
 <li><strong>Ameaças:</strong> painel separado que aparece durante o combate, com PV, PM, ND, Defesa, iniciativa e condições de cada ameaça. Por padrão só o mestre vê; nas configurações ele pode liberar o estado aproximado ou os valores para os jogadores.</li>
 <li>Arraste pelo título para mover, use a seta para a versão compacta e desligue cada painel em <em>Configurações → Academia Arcana</em>.</li>
 </ul>
+<h2>Gerador de Alunos</h2>
+<p>Na Secretaria, <em>Gerar alunos (NPC)</em> cria colegas para povoar a Academia. O mestre escolhe o nível; nome, raça, classe, período, grêmio, histórico de disciplinas e notas são sorteados (raça, classe e período também podem ser fixados).</p>
+<ul>
+<li>As fichas são NPCs com token neutro, guardadas na pasta <em>Alunos da Academia</em>, com as perícias das disciplinas aprovadas e em curso marcadas como treinadas.</li>
+<li>Os nomes vêm da tabela de nomes de <em>Heróis de Arton</em>; as classes, de <em>Tormenta20</em>, <em>Heróis de Arton</em> e <em>Deuses de Arton</em>.</li>
+<li>Ao abrir matrículas em lote, os NPCs escolhem as disciplinas sozinhos; ao encerrar o semestre em lote, recebem notas sorteadas.</li>
+</ul>
+<h2>Calendário do Período Letivo</h2>
+<p>Mostra a semana letiva com uma aula por disciplina e quem está em cada turma, além da lista de NPCs que dividem aula com os personagens. Abra pela Secretaria, pelo ícone de calendário do painel de alunos ou pela macro. O mestre pode mudar o horário de cada turma ou redistribuir todos, e decide nas configurações se os jogadores veem o calendário.</p>
 <h2>Fluxo de um semestre</h2>
 <ol>
 <li><strong>Admissão:</strong> o mestre admite o personagem (na ficha dele ou na Secretaria) e define o Grêmio.</li>
@@ -29,4 +38,4 @@
 <li>criar disciplinas da mesa. O livro traz uma lista parcial; por exemplo, não existe <em>Prática Aventuresca III</em>, mas você pode criá-la, e ela entra automaticamente como pré-requisito da IV.</li>
 </ul>
 <h2>API</h2>
-<p>Para macros e outros módulos: <code>game.modules.get("t20-academia-arcana").api</code>, com <code>abrir(ator)</code>, <code>secretaria()</code>, <code>catalogo()</code>, <code>lerAluno(ator)</code> e <code>contextoCatalogo()</code>. Os dados do aluno ficam em <code>flags["t20-academia-arcana"].aluno</code> no ator.</p>
+<p>Para macros e outros módulos: <code>game.modules.get("t20-academia-arcana").api</code>, com <code>abrir(ator)</code>, <code>secretaria()</code>, <code>catalogo()</code>, <code>calendario()</code>, <code>gerador()</code>, <code>lerAluno(ator)</code> e <code>contextoCatalogo()</code>. Os dados do aluno ficam em <code>flags["t20-academia-arcana"].aluno</code> no ator.</p>

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0
+
+- Gerador de Alunos: cria fichas de NPC neutro escolhendo o nível e sorteando nome, raça, classe, período, grêmio, histórico de disciplinas e notas. Nomes da Tabela 1-24 de *Heróis de Arton*; classes de *Tormenta20*, *Heróis de Arton* e *Deuses de Arton*. As perícias das disciplinas aprovadas e em curso ficam treinadas na ficha.
+- Calendário do Período Letivo: grade semanal com as turmas, os personagens e os NPCs de cada aula, lista de colegas de turma, filtro por personagem e aviso de choque de horário. O mestre pode mudar o horário de cada turma ou redistribuir tudo. A grade se adapta à largura da janela.
+- Secretaria: os NPCs gerados se matriculam sozinhos ao abrir as matrículas em lote e recebem notas sorteadas ao encerrar o semestre em lote.
+- O painel de alunos deixa de listar os NPCs gerados e ganha um atalho para o calendário.
+- Novo documento `docs/regras-da-academia.md` com as regras de matrícula e avaliação, pronto para importar no Notion.
+
 ## 1.1.0
 
 - Painel de alunos: widget flutuante, sempre visível, com vida (PV), mana (PM), resumo das notas do semestre mais recente e atalho para a matrícula de cada aluno.

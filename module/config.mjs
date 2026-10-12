@@ -1,4 +1,5 @@
 import { configPadrao, montarCatalogo, novoAluno, periciasDoCatalogo } from "./logica.mjs";
+import { periciasEstudadas } from "./gerador.mjs";
 
 export const MODULO = "t20-academia-arcana";
 export const FLAG = "aluno";
@@ -79,6 +80,24 @@ export function registrarConfiguracoes(CatalogoApp) {
 		onChange: notificar
 	});
 
+	game.settings.register(MODULO, "calendarioJogadores", {
+		name: "ACADEMIA.Config.calendarioJogadores.Nome",
+		hint: "ACADEMIA.Config.calendarioJogadores.Dica",
+		scope: "world",
+		config: true,
+		type: Boolean,
+		default: true,
+		onChange: notificar
+	});
+
+	game.settings.register(MODULO, "horarios", {
+		scope: "world",
+		config: false,
+		type: Object,
+		default: {},
+		onChange: notificar
+	});
+
 	game.settings.register(MODULO, "paineis", {
 		scope: "client",
 		config: false,
@@ -149,6 +168,32 @@ export async function salvarAluno(actor, aluno) {
 
 export async function removerAluno(actor) {
 	return actor.unsetFlag(MODULO, FLAG);
+}
+
+export function ehNpcGerado(actor) {
+	return !!actor?.getFlag(MODULO, FLAG)?.npc;
+}
+
+/* Marca como treinadas, na ficha do NPC, as perícias das disciplinas aprovadas ou em curso. */
+export async function sincronizarPericias(actor, aluno) {
+	const pericias = actor.system?.pericias ?? {};
+	const mudancas = {};
+	for (const chave of periciasEstudadas(aluno)) {
+		if (pericias[chave] && !pericias[chave].treinado) mudancas[`system.pericias.${chave}.treinado`] = true;
+	}
+	if (Object.keys(mudancas).length) await actor.update(mudancas);
+}
+
+/* Disciplinas do período vigente dos personagens; os NPCs gerados tendem a escolhê-las para dividir turma. */
+export function disciplinasDosPersonagens() {
+	const ids = new Set();
+	for (const actor of game.actors) {
+		const aluno = lerAluno(actor);
+		if (!aluno || aluno.npc) continue;
+		const atual = aluno.semestres.at(-1);
+		if (atual && atual.status !== "encerrado") for (const d of atual.disciplinas) ids.add(d.id);
+	}
+	return ids;
 }
 
 export function podeMatricular(actor) {

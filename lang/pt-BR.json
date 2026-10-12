@@ -2,6 +2,8 @@
 	"ACADEMIA": {
 		"VidaAcademica": "Vida Acadêmica",
 		"Secretaria": "Secretaria da Academia",
+		"Calendario": "Calendário do Período Letivo",
+		"Gerador": "Gerador de Alunos",
 		"Catalogo": "Catálogo de Disciplinas",
 		"BotaoFicha": "Academia",
 		"Config": {
@@ -44,6 +46,10 @@
 				"Estado": "Somente o estado aproximado (sem números)",
 				"Valores": "Valores completos"
 			},
+			"calendarioJogadores": {
+				"Nome": "Jogadores veem o calendário",
+				"Dica": "Permite que os jogadores abram o calendário do período letivo, com as aulas dos personagens e os nomes dos colegas de turma."
+			},
 			"catalogoMenu": {
 				"Nome": "Catálogo de disciplinas",
 				"Rotulo": "Editar catálogo",
@@ -53,6 +59,9 @@
 		"Aviso": {
 			"SemAtor": "Selecione um token ou defina um personagem para o seu usuário.",
 			"SomenteMestre": "Apenas o mestre pode abrir a secretaria.",
+			"SomenteMestreGerador": "Apenas o mestre pode gerar alunos.",
+			"CalendarioRestrito": "O mestre não liberou o calendário para os jogadores.",
+			"Gerados": "{qtd} aluno(s) gerado(s) na pasta {pasta}.",
 			"Admitido": "{nome} foi admitido(a) na Academia Arcana.",
 			"LimiteSemestres": "O aluno atingiu o limite de semestres do curso.",
 			"AbaixoMinimo": "A matrícula tem {qtd} disciplina(s), abaixo do mínimo de {min}. Iniciar o semestre mesmo assim?",

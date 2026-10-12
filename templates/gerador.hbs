@@ -1,0 +1,52 @@
+<div class="aa-janela">
+	<section class="aa-conteudo">
+		<fieldset class="aa-cartao">
+			<legend><i class="fa-solid fa-dice-d20"></i> Novo aluno (NPC neutro)</legend>
+			<div class="aa-gerador-campos">
+				<label>Nível
+					<input type="number" name="aa-nivel" value="{{nivel}}" min="1" max="{{nivelMaximo}}" step="1">
+				</label>
+				<label>Quantidade
+					<input type="number" name="aa-quantidade" value="{{quantidade}}" min="1" max="{{maxPorVez}}" step="1">
+				</label>
+				<label>Raça
+					<select name="aa-raca">{{#each racas}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>
+				</label>
+				<label>Classe
+					<select name="aa-classe">{{#each classes}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>
+				</label>
+				<label>Período
+					<select name="aa-periodo">{{#each periodos}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>
+				</label>
+			</div>
+			<p class="aa-dica">Escolha o nível; o que ficar em <em>Aleatório</em> é sorteado: nome, raça, classe, período, grêmio, histórico de disciplinas e notas. As fichas vão para a pasta <strong>{{pasta}}</strong>, com as perícias das disciplinas aprovadas e em curso marcadas como treinadas.</p>
+			<div class="aa-botoes">
+				<button type="button" data-action="gerar"><i class="fa-solid fa-wand-sparkles"></i> Gerar</button>
+				<button type="button" data-action="calendario"><i class="fa-solid fa-calendar-week"></i> Calendário</button>
+			</div>
+		</fieldset>
+
+		{{#if gerados.length}}
+		<fieldset class="aa-cartao">
+			<legend><i class="fa-solid fa-users"></i> Gerados nesta sessão</legend>
+			<ul class="aa-gerados">
+				{{#each gerados}}
+				<li data-actor="{{id}}">
+					<header>
+						<strong>{{nome}}</strong>
+						<span>{{descricao}} · {{periodo}}º semestre</span>
+						{{#if gremio}}<span class="aa-etiqueta" style="--aa-cor: {{gremio.cor}}"><i class="{{gremio.icone}}"></i> {{gremio.apelido}}</span>{{/if}}
+						<span class="aa-gerados-acoes">
+							<button type="button" data-action="abrirFicha" data-tooltip="Abrir a ficha"><i class="fa-solid fa-user"></i></button>
+							<button type="button" data-action="abrirVida" data-tooltip="Abrir a Vida Acadêmica"><i class="fa-solid fa-hat-wizard"></i></button>
+						</span>
+					</header>
+					<p class="aa-gerados-pericias">{{#each pericias}}<span class="aa-pilula">{{this}}</span>{{else}}—{{/each}}</p>
+					<p class="aa-dica"><i class="fa-solid fa-book"></i> Cursando: {{#each disciplinas}}{{this}}{{#unless @last}}, {{/unless}}{{else}}—{{/each}}</p>
+				</li>
+				{{/each}}
+			</ul>
+		</fieldset>
+		{{/if}}
+	</section>
+</div>

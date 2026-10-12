@@ -1,0 +1,72 @@
+<div class="aa-janela aa-cal">
+	<header class="aa-cal-topo">
+		<label class="aa-cal-filtro"><i class="fa-solid fa-filter"></i>
+			<select name="aa-cal-filtro">{{#each filtros}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>
+		</label>
+		<span class="aa-cal-resumo">{{totalTurmas}} turma(s) · {{colegas.length}} colega(s) NPC</span>
+		<span class="aa-cal-legenda"><span class="aa-cal-chip pc">personagem</span><span class="aa-cal-chip">NPC</span></span>
+		{{#if gm}}<button type="button" data-action="redistribuir" data-tooltip="Descarta os horários e distribui as turmas de novo"><i class="fa-solid fa-shuffle"></i> Redistribuir</button>{{/if}}
+	</header>
+	<section class="aa-conteudo">
+		{{#if vazio}}
+		<div class="aa-vazio">
+			<i class="fa-solid fa-calendar-xmark"></i>
+			{{#if semAlunos}}
+			<p>Nenhum aluno com matrícula aberta ou semestre em curso.</p>
+			{{else}}
+			<p>Nenhuma aula para este filtro. Experimente <em>Todas as aulas da Academia</em>.</p>
+			{{/if}}
+		</div>
+		{{else}}
+		<div class="aa-cal-grade">
+			{{#each dias}}
+			<section class="aa-cal-dia {{#if vazio}}vazio{{/if}}">
+				<h3>{{nome}}</h3>
+				{{#each turnos}}
+				<div class="aa-cal-turno {{#unless turmas.length}}vazio{{/unless}}">
+					<span class="aa-cal-turno-nome">{{nome}}</span>
+					{{#each turmas}}
+					<article class="aa-cal-turma {{#if comPc}}com-pc{{/if}} {{#if choque}}choque{{/if}}">
+						<strong>{{nome}}</strong>
+						<small>{{pericia}}{{#if professor}} · {{professor}}{{/if}}</small>
+						<div class="aa-cal-alunos">
+							{{#each pcs}}<a class="aa-cal-chip pc {{#if destaque}}destaque{{/if}}" {{#if abre}}data-action="abrirAluno" data-actor="{{id}}"{{/if}}><img src="{{img}}" alt="">{{nome}}</a>{{/each}}
+							{{#each npcs}}<a class="aa-cal-chip" {{#if abre}}data-action="abrirAluno" data-actor="{{id}}"{{/if}} {{#if detalhe}}data-tooltip="{{detalhe}}"{{/if}}>{{nome}}</a>{{/each}}
+						</div>
+						{{#if choque}}<p class="aa-cal-aviso"><i class="fa-solid fa-triangle-exclamation"></i> Choque de horário: {{choque}}</p>{{/if}}
+						{{#if @root.gm}}
+						<select data-horario="{{id}}" aria-label="Horário de {{nome}}">{{#each horarios}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>
+						{{/if}}
+					</article>
+					{{/each}}
+				</div>
+				{{/each}}
+				{{#if vazio}}<p class="aa-cal-livre">Sem aulas</p>{{/if}}
+			</section>
+			{{/each}}
+		</div>
+
+		<fieldset class="aa-cartao">
+			<legend><i class="fa-solid fa-user-group"></i> Colegas de turma dos personagens</legend>
+			{{#if colegas.length}}
+			<ul class="aa-cal-colegas">
+				{{#each colegas}}
+				<li>
+					<header>
+						<a class="aa-cal-colega-nome" {{#if abre}}data-action="abrirAluno" data-actor="{{id}}"{{/if}}>{{nome}}</a>
+						<span class="aa-contador" data-tooltip="Aulas em comum">{{total}}</span>
+					</header>
+					{{#if detalhe}}<small>{{detalhe}}</small>{{/if}}
+					<ul>
+						{{#each aulas}}<li>{{nome}} <small>com {{pcs}}</small></li>{{/each}}
+					</ul>
+				</li>
+				{{/each}}
+			</ul>
+			{{else}}
+			<p class="aa-dica">Nenhum NPC divide turma com os personagens nas aulas exibidas.</p>
+			{{/if}}
+		</fieldset>
+		{{/if}}
+	</section>
+</div>

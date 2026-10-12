@@ -15,7 +15,8 @@ export function novoAluno() {
 		situacaoCurso: "ativo",
 		semestres: [],
 		quatroElementos: { vento: false, agua: false, terra: false, fogo: false },
-		anotacoes: ""
+		anotacoes: "",
+		npc: null
 	};
 }
 
