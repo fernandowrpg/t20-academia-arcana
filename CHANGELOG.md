@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.2
+
+- Gerador de Alunos: os atributos também são sorteados (distribuições de 10 pontos da compra de atributos), e o atributo principal da classe é sempre o mais alto. O PV já considera a Constituição sorteada.
+- Compêndio: nova página *Regras dos Semestres*, gerada a partir de `docs/regras-da-academia.md`.
+
 ## 1.2.1
 
 - Gerador de Alunos: as fichas passam a ser criadas como personagem do mestre (sem jogador dono), com um item de classe no nível escolhido, em vez de ameaça. Assim nível, PV e PM aparecem como em qualquer personagem.

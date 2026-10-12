@@ -19,7 +19,7 @@
 					<select name="aa-periodo">{{#each periodos}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>
 				</label>
 			</div>
-			<p class="aa-dica">Escolha o nível; o que ficar em <em>Aleatório</em> é sorteado: nome, raça, classe, período, grêmio, histórico de disciplinas e notas. As fichas são personagens sem jogador dono, com token neutro, e vão para a pasta <strong>{{pasta}}</strong>, com as perícias das disciplinas aprovadas e em curso marcadas como treinadas.</p>
+			<p class="aa-dica">Escolha o nível; o que ficar em <em>Aleatório</em> é sorteado: nome, raça, classe, atributos (o mais alto é sempre o da classe), período, grêmio, histórico de disciplinas e notas. As fichas são personagens sem jogador dono, com token neutro, e vão para a pasta <strong>{{pasta}}</strong>, com as perícias das disciplinas aprovadas e em curso marcadas como treinadas.</p>
 			<div class="aa-botoes">
 				<button type="button" data-action="gerar"><i class="fa-solid fa-wand-sparkles"></i> Gerar</button>
 				<button type="button" data-action="calendario"><i class="fa-solid fa-calendar-week"></i> Calendário</button>
@@ -41,6 +41,7 @@
 							<button type="button" data-action="abrirVida" data-tooltip="Abrir a Vida Acadêmica"><i class="fa-solid fa-hat-wizard"></i></button>
 						</span>
 					</header>
+					<p class="aa-gerados-atributos">{{#each atributos}}<span class="{{#if foco}}foco{{/if}}" data-tooltip="{{nome}}">{{sigla}} <strong>{{valor}}</strong></span>{{/each}}</p>
 					<p class="aa-gerados-pericias">{{#each pericias}}<span class="aa-pilula">{{this}}</span>{{else}}—{{/each}}</p>
 					<p class="aa-dica"><i class="fa-solid fa-book"></i> Cursando: {{#each disciplinas}}{{this}}{{#unless @last}}, {{/unless}}{{else}}—{{/each}}</p>
 				</li>

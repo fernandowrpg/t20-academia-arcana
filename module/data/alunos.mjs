@@ -42,39 +42,51 @@ const T20 = "Tormenta20";
 const HEROIS = "Heróis de Arton";
 const DEUSES = "Deuses de Arton";
 
-/* pv: [inicial, por nível]; pm: por nível. Classes variantes herdam os valores da classe básica quando o livro manda. */
+/* foco: atributo principal da classe; pv: [inicial, por nível]; pm: por nível. Classes variantes herdam os valores da classe básica quando o livro manda. */
 export const CLASSES = {
-	arcanista: { nome: "Arcanista", pv: [8, 2], pm: 6, peso: 30, arcana: true, livro: T20 },
-	barbaro: { nome: "Bárbaro", pv: [24, 6], pm: 3, peso: 1, livro: T20 },
-	bardo: { nome: "Bardo", pv: [12, 3], pm: 4, peso: 6, arcana: true, livro: T20 },
-	bucaneiro: { nome: "Bucaneiro", pv: [16, 4], pm: 3, peso: 3, livro: T20 },
-	cacador: { nome: "Caçador", pv: [16, 4], pm: 4, peso: 3, livro: T20 },
-	cavaleiro: { nome: "Cavaleiro", pv: [20, 5], pm: 3, peso: 2, livro: T20 },
-	clerigo: { nome: "Clérigo", pv: [16, 4], pm: 5, peso: 5, livro: T20 },
-	druida: { nome: "Druida", pv: [16, 4], pm: 4, peso: 3, livro: T20 },
-	guerreiro: { nome: "Guerreiro", pv: [20, 5], pm: 3, peso: 3, livro: T20 },
-	inventor: { nome: "Inventor", pv: [12, 3], pm: 4, peso: 5, livro: T20 },
-	ladino: { nome: "Ladino", pv: [12, 3], pm: 4, peso: 3, livro: T20 },
-	lutador: { nome: "Lutador", pv: [20, 5], pm: 3, peso: 2, livro: T20 },
-	nobre: { nome: "Nobre", pv: [16, 4], pm: 4, peso: 4, livro: T20 },
-	paladino: { nome: "Paladino", pv: [20, 5], pm: 3, peso: 2, livro: T20 },
-	treinador: { nome: "Treinador", pv: [12, 3], pm: 4, peso: 2, livro: HEROIS },
-	alquimista: { nome: "Alquimista", pv: [12, 3], pm: 4, peso: 4, livro: HEROIS },
-	atleta: { nome: "Atleta", pv: [20, 5], pm: 3, peso: 1, livro: HEROIS },
-	burgues: { nome: "Burguês", pv: [12, 3], pm: 4, peso: 2, livro: HEROIS },
-	duelista: { nome: "Duelista", pv: [16, 4], pm: 3, peso: 2, livro: HEROIS },
-	ermitao: { nome: "Ermitão", pv: [12, 3], pm: 4, peso: 1, livro: HEROIS },
-	inovador: { nome: "Inovador", pv: [20, 5], pm: 3, peso: 1, livro: HEROIS },
-	"machado-de-pedra": { nome: "Machado de Pedra", pv: [24, 6], pm: 3, peso: 1, livro: HEROIS },
-	magimarcialista: { nome: "Magimarcialista", pv: [16, 4], pm: 4, peso: 4, arcana: true, livro: HEROIS },
-	necromante: { nome: "Necromante", pv: [8, 2], pm: 6, peso: 4, arcana: true, livro: HEROIS },
-	santo: { nome: "Santo", pv: [20, 5], pm: 4, peso: 1, livro: HEROIS },
-	seteiro: { nome: "Seteiro", pv: [16, 4], pm: 4, peso: 1, livro: HEROIS },
-	usurpador: { nome: "Usurpador", pv: [16, 4], pm: 5, peso: 1, livro: HEROIS },
-	vassalo: { nome: "Vassalo", pv: [20, 5], pm: 3, peso: 1, livro: HEROIS },
-	ventanista: { nome: "Ventanista", pv: [12, 3], pm: 4, peso: 2, livro: HEROIS },
-	frade: { nome: "Frade", pv: [12, 3], pm: 6, peso: 3, livro: DEUSES }
+	arcanista: { nome: "Arcanista", foco: "int", pv: [8, 2], pm: 6, peso: 30, arcana: true, livro: T20 },
+	barbaro: { nome: "Bárbaro", foco: "for", pv: [24, 6], pm: 3, peso: 1, livro: T20 },
+	bardo: { nome: "Bardo", foco: "car", pv: [12, 3], pm: 4, peso: 6, arcana: true, livro: T20 },
+	bucaneiro: { nome: "Bucaneiro", foco: "des", pv: [16, 4], pm: 3, peso: 3, livro: T20 },
+	cacador: { nome: "Caçador", foco: "des", pv: [16, 4], pm: 4, peso: 3, livro: T20 },
+	cavaleiro: { nome: "Cavaleiro", foco: "for", pv: [20, 5], pm: 3, peso: 2, livro: T20 },
+	clerigo: { nome: "Clérigo", foco: "sab", pv: [16, 4], pm: 5, peso: 5, livro: T20 },
+	druida: { nome: "Druida", foco: "sab", pv: [16, 4], pm: 4, peso: 3, livro: T20 },
+	guerreiro: { nome: "Guerreiro", foco: "for", pv: [20, 5], pm: 3, peso: 3, livro: T20 },
+	inventor: { nome: "Inventor", foco: "int", pv: [12, 3], pm: 4, peso: 5, livro: T20 },
+	ladino: { nome: "Ladino", foco: "des", pv: [12, 3], pm: 4, peso: 3, livro: T20 },
+	lutador: { nome: "Lutador", foco: "for", pv: [20, 5], pm: 3, peso: 2, livro: T20 },
+	nobre: { nome: "Nobre", foco: "car", pv: [16, 4], pm: 4, peso: 4, livro: T20 },
+	paladino: { nome: "Paladino", foco: "car", pv: [20, 5], pm: 3, peso: 2, livro: T20 },
+	treinador: { nome: "Treinador", foco: "car", pv: [12, 3], pm: 4, peso: 2, livro: HEROIS },
+	alquimista: { nome: "Alquimista", foco: "int", pv: [12, 3], pm: 4, peso: 4, livro: HEROIS },
+	atleta: { nome: "Atleta", foco: "for", pv: [20, 5], pm: 3, peso: 1, livro: HEROIS },
+	burgues: { nome: "Burguês", foco: "car", pv: [12, 3], pm: 4, peso: 2, livro: HEROIS },
+	duelista: { nome: "Duelista", foco: "des", pv: [16, 4], pm: 3, peso: 2, livro: HEROIS },
+	ermitao: { nome: "Ermitão", foco: "sab", pv: [12, 3], pm: 4, peso: 1, livro: HEROIS },
+	inovador: { nome: "Inovador", foco: "int", pv: [20, 5], pm: 3, peso: 1, livro: HEROIS },
+	"machado-de-pedra": { nome: "Machado de Pedra", foco: "for", pv: [24, 6], pm: 3, peso: 1, livro: HEROIS },
+	magimarcialista: { nome: "Magimarcialista", foco: "int", pv: [16, 4], pm: 4, peso: 4, arcana: true, livro: HEROIS },
+	necromante: { nome: "Necromante", foco: "int", pv: [8, 2], pm: 6, peso: 4, arcana: true, livro: HEROIS },
+	santo: { nome: "Santo", foco: "car", pv: [20, 5], pm: 4, peso: 1, livro: HEROIS },
+	seteiro: { nome: "Seteiro", foco: "des", pv: [16, 4], pm: 4, peso: 1, livro: HEROIS },
+	usurpador: { nome: "Usurpador", foco: "car", pv: [16, 4], pm: 5, peso: 1, livro: HEROIS },
+	vassalo: { nome: "Vassalo", foco: "for", pv: [20, 5], pm: 3, peso: 1, livro: HEROIS },
+	ventanista: { nome: "Ventanista", foco: "des", pv: [12, 3], pm: 4, peso: 2, livro: HEROIS },
+	frade: { nome: "Frade", foco: "sab", pv: [12, 3], pm: 6, peso: 3, livro: DEUSES }
 };
+
+export const ATRIBUTOS = { for: "Força", des: "Destreza", con: "Constituição", int: "Inteligência", sab: "Sabedoria", car: "Carisma" };
+
+/* Distribuições de 10 pontos (compra de atributos de Tormenta20) com um único valor mais alto. */
+export const DISTRIBUICOES = [
+	[4, 2, 1, 1, 0, -1],
+	[4, 2, 1, 0, 0, 0],
+	[4, 2, 2, 0, 0, -1],
+	[4, 1, 1, 1, 0, 0],
+	[3, 2, 2, 1, 1, 0],
+	[3, 2, 2, 2, 0, 0]
+];
 
 export const NIVEL_MAXIMO = 20;
 

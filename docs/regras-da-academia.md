@@ -147,7 +147,7 @@ O Teste do Fogo costuma ser feito no último semestre. Em Tormenta20, o mestre a
 
 ## 7. Alunos NPC
 
-- O mestre pode gerar colegas pelo **Gerador de Alunos**: escolhe o nível, e o módulo sorteia nome, raça, classe, período, grêmio e histórico. A ficha é um personagem controlado pelo mestre. (Módulo)
+- O mestre pode gerar colegas pelo **Gerador de Alunos**: escolhe o nível, e o módulo sorteia nome, raça, classe, atributos (o mais alto é sempre o da classe), período, grêmio e histórico. A ficha é um personagem controlado pelo mestre. (Módulo)
 - Os NPCs se matriculam sozinhos quando o mestre abre as matrículas em lote e tendem a escolher disciplinas que os personagens cursam. (Módulo)
 - Ao encerrar o semestre em lote, cada NPC recebe notas sorteadas: a aptidão do aluno (entre 5,5 e 8,5) mais ou menos 2,5 pontos. Nota 6 ou mais aprova; abaixo disso, reprova. (Módulo)
 - As perícias das disciplinas aprovadas ou em curso ficam treinadas na ficha do NPC. (Módulo)

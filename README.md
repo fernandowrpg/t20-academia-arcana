@@ -72,7 +72,8 @@ Os dois painéis ficam flutuando sobre a mesa. Arraste pelo título para mover (
 Na Secretaria, **Gerar alunos** cria colegas para povoar a Academia. O mestre escolhe o **nível** (e, se quiser, raça, classe e período); o que ficar em *Aleatório* é sorteado, junto com nome, grêmio, histórico de disciplinas e notas.
 
 - As fichas são do tipo **personagem**, sem jogador dono (só o mestre controla), com token **neutro**, e vão para a pasta de atores *Alunos da Academia*.
-- A ficha recebe a raça, um item de classe com o nível escolhido (é dele que o sistema Tormenta20 calcula nível, PV e PM) e um resumo na biografia. As perícias das disciplinas aprovadas e em curso ficam marcadas como treinadas.
+- A ficha recebe a raça, um item de classe com o nível escolhido (é dele que o sistema Tormenta20 calcula nível, PV e PM) e um resumo na biografia.
+- Os atributos são sorteados entre distribuições de 10 pontos da compra de atributos, sem modificador de raça. O atributo principal da classe (Inteligência para arcanistas, Força para guerreiros etc.) é sempre o mais alto. As perícias das disciplinas aprovadas e em curso ficam marcadas como treinadas.
 - Nomes: Tabela 1-24 de *Heróis de Arton*. Raças sem tabela própria usam a tabela humana (eiradaan usa a élfica; meio-elfo, a humana ou a élfica; lefou, qualquer uma).
 - Classes: as 14 de *Tormenta20*, o treinador e as 14 variantes de *Heróis de Arton* e o frade de *Deuses de Arton*. Arcanistas são os mais comuns.
 - Os NPCs tendem a se matricular nas disciplinas que os personagens cursam. Ao **abrir matrículas** em lote eles escolhem as disciplinas sozinhos, e ao **encerrar o semestre** em lote recebem notas sorteadas nas disciplinas pendentes.

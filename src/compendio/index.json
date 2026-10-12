@@ -19,6 +19,7 @@
 				{ "arquivo": "12-raschid.html", "titulo": "Raschid, o Zelador" },
 				{ "arquivo": "13-itens.html", "titulo": "Itens da Academia" },
 				{ "arquivo": "14-vida-estudantil.html", "titulo": "Vida Estudantil (a adaptar)" },
+				{ "markdown": "docs/regras-da-academia.md", "titulo": "Regras dos Semestres" },
 				{ "arquivo": "15-usando-o-modulo.html", "titulo": "Usando o Módulo" }
 			]
 		}

@@ -1338,3 +1338,15 @@
 		display: none;
 	}
 }
+
+.academia-arcana .aa-gerados-atributos {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem 0.75rem;
+	font-size: 0.85rem;
+}
+
+.academia-arcana .aa-gerados-atributos .foco {
+	color: var(--aa-roxo);
+	font-weight: bold;
+}

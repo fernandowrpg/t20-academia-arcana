@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { compilePack } from "@foundryvtt/foundryvtt-cli";
 import { DISCIPLINAS, OFICIO_LIVRE } from "../module/data/disciplinas.mjs";
 import { montarCatalogo, nomePericia, periciasDoCatalogo, preRequisitos } from "../module/logica.mjs";
+import { markdownParaHtml } from "./markdown.mjs";
 
 const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = join(RAIZ, "src");
@@ -70,11 +71,17 @@ function paginaDisciplinas() {
 	return partes.join("\n");
 }
 
+function conteudoDaPagina(p) {
+	if (p.gerado === "disciplinas") return paginaDisciplinas();
+	if (p.markdown) return semTituloInicial(markdownParaHtml(readFileSync(join(RAIZ, p.markdown), "utf8")));
+	return semTituloInicial(readFileSync(join(SRC, "compendio", p.arquivo), "utf8"));
+}
+
 function documentoJournal(journal, indiceJournal) {
 	const jid = idEstavel(`journal:${journal.nome}`);
 	const pages = journal.paginas.map((p, i) => {
 		const pid = idEstavel(`page:${journal.nome}:${p.titulo}`);
-		const conteudo = p.gerado === "disciplinas" ? paginaDisciplinas() : semTituloInicial(readFileSync(join(SRC, "compendio", p.arquivo), "utf8"));
+		const conteudo = conteudoDaPagina(p);
 		return {
 			_id: pid,
 			_key: `!journal.pages!${jid}.${pid}`,

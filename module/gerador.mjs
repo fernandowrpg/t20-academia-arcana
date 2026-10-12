@@ -1,4 +1,4 @@
-import { CLASSES, NIVEL_MAXIMO, NOMES, RACAS } from "./data/alunos.mjs";
+import { ATRIBUTOS, CLASSES, DISTRIBUICOES, NIVEL_MAXIMO, NOMES, RACAS } from "./data/alunos.mjs";
 import { GREMIOS, OFICIO_LIVRE, OFICIOS_T20 } from "./data/disciplinas.mjs";
 import { avaliarDisciplina, novoAluno, novoSemestre, pendenciasParaEncerrar, periciaEfetiva, preRequisitos } from "./logica.mjs";
 
@@ -38,10 +38,24 @@ export function descricaoNpc(npc) {
 	return `${RACAS[npc.raca]?.nome ?? npc.raca} · ${CLASSES[npc.classe]?.nome ?? npc.classe} ${npc.nivel}`;
 }
 
-export function pontosDaClasse(classe, nivel) {
+/* O atributo de foco da classe recebe o valor mais alto; os demais são embaralhados. */
+export function sortearAtributos(classe, rng = Math.random) {
+	const [maior, ...resto] = sortear(DISTRIBUICOES, rng);
+	const foco = CLASSES[classe]?.foco ?? "int";
+	const atributos = {};
+	for (const chave of Object.keys(ATRIBUTOS)) {
+		atributos[chave] = chave === foco ? maior : resto.splice(Math.floor(rng() * resto.length), 1)[0];
+	}
+	return atributos;
+}
+
+/* Cada nível rende ao menos 1 PV, como no sistema. */
+export function pontosDaClasse(classe, nivel, con = 0) {
 	const dados = CLASSES[classe];
 	if (!dados) return { pv: 0, pm: 0 };
-	return { pv: dados.pv[0] + dados.pv[1] * (nivel - 1), pm: dados.pm * nivel };
+	const primeiro = Math.max(dados.pv[0] + con, 1);
+	const demais = Math.max(dados.pv[1] + con, 1) * (nivel - 1);
+	return { pv: primeiro + demais, pm: dados.pm * nivel };
 }
 
 function focosDeEstudo(classe, pericias, rng) {
@@ -117,6 +131,7 @@ export function gerarAluno({
 	if (!(periodo >= 1 && periodo <= semestresRegulares)) periodo = 1 + Math.floor(rng() * semestresRegulares);
 
 	const nome = gerarNome(raca, usados, rng);
+	const atributos = sortearAtributos(classe, rng);
 	const pericias = [...new Set([...catalogo.values()].map((d) => d.pericia))];
 	const aluno = novoAluno();
 	aluno.gremio = sortear(Object.keys(GREMIOS), rng);
@@ -141,5 +156,5 @@ export function gerarAluno({
 			semestre.status = "cursando";
 		}
 	}
-	return { nome, raca, classe, nivel, periodo, ...pontosDaClasse(classe, nivel), aluno, pericias: periciasEstudadas(aluno) };
+	return { nome, raca, classe, nivel, periodo, atributos, ...pontosDaClasse(classe, nivel, atributos.con), aluno, pericias: periciasEstudadas(aluno) };
 }

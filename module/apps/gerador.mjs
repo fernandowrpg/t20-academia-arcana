@@ -1,4 +1,4 @@
-import { CLASSES, NIVEL_MAXIMO, RACAS } from "../data/alunos.mjs";
+import { ATRIBUTOS, CLASSES, NIVEL_MAXIMO, RACAS } from "../data/alunos.mjs";
 import { GREMIOS } from "../data/disciplinas.mjs";
 import { descricaoNpc, gerarAluno } from "../gerador.mjs";
 import { nomePericia } from "../logica.mjs";
@@ -127,6 +127,7 @@ export class GeradorAlunosApp extends HandlebarsApplicationMixin(ApplicationV2) 
 				type: "character",
 				folder: pasta?.id ?? null,
 				system: {
+					atributos: Object.fromEntries(Object.entries(g.atributos).map(([chave, valor]) => [chave, { base: valor }])),
 					attributes: { pv: { value: g.pv, max: g.pv }, pm: { value: g.pm, max: g.pm } },
 					detalhes: { raca: RACAS[g.raca].nome, biography: { value: biografia(g) } }
 				},
@@ -148,6 +149,7 @@ export class GeradorAlunosApp extends HandlebarsApplicationMixin(ApplicationV2) 
 				nome: g.nome,
 				descricao: descricaoNpc(g.aluno.npc),
 				periodo: g.periodo,
+				atributos: Object.entries(g.atributos).map(([chave, valor]) => ({ sigla: chave.toUpperCase(), valor, foco: chave === CLASSES[g.classe].foco, nome: ATRIBUTOS[chave] })),
 				gremio: GREMIOS[g.aluno.gremio] ?? null,
 				pericias: g.pericias.map((p) => nomePericia(p)).sort((a, b) => a.localeCompare(b, "pt-BR")),
 				disciplinas: g.aluno.semestres.at(-1)?.disciplinas.map((d) => d.nome) ?? []
