@@ -1638,3 +1638,43 @@
 .academia-arcana .aa-correio-topo .aa-correio-aviso {
 	flex: 0 1 220px;
 }
+
+.academia-arcana .aa-correio-texto {
+	overflow-wrap: anywhere;
+}
+
+.academia-arcana .aa-correio-texto > :first-child {
+	margin-top: 0;
+}
+
+.academia-arcana .aa-correio-texto > :last-child {
+	margin-bottom: 0;
+}
+
+.academia-arcana .aa-correio-item {
+	flex-wrap: wrap;
+}
+
+.academia-arcana .aa-correio-item.pendente {
+	padding: 0.25rem 0.4rem;
+	border: 1px dashed var(--aa-ouro);
+	border-radius: 4px;
+}
+
+.academia-arcana .aa-correio-item button {
+	flex: 0 0 auto;
+	width: auto;
+	margin-left: auto;
+	line-height: 1.6;
+}
+
+.academia-arcana .aa-correio-historico .aa-correio-texto {
+	text-decoration: line-through;
+	opacity: 0.8;
+}
+
+.academia-arcana .aa-correio-topo > a {
+	flex: 0 0 auto;
+	cursor: pointer;
+	color: var(--aa-roxo);
+}

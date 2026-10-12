@@ -34,13 +34,20 @@
 				{{#if aberta.membros}}<small data-tooltip="{{aberta.membros}}">{{aberta.membros}}</small>{{/if}}
 			</span>
 			{{#if gm}}<small class="aa-correio-aviso">Você vê o histórico de edições; os jogadores, só quando revelado.</small>{{/if}}
+			{{#if temNota}}<a data-action="abrirNota" data-tooltip="Abrir a nota desta conversa"><i class="fa-solid fa-book-open"></i></a>{{/if}}
 		</header>
 		<ol class="aa-correio-mensagens">
 			{{#each mensagens}}
 			<li class="aa-correio-mensagem {{#if minha}}minha{{/if}}" data-mensagem="{{id}}">
 				<div class="aa-correio-balao">
-					{{#if texto}}<p>{{texto}}</p>{{/if}}
-					{{#if item}}<p class="aa-correio-item"><img src="{{item.img}}" alt=""> <strong>{{item.nome}}</strong>{{#if item.qtd}} ×{{item.qtd}}{{/if}} <small>entregue{{#if item.para}} a {{item.para}}{{/if}}</small></p>{{/if}}
+					{{#if html}}<div class="aa-correio-texto">{{{html}}}</div>{{/if}}
+					{{#if item}}
+					<p class="aa-correio-item {{#unless item.recebido}}pendente{{/unless}}">
+						<img src="{{item.img}}" alt=""> <strong>{{item.nome}}</strong>{{#if item.qtd}} ×{{item.qtd}}{{/if}}
+						<small>{{#if item.recebido}}retirado{{else}}aguardando retirada{{/if}}{{#if item.para}} por {{item.para}}{{/if}}</small>
+						{{#if item.podeReceber}}<button type="button" data-action="receber"><i class="fa-solid fa-box-open"></i> Receber</button>{{/if}}
+					</p>
+					{{/if}}
 					<footer>
 						<span>{{autor}} · {{quando}}</span>
 						{{#if editada}}<span class="aa-correio-editada"><i class="fa-solid fa-pen-nib"></i> editada</span>{{/if}}
@@ -53,7 +60,7 @@
 					<details class="aa-correio-historico">
 						<summary>Histórico de edições ({{edicoes.length}})</summary>
 						<ol>
-							{{#each edicoes}}<li><small>Até {{quando}}{{#if @root.gm}} · alterada por {{por}}{{/if}}</small><p>{{texto}}</p></li>{{/each}}
+							{{#each edicoes}}<li><small>Até {{quando}} · alterada por {{por}}</small><div class="aa-correio-texto">{{{html}}}</div></li>{{/each}}
 						</ol>
 					</details>
 					{{/if}}
@@ -82,7 +89,7 @@
 				<button type="button" data-action="enviar"><i class="fa-solid fa-paper-plane"></i> Enviar</button>
 			</div>
 			{{else}}
-			<p class="aa-alerta"><i class="fa-solid fa-triangle-exclamation"></i> O correio só entrega com o mestre conectado.</p>
+			<p class="aa-alerta"><i class="fa-solid fa-triangle-exclamation"></i> O mestre não liberou o correio para os jogadores.</p>
 			{{/if}}
 		</footer>
 		{{else}}

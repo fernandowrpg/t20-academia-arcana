@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.0
+
+- Correio: cada conversa agora é uma nota (Journal), na pasta *Correio da Academia*, cujos donos são os jogadores dos alunos participantes. Cada mensagem é uma página da nota. Com isso, enviar e ler mensagens não depende mais do mestre conectado.
+- Correio: o item enviado sai da ficha do remetente e fica guardado na mensagem até o destinatário clicar em **Receber**.
+- Correio: toda alteração de texto deixa histórico, inclusive as feitas direto na nota, e só o mestre pode apagar mensagens ou conversas.
+- As conversas da v1.5.0 são convertidas em notas na primeira vez que o mestre entrar.
+
 ## 1.5.0
 
 - Correio da Academia: os alunos trocam mensagens em conversas com histórico. Cada jogador escreve pelos seus personagens; o mestre lê tudo e escreve como qualquer aluno, inclusive os NPCs gerados.

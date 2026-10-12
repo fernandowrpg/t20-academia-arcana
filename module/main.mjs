@@ -5,7 +5,7 @@ import { CatalogoApp } from "./apps/catalogo.mjs";
 import { CalendarioApp } from "./apps/calendario.mjs";
 import { GeradorAlunosApp } from "./apps/gerador.mjs";
 import { CorreioApp } from "./apps/correio.mjs";
-import { registrarSocket, totalNaoLidas } from "./correio.mjs";
+import { ehConversa, migrarRegistroAntigo, registrarGuardas, registrarSocket, sincronizarPermissoes, totalNaoLidas } from "./correio.mjs";
 import { PainelAlunosApp } from "./apps/painel-alunos.mjs";
 import { PainelAmeacasApp } from "./apps/painel-ameacas.mjs";
 import * as dados from "./data/disciplinas.mjs";
@@ -66,6 +66,8 @@ Hooks.once("ready", () => {
 		console.warn(`${MODULO} | Este módulo foi feito para o sistema Tormenta20; sistema atual: ${game.system.id}`);
 	}
 	registrarSocket();
+	registrarGuardas();
+	migrarRegistroAntigo().then(() => sincronizarPermissoes());
 	cartasPendentes = totalNaoLidas();
 	PainelAlunosApp.sincronizar();
 	PainelAmeacasApp.sincronizar();
@@ -75,11 +77,26 @@ Hooks.on("updateActor", (actor, mudancas) => {
 	atualizarPainelAlunos();
 	atualizarPainelAmeacas();
 	if ("name" in mudancas) CalendarioApp.atualizar();
+	if ("ownership" in mudancas && ehAluno(actor)) sincronizarPermissoes();
 	if (!foundry.utils.hasProperty(mudancas, `flags.${MODULO}`)) return;
 	VidaAcademicaApp.atualizar(actor);
 	SecretariaApp.atualizar();
 	CalendarioApp.atualizar();
 });
+
+/* O correio vive em notas: qualquer mudança nelas atualiza a janela, o contador e o aviso. */
+const atualizarCorreio = foundry.utils.debounce(() => {
+	CorreioApp.atualizar();
+	conferirCorreio();
+	PainelAlunosApp.sincronizar();
+}, 100);
+
+for (const gancho of ["createJournalEntry", "updateJournalEntry", "deleteJournalEntry"]) {
+	Hooks.on(gancho, (nota) => ehConversa(nota) && atualizarCorreio());
+}
+for (const gancho of ["createJournalEntryPage", "updateJournalEntryPage", "deleteJournalEntryPage"]) {
+	Hooks.on(gancho, (pagina) => ehConversa(pagina.parent) && atualizarCorreio());
+}
 
 Hooks.on("createActor", (actor) => {
 	if (!ehAluno(actor)) return;

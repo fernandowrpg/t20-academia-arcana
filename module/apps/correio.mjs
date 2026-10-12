@@ -1,16 +1,17 @@
 import { MODULO, ehAluno, opcao } from "../config.mjs";
 import {
 	alternarRevelacao,
+	conversas,
 	correioDisponivel,
 	criarGrupo,
 	editarMensagem,
 	enviar,
-	idConversa,
 	itensEnviaveis,
-	lerCorreio,
 	marcarLida,
 	naoLidas,
+	paraTexto,
 	quantidadeDoItem,
+	receberItem,
 	remetentesDoUsuario
 } from "../correio.mjs";
 
@@ -26,7 +27,7 @@ function escapar(texto) {
 
 function previa(mensagem) {
 	if (!mensagem) return "";
-	return mensagem.texto || `Enviou ${mensagem.item?.nome ?? "um item"}`;
+	return paraTexto(mensagem.html).replace(/\s+/g, " ") || `Enviou ${mensagem.item?.nome ?? "um item"}`;
 }
 
 export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -61,6 +62,8 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			abrirConversa: CorreioApp.#abrirConversa,
 			novoGrupo: CorreioApp.#novoGrupo,
 			enviar: CorreioApp.#enviar,
+			receber: CorreioApp.#receber,
+			abrirNota: CorreioApp.#abrirNota,
 			editar: CorreioApp.#editar,
 			revelar: CorreioApp.#revelar
 		}
@@ -72,7 +75,7 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	remetente = null;
 
-	/* Id de um grupo ou do ator com quem se conversa a dois. */
+	/* Id da nota de um grupo ou do ator com quem se conversa a dois. */
 	aberta = null;
 
 	rascunho = "";
@@ -84,9 +87,14 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		CorreioApp.instancia = null;
 	}
 
-	#idDaConversa(correio = lerCorreio()) {
+	/* A conversa aberta, se a nota dela já existir. */
+	#conversaAberta(todas = conversas()) {
 		if (!this.aberta) return null;
-		return correio.conversas[this.aberta]?.grupo ? this.aberta : idConversa(this.remetente, this.aberta);
+		return (
+			todas.find((c) => c.grupo && c.id === this.aberta) ??
+			todas.find((c) => !c.grupo && c.participantes.includes(this.remetente) && c.participantes.includes(this.aberta)) ??
+			null
+		);
 	}
 
 	async _prepareContext() {
@@ -96,42 +104,50 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			this.remetente = (remetentes.find((a) => a.id === game.user.character?.id) ?? remetentes[0])?.id ?? null;
 		}
 		const eu = game.actors.get(this.remetente);
-		const correio = lerCorreio();
+		const todas = conversas().filter((c) => c.participantes.includes(this.remetente));
 		const pendentes = naoLidas();
 		const nomes = (ids) => ids.map((id) => game.actors.get(id)?.name ?? "?");
 
-		const grupos = Object.values(correio.conversas)
-			.filter((c) => c.grupo && c.participantes.includes(this.remetente))
+		const grupos = todas
+			.filter((c) => c.grupo)
 			.map((c) => ({ id: c.id, grupo: true, nome: c.nome, quando: c.mensagens.at(-1)?.quando ?? 0, previa: previa(c.mensagens.at(-1)) || nomes(c.participantes).join(", "), novas: pendentes[c.id] ?? 0 }));
 		const pessoas = game.actors
 			.filter((a) => ehAluno(a) && a.id !== this.remetente)
 			.map((a) => {
-				const id = idConversa(this.remetente, a.id);
-				const ultima = correio.conversas[id]?.mensagens.at(-1) ?? null;
-				return { id: a.id, nome: a.name, img: a.img, quando: ultima?.quando ?? 0, previa: previa(ultima), novas: pendentes[id] ?? 0 };
+				const conversa = todas.find((c) => !c.grupo && c.participantes.includes(a.id));
+				const ultima = conversa?.mensagens.at(-1) ?? null;
+				return { id: a.id, nome: a.name, img: a.img, quando: ultima?.quando ?? 0, previa: previa(ultima), novas: conversa ? (pendentes[conversa.id] ?? 0) : 0 };
 			});
-		const conversas = [...grupos, ...pessoas].sort((a, b) => b.quando - a.quando || Number(!!b.grupo) - Number(!!a.grupo) || a.nome.localeCompare(b.nome, "pt-BR"));
-		if (!conversas.some((c) => c.id === this.aberta)) this.aberta = null;
-		for (const c of conversas) c.ativa = c.id === this.aberta;
+		const lista = [...grupos, ...pessoas].sort((a, b) => b.quando - a.quando || Number(!!b.grupo) - Number(!!a.grupo) || a.nome.localeCompare(b.nome, "pt-BR"));
+		if (!lista.some((c) => c.id === this.aberta)) this.aberta = null;
+		for (const c of lista) c.ativa = c.id === this.aberta;
 
-		const idAtual = this.#idDaConversa(correio);
-		const grupo = correio.conversas[this.aberta]?.grupo ? correio.conversas[this.aberta] : null;
+		const atual = this.#conversaAberta(todas);
+		const grupo = atual?.grupo ? atual : null;
 		const outro = grupo ? null : game.actors.get(this.aberta);
-		const mensagens = (correio.conversas[idAtual]?.mensagens ?? []).map((m) => {
+		const mensagens = (atual?.mensagens ?? []).map((m) => {
 			const verHistorico = (gm || m.revelada) && m.edicoes.length > 0;
+			const dono = game.actors.get(m.item?.para);
 			return {
 				id: m.id,
 				minha: m.de === this.remetente,
 				autor: game.actors.get(m.de)?.name ?? "?",
-				texto: m.texto,
+				html: m.html,
 				quando: dataHora(m.quando),
-				item: m.item ? { ...m.item, para: grupo ? m.item.para : null } : null,
+				item: m.item && {
+					nome: m.item.nome,
+					img: m.item.img,
+					qtd: m.item.qtd,
+					recebido: m.item.recebido,
+					para: dono?.name ?? null,
+					podeReceber: !m.item.recebido && !!m.item.dados && !!dono && (gm || dono.isOwner)
+				},
 				editada: verHistorico,
 				revelada: m.revelada,
-				edicoes: verHistorico ? m.edicoes.map((e) => ({ texto: e.texto, quando: dataHora(e.quando), por: e.por })) : []
+				edicoes: verHistorico ? m.edicoes.map((e) => ({ html: e.texto, quando: dataHora(e.quando), por: e.por })) : []
 			};
 		});
-		if (idAtual) marcarLida(idAtual);
+		if (atual) marcarLida(atual);
 
 		const itens = eu && (gm || eu.isOwner) ? itensEnviaveis(eu).map((i) => ({ id: i.id, qtd: quantidadeDoItem(i), rotulo: quantidadeDoItem(i) > 1 ? `${i.name} (×${quantidadeDoItem(i)})` : i.name })) : [];
 		return {
@@ -139,8 +155,9 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			remetentes: remetentes.map((a) => ({ id: a.id, nome: a.name, selecionado: a.id === this.remetente })),
 			variosRemetentes: remetentes.length > 1,
 			eu: eu ? { nome: eu.name, img: eu.img } : null,
-			conversas,
+			conversas: lista,
 			aberta: grupo ? { nome: grupo.nome, grupo: true, membros: nomes(grupo.participantes).join(", ") } : outro ? { nome: outro.name, img: outro.img } : null,
+			temNota: !!atual,
 			destinatarios: grupo ? grupo.participantes.filter((id) => id !== this.remetente).map((id) => ({ id, nome: game.actors.get(id)?.name ?? "?" })) : [],
 			mensagens,
 			itens,
@@ -220,7 +237,9 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			ui.notifications.warn(game.i18n.localize("ACADEMIA.Aviso.GrupoPequeno"));
 			return;
 		}
-		await criarGrupo({ de: this.remetente, nome: dados.nome, participantes: dados.participantes });
+		const nota = await criarGrupo({ de: this.remetente, nome: dados.nome, participantes: dados.participantes });
+		if (nota) this.aberta = nota.id;
+		this.render();
 	}
 
 	static async #enviar() {
@@ -228,35 +247,48 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		const campo = (seletor) => this.element.querySelector(seletor)?.value ?? "";
 		const texto = campo("textarea[name='aa-correio-texto']");
 		const idDoItem = campo("select[name='aa-correio-item']") || null;
-		const emGrupo = !!lerCorreio().conversas[this.aberta]?.grupo;
 		if (!texto.trim() && !idDoItem) return;
-		this.rascunho = "";
+		const atual = this.#conversaAberta();
 		const item = idDoItem ? { id: idDoItem, qtd: Number(campo("input[name='aa-correio-qtd']")) || 1, para: campo("select[name='aa-correio-para']") || null } : null;
-		await enviar({ de: this.remetente, para: emGrupo ? null : this.aberta, conversa: emGrupo ? this.aberta : null, texto, item });
+		this.rascunho = "";
+		const pagina = await enviar({ de: this.remetente, para: atual ? null : this.aberta, conversa: atual?.id ?? null, texto, item });
+		if (!pagina) this.rascunho = texto;
 		this.render();
+	}
+
+	static async #receber(event, alvo) {
+		const atual = this.#conversaAberta();
+		if (!atual) return;
+		this.irParaOFim = false;
+		await receberItem(atual.id, alvo.closest("[data-mensagem]")?.dataset.mensagem);
+	}
+
+	static #abrirNota() {
+		this.#conversaAberta()?.nota.sheet.render(true);
 	}
 
 	static async #editar(event, alvo) {
 		if (!game.user.isGM) return;
+		const atual = this.#conversaAberta();
 		const id = alvo.closest("[data-mensagem]")?.dataset.mensagem;
-		const conversa = this.#idDaConversa();
-		const atual = lerCorreio().conversas[conversa]?.mensagens.find((m) => m.id === id);
-		if (!atual) return;
+		const mensagem = atual?.mensagens.find((m) => m.id === id);
+		if (!mensagem) return;
 		const texto = await DialogV2.prompt({
 			window: { title: "Editar mensagem" },
-			content: `<p>O texto anterior fica guardado no histórico da mensagem.</p><textarea name="texto" rows="6" style="width:100%">${escapar(atual.texto)}</textarea>`,
+			content: `<p>O texto anterior fica guardado no histórico da mensagem.</p><textarea name="texto" rows="6" style="width:100%">${escapar(paraTexto(mensagem.html))}</textarea>`,
 			ok: { label: "Salvar", callback: (ev, botao) => botao.form.elements.texto.value },
 			rejectClose: false
 		});
 		if (typeof texto !== "string") return;
 		this.irParaOFim = false;
-		await editarMensagem(conversa, id, texto);
+		await editarMensagem(atual.id, id, texto);
 	}
 
 	static async #revelar(event, alvo) {
 		if (!game.user.isGM) return;
-		const id = alvo.closest("[data-mensagem]")?.dataset.mensagem;
+		const atual = this.#conversaAberta();
+		if (!atual) return;
 		this.irParaOFim = false;
-		await alternarRevelacao(this.#idDaConversa(), id);
+		await alternarRevelacao(atual.id, alvo.closest("[data-mensagem]")?.dataset.mensagem);
 	}
 }

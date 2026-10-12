@@ -60,7 +60,7 @@
 			},
 			"correioJogadores": {
 				"Nome": "Jogadores usam o correio",
-				"Dica": "Permite que os jogadores troquem mensagens e itens entre alunos pelo Correio da Academia. O mestre sempre pode ler, escrever como qualquer aluno e editar mensagens."
+				"Dica": "Permite que os jogadores troquem mensagens e itens entre alunos pelo Correio da Academia. Cada conversa é uma nota cujos donos são os jogadores dos alunos participantes. O mestre sempre pode ler, escrever como qualquer aluno e editar mensagens."
 			},
 			"catalogoMenu": {
 				"Nome": "Catálogo de disciplinas",
@@ -74,7 +74,8 @@
 			"SomenteMestreGerador": "Apenas o mestre pode gerar alunos.",
 			"CorreioRestrito": "O mestre não liberou o correio para os jogadores.",
 			"CorreioSemAluno": "Você precisa de um personagem admitido na Academia para usar o correio.",
-			"CorreioSemMestre": "O correio só entrega com o mestre conectado.",
+			"CorreioSemMestre": "Para abrir uma conversa nova, o mestre precisa estar conectado (ou liberar a você a permissão de criar notas).",
+			"CorreioSemApagar": "Só o mestre pode apagar a correspondência.",
 			"GrupoPequeno": "Um grupo precisa de você e de pelo menos mais dois alunos.",
 			"CorreioNovo": "Chegou correspondência nova no Correio da Academia.",
 			"CalendarioRestrito": "O mestre não liberou o calendário para os jogadores.",
