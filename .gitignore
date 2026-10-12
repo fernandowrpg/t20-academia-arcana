@@ -1,0 +1,8 @@
+node_modules/
+dist/
+packs/
+.build/
+extraido/
+*.log
+.DS_Store
+Thumbs.db

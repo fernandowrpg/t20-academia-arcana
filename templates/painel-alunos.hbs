@@ -1,0 +1,52 @@
+<div class="aa-painel-conteudo">
+	<header class="aa-painel-topo" data-tooltip="Arraste para mover; clique duplo para voltar à posição padrão">
+		<i class="fa-solid fa-hat-wizard"></i>
+		<strong>Alunos</strong>
+		<span class="aa-painel-acoes">
+			{{#if gm}}<a data-action="secretaria" data-tooltip="Secretaria da Academia"><i class="fa-solid fa-building-columns"></i></a>{{/if}}
+			<a data-action="recolher" data-tooltip="{{#if recolhido}}Mostrar as notas{{else}}Mostrar só vida, mana e matrícula{{/if}}"><i class="fa-solid {{#if recolhido}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i></a>
+		</span>
+	</header>
+	<ul class="aa-painel-lista">
+		{{#each alunos}}
+		<li class="aa-painel-item" data-actor="{{id}}">
+			<img class="aa-painel-retrato" src="{{img}}" alt="" data-action="abrirFicha" data-tooltip="Abrir a ficha de {{nome}}"{{#if gremio}} style="--aa-cor: {{gremio.cor}}"{{/if}}>
+			<div class="aa-painel-corpo">
+				<div class="aa-painel-linha">
+					<a class="aa-painel-nome" data-action="abrirVida" data-tooltip="Abrir a Vida Acadêmica">{{nome}}</a>
+					<a class="aa-painel-matricula {{#if matricula.aberta}}aberta{{/if}}" data-action="abrirMatricula" data-tooltip="{{matricula.dica}}"><i class="fa-solid fa-file-signature"></i> Matrícula</a>
+				</div>
+				{{#each barras}}
+				<div class="aa-barra aa-barra-{{tipo}} faixa-{{faixa}}" data-tooltip="{{dica}}">
+					<span class="aa-barra-rotulo">{{rotulo}}</span>
+					<span class="aa-barra-trilho"><span class="aa-barra-nivel" style="width: {{pct}}%"></span></span>
+					<span class="aa-barra-valor">{{texto}}</span>
+				</div>
+				{{/each}}
+				<div class="aa-painel-detalhe">
+					{{#if notas}}
+					<a class="aa-painel-notas" data-action="alternarNotas" data-tooltip="Mostrar ou ocultar as disciplinas">
+						<span><i class="fa-solid fa-scroll"></i> {{notas.numero}}º sem. · {{notas.status}}</span>
+						{{#if @root.usarNotas}}<span class="aa-painel-media">média <strong>{{notas.media}}</strong></span>{{/if}}
+					</a>
+					<div class="aa-painel-contagem">
+						<span class="situacao-aprovado" data-tooltip="Aprovações"><i class="fa-solid fa-circle-check"></i> {{notas.aprovadas}}</span>
+						<span class="situacao-reprovado" data-tooltip="Reprovações"><i class="fa-solid fa-circle-xmark"></i> {{notas.reprovadas}}</span>
+						<span class="situacao-cursando" data-tooltip="Cursando ou em recuperação"><i class="fa-solid fa-hourglass-half"></i> {{notas.pendentes}}</span>
+					</div>
+					{{#if notas.abertas}}
+					<ul class="aa-painel-disciplinas">
+						{{#each notas.disciplinas}}
+						<li class="situacao-{{situacao}}" data-tooltip="{{situacaoTexto}}"><span>{{nome}}</span><strong>{{valor}}</strong></li>
+						{{/each}}
+					</ul>
+					{{/if}}
+					{{else}}
+					<p class="aa-painel-vazio">Nenhuma nota lançada ainda.</p>
+					{{/if}}
+				</div>
+			</div>
+		</li>
+		{{/each}}
+	</ul>
+</div>

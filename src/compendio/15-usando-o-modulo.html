@@ -1,0 +1,32 @@
+<h1>Usando o Módulo</h1>
+<h2>Abrindo a Vida Acadêmica</h2>
+<ul>
+<li><strong>Na ficha do personagem:</strong> botão <em>Academia</em> no cabeçalho (o mestre vê em todos os personagens; jogadores, só em alunos matriculados).</li>
+<li><strong>No diretório de Atores:</strong> o mestre tem o botão <em>Secretaria da Academia</em>; o jogador cujo personagem é aluno tem o botão <em>Vida Acadêmica</em>.</li>
+<li><strong>Macros:</strong> o compêndio <em>Academia Arcana: Macros</em> traz atalhos prontos.</li>
+</ul>
+<h2>Painéis</h2>
+<ul>
+<li><strong>Alunos:</strong> painel flutuante, sempre visível, com PV, PM, o resumo das notas do semestre mais recente e o botão <em>Matrícula</em> de cada aluno. O mestre vê todos os alunos; o jogador, os personagens que pode observar.</li>
+<li><strong>Ameaças:</strong> painel separado que aparece durante o combate, com PV, PM, ND, Defesa, iniciativa e condições de cada ameaça. Por padrão só o mestre vê; nas configurações ele pode liberar o estado aproximado ou os valores para os jogadores.</li>
+<li>Arraste pelo título para mover, use a seta para a versão compacta e desligue cada painel em <em>Configurações → Academia Arcana</em>.</li>
+</ul>
+<h2>Fluxo de um semestre</h2>
+<ol>
+<li><strong>Admissão:</strong> o mestre admite o personagem (na ficha dele ou na Secretaria) e define o Grêmio.</li>
+<li><strong>Abrir matrícula:</strong> o mestre abre a matrícula do próximo semestre (individualmente ou para todos, pela Secretaria).</li>
+<li><strong>Matrícula:</strong> o jogador escolhe as disciplinas na aba <em>Matrícula</em>, agrupadas por perícia de Tormenta20. Nas disciplinas de <em>Ofício (à escolha)</em>, o aluno escolhe qual ofício usar (os oficiais ou um ofício personalizado da ficha). O módulo bloqueia disciplinas sem pré-requisito, já aprovadas ou especiais não ofertadas.</li>
+<li><strong>Iniciar semestre:</strong> o mestre fecha a matrícula; as disciplinas passam a "Cursando".</li>
+<li><strong>Boletim:</strong> durante e ao fim do semestre, o mestre lança notas e situação (Aprovado, Recuperação, Reprovado, Trancado). O dado ao lado de cada disciplina rola a perícia de Tormenta20 dela (ou o ofício escolhido).</li>
+<li><strong>Encerrar semestre:</strong> exige que todas as disciplinas tenham situação final.</li>
+</ol>
+<h2>Catálogo de disciplinas</h2>
+<p>Em <em>Configurações → Academia Arcana → Editar catálogo</em> (ou pela Secretaria), o mestre pode:</p>
+<ul>
+<li>trocar a perícia de Tormenta20 de qualquer disciplina;</li>
+<li>ocultar disciplinas;</li>
+<li>ofertar disciplinas especiais (como <em>Estudo dos Lefeu</em>);</li>
+<li>criar disciplinas da mesa. O livro traz uma lista parcial; por exemplo, não existe <em>Prática Aventuresca III</em>, mas você pode criá-la, e ela entra automaticamente como pré-requisito da IV.</li>
+</ul>
+<h2>API</h2>
+<p>Para macros e outros módulos: <code>game.modules.get("t20-academia-arcana").api</code>, com <code>abrir(ator)</code>, <code>secretaria()</code>, <code>catalogo()</code>, <code>lerAluno(ator)</code> e <code>contextoCatalogo()</code>. Os dados do aluno ficam em <code>flags["t20-academia-arcana"].aluno</code> no ator.</p>

@@ -1,0 +1,156 @@
+import { configPadrao, montarCatalogo, novoAluno, periciasDoCatalogo } from "./logica.mjs";
+
+export const MODULO = "t20-academia-arcana";
+export const FLAG = "aluno";
+
+const ouvintes = new Set();
+
+export function aoMudarConfiguracao(fn) {
+	ouvintes.add(fn);
+}
+
+function notificar() {
+	for (const fn of ouvintes) fn();
+}
+
+export function registrarConfiguracoes(CatalogoApp) {
+	const numero = (chave, padrao, min, max) =>
+		game.settings.register(MODULO, chave, {
+			name: `ACADEMIA.Config.${chave}.Nome`,
+			hint: `ACADEMIA.Config.${chave}.Dica`,
+			scope: "world",
+			config: true,
+			type: new foundry.data.fields.NumberField({ min, max, step: 1, integer: true, nullable: false, initial: padrao }),
+			default: padrao,
+			onChange: notificar
+		});
+
+	numero("minDisciplinas", 3, 0, 20);
+	numero("maxDisciplinas", 6, 0, 30);
+	numero("semestresRegulares", 8, 1, 20);
+	numero("maxSemestres", 10, 1, 30);
+
+	game.settings.register(MODULO, "jogadoresMatriculam", {
+		name: "ACADEMIA.Config.jogadoresMatriculam.Nome",
+		hint: "ACADEMIA.Config.jogadoresMatriculam.Dica",
+		scope: "world",
+		config: true,
+		type: Boolean,
+		default: true,
+		onChange: notificar
+	});
+
+	game.settings.register(MODULO, "usarNotas", {
+		name: "ACADEMIA.Config.usarNotas.Nome",
+		hint: "ACADEMIA.Config.usarNotas.Dica",
+		scope: "world",
+		config: true,
+		type: Boolean,
+		default: true,
+		onChange: notificar
+	});
+
+	const painel = (chave) =>
+		game.settings.register(MODULO, chave, {
+			name: `ACADEMIA.Config.${chave}.Nome`,
+			hint: `ACADEMIA.Config.${chave}.Dica`,
+			scope: "client",
+			config: true,
+			type: Boolean,
+			default: true,
+			onChange: notificar
+		});
+
+	painel("painelAlunos");
+	painel("painelAmeacas");
+
+	game.settings.register(MODULO, "ameacasJogadores", {
+		name: "ACADEMIA.Config.ameacasJogadores.Nome",
+		hint: "ACADEMIA.Config.ameacasJogadores.Dica",
+		scope: "world",
+		config: true,
+		type: String,
+		choices: {
+			nenhum: "ACADEMIA.Config.ameacasJogadores.Nenhum",
+			estado: "ACADEMIA.Config.ameacasJogadores.Estado",
+			valores: "ACADEMIA.Config.ameacasJogadores.Valores"
+		},
+		default: "nenhum",
+		onChange: notificar
+	});
+
+	game.settings.register(MODULO, "paineis", {
+		scope: "client",
+		config: false,
+		type: Object,
+		default: {}
+	});
+
+	game.settings.register(MODULO, "catalogo", {
+		scope: "world",
+		config: false,
+		type: Object,
+		default: configPadrao(),
+		onChange: notificar
+	});
+
+	game.settings.registerMenu(MODULO, "catalogoMenu", {
+		name: "ACADEMIA.Config.catalogoMenu.Nome",
+		label: "ACADEMIA.Config.catalogoMenu.Rotulo",
+		hint: "ACADEMIA.Config.catalogoMenu.Dica",
+		icon: "fa-solid fa-book-open",
+		type: CatalogoApp,
+		restricted: true
+	});
+}
+
+export function opcao(chave) {
+	return game.settings.get(MODULO, chave);
+}
+
+export function estadoPainel(chave) {
+	return opcao("paineis")?.[chave] ?? {};
+}
+
+export async function salvarEstadoPainel(chave, dados) {
+	const todos = foundry.utils.deepClone(opcao("paineis") ?? {});
+	todos[chave] = { ...todos[chave], ...dados };
+	return game.settings.set(MODULO, "paineis", todos);
+}
+
+export function lerConfigCatalogo() {
+	return foundry.utils.mergeObject(configPadrao(), foundry.utils.deepClone(opcao("catalogo") ?? {}), { inplace: false });
+}
+
+export function contextoCatalogo() {
+	const config = lerConfigCatalogo();
+	const catalogo = montarCatalogo(config);
+	return {
+		config,
+		catalogo,
+		pericias: periciasDoCatalogo(catalogo),
+		ofertas: new Set(config.ofertas)
+	};
+}
+
+export function lerAluno(actor) {
+	const dados = actor?.getFlag(MODULO, FLAG);
+	if (!dados) return null;
+	return foundry.utils.mergeObject(novoAluno(), foundry.utils.deepClone(dados), { inplace: false });
+}
+
+export function ehAluno(actor) {
+	return !!actor?.getFlag(MODULO, FLAG);
+}
+
+export async function salvarAluno(actor, aluno) {
+	return actor.update({ [`flags.${MODULO}.${FLAG}`]: aluno });
+}
+
+export async function removerAluno(actor) {
+	return actor.unsetFlag(MODULO, FLAG);
+}
+
+export function podeMatricular(actor) {
+	return game.user.isGM || (actor.isOwner && opcao("jogadoresMatriculam"));
+}

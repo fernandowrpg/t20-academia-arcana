@@ -1,0 +1,42 @@
+<div class="aa-painel-conteudo">
+	<header class="aa-painel-topo" data-tooltip="Arraste para mover; clique duplo para voltar à posição padrão">
+		<i class="fa-solid fa-skull"></i>
+		<strong>Ameaças</strong>
+		<span class="aa-painel-rodada">Rodada {{rodada}}</span>
+		<span class="aa-painel-acoes">
+			<a data-action="recolher" data-tooltip="{{#if recolhido}}Mostrar ND, Defesa e condições{{else}}Mostrar só vida e mana{{/if}}"><i class="fa-solid {{#if recolhido}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i></a>
+		</span>
+	</header>
+	<ul class="aa-painel-lista">
+		{{#each ameacas}}
+		<li class="aa-painel-item {{#if daVez}}da-vez{{/if}} {{#if caida}}caida{{/if}}" data-combatente="{{id}}">
+			<img class="aa-painel-retrato" src="{{img}}" alt="" data-action="abrirFicha" data-tooltip="Abrir a ficha">
+			<div class="aa-painel-corpo">
+				<div class="aa-painel-linha">
+					<a class="aa-painel-nome" data-action="focar" data-tooltip="Centralizar no token">{{#if daVez}}<i class="fa-solid fa-play"></i> {{/if}}{{nome}}</a>
+					{{#if oculta}}<i class="fa-solid fa-eye-slash" data-tooltip="Oculta para os jogadores"></i>{{/if}}
+					{{#if derrotada}}<i class="fa-solid fa-skull" data-tooltip="Derrotada"></i>{{/if}}
+				</div>
+				{{#each barras}}
+				<div class="aa-barra aa-barra-{{tipo}} faixa-{{faixa}}" data-tooltip="{{dica}}">
+					<span class="aa-barra-rotulo">{{rotulo}}</span>
+					<span class="aa-barra-trilho"><span class="aa-barra-nivel" style="width: {{pct}}%"></span></span>
+					<span class="aa-barra-valor">{{texto}}</span>
+				</div>
+				{{/each}}
+				<div class="aa-painel-detalhe aa-painel-dados">
+					<span data-tooltip="Iniciativa"><i class="fa-solid fa-bolt"></i> {{iniciativa}}</span>
+					{{#if nd}}<span data-tooltip="Nível de desafio">ND {{nd}}</span>{{/if}}
+					{{#if defesa}}<span data-tooltip="Defesa"><i class="fa-solid fa-shield-halved"></i> {{defesa}}</span>{{/if}}
+					{{#each condicoes}}<img class="aa-painel-condicao" src="{{img}}" alt="{{nome}}" data-tooltip="{{nome}}">{{/each}}
+					{{#if maisCondicoes}}<span data-tooltip="Outras condições">+{{maisCondicoes}}</span>{{/if}}
+				</div>
+			</div>
+		</li>
+		{{/each}}
+	</ul>
+	<footer class="aa-painel-rodape">
+		<span><i class="fa-solid fa-person"></i> {{dePe}} de {{total}} de pé</span>
+		{{#if completo}}<span data-tooltip="Soma dos PV das ameaças">PV {{pvAtual}}/{{pvMaximo}} ({{pvPct}}%)</span>{{/if}}
+	</footer>
+</div>

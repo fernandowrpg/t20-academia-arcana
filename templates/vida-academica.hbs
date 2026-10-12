@@ -1,0 +1,274 @@
+<div class="aa-janela">
+	<header class="aa-cabecalho">
+		<img class="aa-retrato" src="{{actor.img}}" alt="{{actor.name}}">
+		<div class="aa-identidade">
+			<h1>{{actor.name}}</h1>
+			<p class="aa-subtitulo">Grande Academia Arcana</p>
+			{{#if aluno}}
+			<div class="aa-etiquetas">
+				{{#if ficha.gremioInfo}}
+				<span class="aa-etiqueta" style="--aa-cor: {{ficha.gremioInfo.cor}}"><i class="{{ficha.gremioInfo.icone}}"></i> {{ficha.gremioInfo.nome}}</span>
+				{{/if}}
+				{{#if ficha.semestreAtual}}
+				<span class="aa-etiqueta"><i class="fa-solid fa-calendar"></i> {{ficha.semestreAtual.numero}}º semestre · {{ficha.semestreAtual.status}}</span>
+				{{/if}}
+				<span class="aa-etiqueta"><i class="fa-solid fa-user-graduate"></i> {{ficha.situacaoCurso}}</span>
+			</div>
+			{{/if}}
+		</div>
+		<button type="button" class="aa-botao-icone" data-action="abrirCompendio" data-tooltip="Abrir o compêndio da Academia"><i class="fa-solid fa-book"></i></button>
+	</header>
+
+	{{#unless aluno}}
+	<section class="aa-vazio">
+		<i class="fa-solid fa-hat-wizard"></i>
+		<p>Este personagem ainda não está matriculado na Academia Arcana.</p>
+		{{#if gm}}
+		<button type="button" data-action="admitir"><i class="fa-solid fa-door-open"></i> Admitir na Academia</button>
+		{{else}}
+		<p class="aa-dica">Peça ao mestre para registrar sua admissão.</p>
+		{{/if}}
+	</section>
+	{{else}}
+
+	<nav class="aa-abas">
+		{{#each abas}}
+		<a class="aa-aba {{#if ativa}}ativa{{/if}}" data-action="trocarAba" data-aba="{{id}}"><i class="{{icone}}"></i> {{rotulo}}</a>
+		{{/each}}
+	</nav>
+
+	<section class="aa-conteudo">
+		{{#if (eq aba "resumo")}}
+		<div class="aa-grade-ficha">
+			<fieldset class="aa-cartao">
+				<legend>Registro</legend>
+				<label class="aa-campo">
+					<span>Grêmio</span>
+					<select data-campo="gremio" {{#unless gm}}disabled{{/unless}}>
+						{{#each ficha.gremios}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}
+					</select>
+				</label>
+				<label class="aa-campo">
+					<span>Ingresso</span>
+					<input type="text" data-campo="ingresso" value="{{ficha.ingresso}}" placeholder="ex.: 1410, Dia do Reencontro" {{#unless gm}}disabled{{/unless}}>
+				</label>
+				<label class="aa-campo">
+					<span>Situação do curso</span>
+					<select data-campo="situacaoCurso" {{#unless gm}}disabled{{/unless}}>
+						{{#each ficha.situacoesCurso}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}
+					</select>
+				</label>
+				<label class="aa-campo aa-campo-linha">
+					<input type="checkbox" data-campo="bolsista" {{checked ficha.bolsista}} {{#unless gm}}disabled{{/unless}}>
+					<span>Bolsista</span>
+				</label>
+			</fieldset>
+
+			<fieldset class="aa-cartao">
+				<legend>Desempenho</legend>
+				<div class="aa-numeros">
+					<div><strong>{{ficha.est.semestresCursados}}</strong><span>semestres cursados</span></div>
+					<div><strong>{{ficha.est.aprovadas}}</strong><span>aprovações</span></div>
+					<div><strong>{{ficha.est.reprovadas}}</strong><span>reprovações</span></div>
+					{{#if usarNotas}}<div><strong>{{ficha.est.coeficiente}}</strong><span>coeficiente</span></div>{{/if}}
+				</div>
+				<div class="aa-progresso" data-tooltip="{{ficha.est.semestresCursados}} de {{ficha.regulares}} semestres regulares (limite: {{ficha.maxSemestres}})">
+					<div class="aa-progresso-barra" style="width: {{ficha.progresso}}%"></div>
+				</div>
+				<p class="aa-dica">Curso regular de {{ficha.regulares}} semestres; limite de {{ficha.maxSemestres}} para concluir.</p>
+			</fieldset>
+
+			<fieldset class="aa-cartao">
+				<legend>Teste de Proficiência dos Quatro Elementos</legend>
+				<ul class="aa-elementos">
+					{{#each ficha.elementos}}
+					<li class="{{#if concluido}}concluido{{/if}}">
+						{{#if @root.gm}}
+						<a data-action="alternarElemento" data-elemento="{{id}}" data-tooltip="Marcar/desmarcar"><i class="{{icone}}"></i></a>
+						{{else}}
+						<i class="{{icone}}"></i>
+						{{/if}}
+						<div><strong>{{nome}}</strong> <small>ND {{nd}}</small><br><small>Prêmio: {{premio}}</small></div>
+					</li>
+					{{/each}}
+				</ul>
+			</fieldset>
+
+			<fieldset class="aa-cartao">
+				<legend>Aprovações por perícia</legend>
+				{{#if ficha.porPericia.length}}
+				<ul class="aa-lista-simples">
+					{{#each ficha.porPericia}}<li><span>{{nome}}</span><span class="aa-contador">{{quantidade}}</span></li>{{/each}}
+				</ul>
+				{{else}}
+				<p class="aa-dica">Nenhuma disciplina concluída ainda.</p>
+				{{/if}}
+			</fieldset>
+		</div>
+
+		<fieldset class="aa-cartao">
+			<legend>Anotações</legend>
+			<textarea data-campo="anotacoes" rows="4" {{#unless dono}}disabled{{/unless}} placeholder="Contatos, rivalidades, segredos descobertos no campus...">{{ficha.anotacoes}}</textarea>
+		</fieldset>
+
+		{{#if gm}}
+		<fieldset class="aa-cartao aa-secretaria">
+			<legend><i class="fa-solid fa-stamp"></i> Secretaria (mestre)</legend>
+			<div class="aa-botoes">
+				{{#if ficha.podeAbrirMatricula}}<button type="button" data-action="abrirMatricula"><i class="fa-solid fa-file-circle-plus"></i> Abrir matrícula do {{ficha.proximoNumero}}º semestre</button>{{/if}}
+				{{#if ficha.limiteAtingido}}<span class="aa-alerta">Limite de semestres atingido.</span>{{/if}}
+				{{#if ficha.podeIniciar}}<button type="button" data-action="iniciarSemestre"><i class="fa-solid fa-play"></i> Iniciar semestre</button>{{/if}}
+				{{#if ficha.podeEncerrar}}<button type="button" data-action="encerrarSemestre"><i class="fa-solid fa-flag-checkered"></i> Encerrar semestre</button>{{/if}}
+				{{#if ficha.podeReabrir}}<button type="button" data-action="reabrirSemestre"><i class="fa-solid fa-rotate-left"></i> Reabrir último semestre</button>{{/if}}
+				{{#if ficha.semestreAtual}}<button type="button" class="aa-perigo" data-action="excluirSemestre"><i class="fa-solid fa-trash"></i> Excluir último semestre</button>{{/if}}
+				<button type="button" class="aa-perigo" data-action="desligar"><i class="fa-solid fa-user-xmark"></i> Remover registro acadêmico</button>
+			</div>
+		</fieldset>
+		{{/if}}
+		{{/if}}
+
+		{{#if (eq aba "matricula")}}
+		<div class="aa-matricula-topo">
+			{{#if matricula.aberta}}
+			<div class="aa-faixa aa-faixa-aberta">
+				<i class="fa-solid fa-file-signature"></i>
+				<div>
+					<strong>Matrícula aberta: {{matricula.numero}}º semestre</strong>
+					<span>{{matricula.quantidade}} disciplina(s) selecionada(s) · mínimo {{matricula.min}}{{#if matricula.max}} · máximo {{matricula.max}}{{/if}}</span>
+					{{#if matricula.predominantes.length}}<span>Perícia predominante: {{#each matricula.predominantes}}{{this}}{{#unless @last}}; {{/unless}}{{/each}}</span>{{/if}}
+				</div>
+			</div>
+			{{#if matricula.semOficio}}<p class="aa-alerta">Escolha o ofício das disciplinas marcadas como "Ofício (à escolha)".</p>{{/if}}
+			{{#if matricula.abaixoMin}}<p class="aa-alerta">Selecione pelo menos {{matricula.min}} disciplinas.</p>{{/if}}
+			{{#unless matricula.pode}}<p class="aa-dica">Somente o mestre pode alterar esta matrícula.</p>{{/unless}}
+			{{#if matricula.selecionadas.length}}
+			<ul class="aa-selecionadas">
+				{{#each matricula.selecionadas}}
+				<li data-disciplina="{{id}}">
+					<span><strong>{{nome}}</strong><small>{{pericia}}{{#if professor}} · {{professor}}{{/if}}</small></span>
+					{{#if escolheOficio}}{{#if @root.matricula.pode}}<select data-oficio="{{id}}" data-tooltip="Ofício usado nesta disciplina">{{#each oficios}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>{{/if}}{{/if}}
+					{{#if @root.matricula.pode}}<a data-action="desmatricular" data-tooltip="Remover"><i class="fa-solid fa-xmark"></i></a>{{/if}}
+				</li>
+				{{/each}}
+			</ul>
+			{{/if}}
+			{{else}}
+			<div class="aa-faixa">
+				<i class="fa-solid fa-lock"></i>
+				<div>
+					<strong>Matrícula fechada</strong>
+					<span>A grade abaixo mostra o que estaria disponível para o {{matricula.numero}}º semestre.{{#if gm}} Abra a matrícula na Ficha do Aluno.{{/if}}</span>
+				</div>
+			</div>
+			{{/if}}
+			<div class="aa-filtros">
+				<input type="search" name="aa-filtro" value="{{matricula.filtro}}" placeholder="Buscar disciplina ou professor...">
+				<label><input type="checkbox" name="aa-so-disponiveis" {{checked matricula.soDisponiveis}}> Somente disponíveis</label>
+			</div>
+		</div>
+
+		<div class="aa-grupos">
+			{{#each matricula.grupos}}
+			{{#if visivel}}
+			<details class="aa-grupo" data-grupo="{{id}}" {{#if aberto}}open{{/if}}>
+				<summary>
+					<span class="aa-grupo-nome">{{nome}}</span>
+					{{#if livre}}<span class="aa-grupo-pericia">o aluno escolhe o ofício na matrícula</span>{{/if}}
+					<span class="aa-grupo-contagem">
+						{{#if matriculadas}}<span class="aa-pilula matriculada">{{matriculadas}} matr.</span>{{/if}}
+						{{#if aprovadas}}<span class="aa-pilula aprovada">{{aprovadas}} aprov.</span>{{/if}}
+						<span class="aa-pilula">{{disponiveis}}/{{total}} disp.</span>
+					</span>
+				</summary>
+				<ul class="aa-disciplinas">
+					{{#each disciplinas}}
+					{{#if visivel}}
+					<li class="aa-disciplina estado-{{estado}}" data-disciplina="{{id}}">
+						<div class="aa-disciplina-info">
+							<strong>{{nome}}</strong>
+							{{#if especial}}<span class="aa-pilula especial">especial</span>{{/if}}
+							{{#if personalizada}}<span class="aa-pilula">da mesa</span>{{/if}}
+							<small>{{#if professor}}{{professor}}{{else}}Professor a definir{{/if}}{{#if requisitos}} · Pré-requisitos: {{requisitos}}{{/if}}</small>
+						</div>
+						<span class="aa-estado" data-tooltip="{{motivo}}">
+							{{#if (eq estado "aprovada")}}<i class="fa-solid fa-circle-check"></i> Aprovada{{/if}}
+							{{#if (eq estado "matriculada")}}<i class="fa-solid fa-bookmark"></i> Matriculada{{/if}}
+							{{#if (eq estado "disponivel")}}<i class="fa-regular fa-circle"></i> Disponível{{/if}}
+							{{#if (eq estado "bloqueada")}}<i class="fa-solid fa-lock"></i> Bloqueada{{/if}}
+						</span>
+						<span class="aa-acao">
+							{{#if podeAdicionar}}<button type="button" data-action="matricular" {{#if @root.matricula.cheia}}disabled{{/if}}><i class="fa-solid fa-plus"></i></button>{{/if}}
+							{{#if podeRemover}}<button type="button" data-action="desmatricular"><i class="fa-solid fa-minus"></i></button>{{/if}}
+						</span>
+					</li>
+					{{/if}}
+					{{/each}}
+				</ul>
+			</details>
+			{{/if}}
+			{{/each}}
+		</div>
+		{{/if}}
+
+		{{#if (eq aba "boletim")}}
+		{{#unless boletim.length}}
+		<p class="aa-vazio-texto">Nenhum semestre registrado ainda.</p>
+		{{/unless}}
+		{{#each boletim}}
+		<article class="aa-boletim status-{{chave}}">
+			<header>
+				<h2>{{numero}}º semestre</h2>
+				{{#if @root.gm}}
+				<input type="text" class="aa-ano" data-campo="semestres.{{indice}}.ano" value="{{ano}}" placeholder="ano/período">
+				{{else}}{{#if ano}}<span class="aa-ano">{{ano}}</span>{{/if}}{{/if}}
+				<span class="aa-pilula">{{status}}</span>
+				{{#if predominantes}}<span class="aa-predominante" data-tooltip="Perícia(s) da maioria das disciplinas">{{predominantes}}</span>{{/if}}
+				{{#if @root.usarNotas}}<span class="aa-media">Média: <strong>{{media}}</strong></span>{{/if}}
+			</header>
+			{{#if disciplinas.length}}
+			<table>
+				<thead>
+					<tr>
+						<th>Disciplina</th>
+						<th>Perícia</th>
+						<th>Professor</th>
+						{{#if @root.usarNotas}}<th class="aa-col-nota">Nota</th>{{/if}}
+						<th class="aa-col-situacao">Situação</th>
+						<th class="aa-col-acao"></th>
+					</tr>
+				</thead>
+				<tbody>
+					{{#each disciplinas}}
+					<tr class="situacao-{{situacao}}" data-semestre="{{../indice}}" data-indice="{{indice}}">
+						<td>{{nome}}</td>
+						<td>{{#if escolheOficio}}{{#if ../editavel}}<select data-campo="semestres.{{../indice}}.disciplinas.{{indice}}.oficio">{{#each oficios}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>{{else}}{{pericia}}{{/if}}{{else}}{{pericia}}{{/if}}</td>
+						<td>{{professor}}</td>
+						{{#if @root.usarNotas}}
+						<td class="aa-col-nota">
+							{{#if ../editavel}}<input type="number" step="0.1" min="0" data-tipo="numero" data-campo="semestres.{{../indice}}.disciplinas.{{indice}}.nota" value="{{nota}}">{{else}}{{notaTexto}}{{/if}}
+						</td>
+						{{/if}}
+						<td class="aa-col-situacao">
+							{{#if ../editavel}}
+							<select data-campo="semestres.{{../indice}}.disciplinas.{{indice}}.situacao">
+								{{#each situacoes}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}
+							</select>
+							{{else}}<span class="aa-situacao">{{situacaoTexto}}</span>{{/if}}
+						</td>
+						<td class="aa-col-acao">{{#if podeRolar}}<a data-action="rolar" data-tooltip="Rolar {{pericia}}"><i class="fa-solid fa-dice-d20"></i></a>{{/if}}</td>
+					</tr>
+					{{/each}}
+				</tbody>
+			</table>
+			{{else}}
+			<p class="aa-dica">Nenhuma disciplina neste semestre.</p>
+			{{/if}}
+			{{#if @root.gm}}
+			<textarea class="aa-obs" data-campo="semestres.{{indice}}.observacoes" rows="2" placeholder="Observações do semestre (aventuras, eventos, advertências...)">{{observacoes}}</textarea>
+			{{else}}{{#if observacoes}}<p class="aa-obs-texto">{{observacoes}}</p>{{/if}}{{/if}}
+		</article>
+		{{/each}}
+		{{/if}}
+	</section>
+	{{/unless}}
+</div>

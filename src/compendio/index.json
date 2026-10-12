@@ -1,0 +1,26 @@
+{
+	"journals": [
+		{
+			"nome": "Academia Arcana",
+			"pasta": null,
+			"paginas": [
+				{ "arquivo": "00-sobre.html", "titulo": "Sobre este compêndio" },
+				{ "arquivo": "01-visao-geral.html", "titulo": "A Grande Academia Arcana" },
+				{ "arquivo": "02-acesso.html", "titulo": "Formas de Acesso" },
+				{ "arquivo": "03-periodo-letivo.html", "titulo": "Período Letivo" },
+				{ "arquivo": "04-admissao.html", "titulo": "Testes de Admissão" },
+				{ "arquivo": "05-alunos-e-classes.html", "titulo": "Quem Pode Ser Aluno" },
+				{ "arquivo": "06-campus.html", "titulo": "O Campus" },
+				{ "arquivo": "07-gremios.html", "titulo": "Tendências e Grêmios" },
+				{ "gerado": "disciplinas", "titulo": "Disciplinas" },
+				{ "arquivo": "09-quatro-elementos.html", "titulo": "Teste dos Quatro Elementos" },
+				{ "arquivo": "10-seniores.html", "titulo": "Professores Seniores" },
+				{ "arquivo": "11-outros-professores.html", "titulo": "Outros Professores" },
+				{ "arquivo": "12-raschid.html", "titulo": "Raschid, o Zelador" },
+				{ "arquivo": "13-itens.html", "titulo": "Itens da Academia" },
+				{ "arquivo": "14-vida-estudantil.html", "titulo": "Vida Estudantil (a adaptar)" },
+				{ "arquivo": "15-usando-o-modulo.html", "titulo": "Usando o Módulo" }
+			]
+		}
+	]
+}

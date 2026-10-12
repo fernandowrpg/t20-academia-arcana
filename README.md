@@ -12,6 +12,8 @@ Módulo para **Foundry VTT v13** e o sistema **Tormenta20** que acompanha a vida
 - **Ficha do Aluno**: grêmio, ingresso, bolsa, situação do curso, desempenho (semestres, aprovações, reprovações, coeficiente), Teste dos Quatro Elementos e anotações.
 - **Matrícula**: 158 disciplinas do *Manual do Arcano* agrupadas por perícia de Tormenta20. Nas disciplinas de *Ofício (à escolha)* o aluno escolhe qual ofício usar: os oficiais (Armeiro, Artesão, Alquimista, Cozinheiro, Alfaiate), Engenhoqueiro ou um ofício personalizado da ficha. Bloqueia disciplinas sem pré-requisito, já aprovadas ou especiais não ofertadas; respeita mínimo e máximo por semestre; mostra a perícia predominante do semestre. Tem busca e filtro "somente disponíveis".
 - **Boletim**: um quadro por semestre com nota, situação (Cursando, Aprovado, Recuperação, Reprovado, Trancado), média, observações e um botão que rola a perícia de T20 do personagem (ou o ofício escolhido).
+- **Painel de alunos**: widget flutuante, sempre visível, com vida (PV), mana (PM), resumo das notas do semestre mais recente e atalho para a matrícula de cada aluno.
+- **Painel de ameaças**: widget separado que aparece durante o combate com PV, PM, ND, Defesa, iniciativa e condições de cada ameaça.
 - **Secretaria** (mestre): admissão de personagens e ações em lote (abrir matrículas, iniciar e encerrar semestre).
 - **Catálogo editável** (mestre): trocar a perícia de T20 de qualquer disciplina, ocultar disciplinas, ofertar disciplinas especiais e criar disciplinas da mesa. Disciplinas com numeral romano encadeiam pré-requisitos automaticamente.
 - **Compêndio** *Academia Arcana: Compêndio* com 16 páginas: visão geral, acesso, período letivo, admissão, classes, campus, grêmios, disciplinas, Teste dos Quatro Elementos, corpo docente, Raschid, itens e guia de uso.
@@ -56,7 +58,14 @@ Ative o módulo no mundo Tormenta20.
 5. **Boletim**: o mestre lança notas e situação de cada disciplina.
 6. **Encerrar semestre**: só é permitido quando todas as disciplinas têm situação final.
 
-Configurações em **Configure Settings → Academia Arcana**: mínimo e máximo de disciplinas, semestres regulares, limite de semestres, se jogadores fazem a própria matrícula, uso de notas numéricas e o editor do catálogo.
+Configurações em **Configure Settings → Academia Arcana**: mínimo e máximo de disciplinas, semestres regulares, limite de semestres, se jogadores fazem a própria matrícula, uso de notas numéricas, exibição dos painéis e o editor do catálogo.
+
+### Painéis
+
+Os dois painéis ficam flutuando sobre a mesa. Arraste pelo título para mover (clique duplo no título volta à posição padrão) e use a seta para alternar entre a versão completa e a compacta. A posição e o modo ficam salvos por navegador, e cada usuário pode desligar um painel nas configurações do módulo.
+
+- **Alunos**: lista os alunos ativos ou com o curso trancado. O mestre vê todos; o jogador vê os personagens em que tem permissão de observador ou dono. Cada aluno mostra PV, PM, o semestre mais recente com notas (média, aprovações, reprovações, pendências e, ao clicar, as disciplinas) e o botão **Matrícula**, que abre direto a aba de matrícula e fica destacado enquanto a matrícula está aberta.
+- **Ameaças**: aparece quando o combate é iniciado e some quando ele termina. Lista os combatentes sem jogador dono cujo token não é amistoso, na ordem de iniciativa, com destaque para quem está na vez. Clicar no nome centraliza o token; clicar no retrato abre a ficha. Por padrão só o mestre vê; em **Painel de ameaças para jogadores** ele pode liberar o estado aproximado (sem números) ou os valores completos. Ameaças ocultas nunca aparecem para jogadores.
 
 ### API
 
@@ -65,6 +74,8 @@ const api = game.modules.get("t20-academia-arcana").api;
 api.abrir(actor);
 api.secretaria();
 api.catalogo();
+api.painelAlunos();
+api.painelAmeacas();
 api.lerAluno(actor);
 ```
 

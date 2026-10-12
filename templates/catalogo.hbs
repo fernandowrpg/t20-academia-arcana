@@ -1,0 +1,58 @@
+<div class="aa-janela">
+	<section class="aa-conteudo">
+		<p class="aa-dica">
+			Ajuste o catálogo da sua mesa: troque a perícia de Tormenta20 de qualquer disciplina, oculte disciplinas, oferte disciplinas
+			especiais e crie disciplinas novas. Em "Ofício (à escolha)", o aluno escolhe na matrícula qual ofício usar (os oficiais ou um
+			ofício personalizado da ficha). Disciplinas terminadas em numeral romano (I, II, III...) exigem automaticamente as anteriores da
+			mesma série. Uma disciplina da mesa com o mesmo nome de uma do livro a substitui.
+		</p>
+
+		<fieldset class="aa-cartao">
+			<legend><i class="fa-solid fa-plus"></i> Disciplinas da mesa</legend>
+			{{#if personalizadas.length}}
+			<table class="aa-tabela-catalogo">
+				<thead><tr><th>Nome</th><th>Perícia</th><th>Professor</th><th>Pré-requisitos (separados por vírgula)</th><th>Especial</th><th>Ofertada</th><th></th></tr></thead>
+				<tbody>
+					{{#each personalizadas}}
+					<tr data-indice="{{indice}}">
+						<td><input type="text" name="personalizadas.{{indice}}.nome" value="{{nome}}" placeholder="Prática Aventuresca III"></td>
+						<td><select name="personalizadas.{{indice}}.pericia">{{#each pericias}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select></td>
+						<td><input type="text" name="personalizadas.{{indice}}.professor" value="{{professor}}"></td>
+						<td><input type="text" name="personalizadas.{{indice}}.prereqs" value="{{prereqs}}" placeholder="Introdução aos Ermos"></td>
+						<td class="aa-centro"><input type="checkbox" name="personalizadas.{{indice}}.especial" {{checked especial}}></td>
+						<td class="aa-centro"><input type="checkbox" name="personalizadas.{{indice}}.ofertada" {{checked ofertada}}></td>
+						<td><a data-action="remover" data-tooltip="Remover"><i class="fa-solid fa-trash"></i></a></td>
+					</tr>
+					{{/each}}
+				</tbody>
+			</table>
+			{{/if}}
+			<button type="button" data-action="adicionar"><i class="fa-solid fa-plus"></i> Nova disciplina</button>
+		</fieldset>
+
+		<fieldset class="aa-cartao">
+			<legend><i class="fa-solid fa-book"></i> Disciplinas do Manual do Arcano</legend>
+			{{#each grupos}}
+			<details class="aa-grupo">
+				<summary><span class="aa-grupo-nome">{{nome}}</span><span class="aa-pilula">{{disciplinas.length}}</span></summary>
+				<ul class="aa-disciplinas">
+					{{#each disciplinas}}
+					<li class="aa-disciplina aa-disciplina-catalogo {{#if oculta}}estado-bloqueada{{/if}}">
+						<div class="aa-disciplina-info"><strong>{{nome}}</strong>{{#if alterada}} <span class="aa-pilula especial">perícia alterada</span>{{/if}}<small>{{professor}}</small></div>
+						<select name="pericias.{{id}}">{{#each opcoes}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>
+						<span class="aa-checks">
+							{{#if especial}}<label class="aa-check"><input type="checkbox" name="ofertas.{{id}}" {{checked ofertada}}> ofertada</label>{{/if}}
+							<label class="aa-check"><input type="checkbox" name="ocultas.{{id}}" {{checked oculta}}> ocultar</label>
+						</span>
+					</li>
+					{{/each}}
+				</ul>
+			</details>
+			{{/each}}
+		</fieldset>
+	</section>
+	<footer class="aa-rodape">
+		<button type="button" class="aa-perigo" data-action="restaurar"><i class="fa-solid fa-rotate-left"></i> Restaurar padrão</button>
+		<button type="submit"><i class="fa-solid fa-floppy-disk"></i> Salvar catálogo</button>
+	</footer>
+</div>

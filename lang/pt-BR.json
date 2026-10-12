@@ -1,0 +1,70 @@
+{
+	"ACADEMIA": {
+		"VidaAcademica": "Vida Acadêmica",
+		"Secretaria": "Secretaria da Academia",
+		"Catalogo": "Catálogo de Disciplinas",
+		"BotaoFicha": "Academia",
+		"Config": {
+			"minDisciplinas": {
+				"Nome": "Mínimo de disciplinas por semestre",
+				"Dica": "O Manual do Arcano exige ao menos três disciplinas por semestre. Use 0 para não exigir."
+			},
+			"maxDisciplinas": {
+				"Nome": "Máximo de disciplinas por semestre",
+				"Dica": "Limite de disciplinas em uma matrícula. Use 0 para não limitar."
+			},
+			"semestresRegulares": {
+				"Nome": "Semestres regulares do curso",
+				"Dica": "Duração normal do curso (o livro usa quatro anos, oito semestres)."
+			},
+			"maxSemestres": {
+				"Nome": "Limite de semestres",
+				"Dica": "Quantidade máxima de semestres para concluir o curso (o livro usa dez)."
+			},
+			"jogadoresMatriculam": {
+				"Nome": "Jogadores fazem a própria matrícula",
+				"Dica": "Permite que o dono do personagem escolha as disciplinas enquanto a matrícula estiver aberta. Desmarcado, só o mestre matricula."
+			},
+			"usarNotas": {
+				"Nome": "Registrar notas numéricas",
+				"Dica": "Exibe a coluna de notas, a média do semestre e o coeficiente do aluno no boletim."
+			},
+			"painelAlunos": {
+				"Nome": "Exibir o painel de alunos",
+				"Dica": "Painel flutuante, sempre visível, com vida, mana, resumo das notas mais recentes e atalho para a matrícula de cada aluno. O mestre vê todos os alunos; o jogador, os personagens que pode observar."
+			},
+			"painelAmeacas": {
+				"Nome": "Exibir o painel de ameaças",
+				"Dica": "Painel flutuante com vida, mana, ND, Defesa e condições das ameaças enquanto houver um combate em andamento."
+			},
+			"ameacasJogadores": {
+				"Nome": "Painel de ameaças para jogadores",
+				"Dica": "Define o que os jogadores veem no painel de ameaças. O mestre sempre vê os valores completos.",
+				"Nenhum": "Não exibir",
+				"Estado": "Somente o estado aproximado (sem números)",
+				"Valores": "Valores completos"
+			},
+			"catalogoMenu": {
+				"Nome": "Catálogo de disciplinas",
+				"Rotulo": "Editar catálogo",
+				"Dica": "Troque a perícia de Tormenta20 de qualquer disciplina, oculte disciplinas, oferte disciplinas especiais e crie disciplinas da sua mesa."
+			}
+		},
+		"Aviso": {
+			"SemAtor": "Selecione um token ou defina um personagem para o seu usuário.",
+			"SomenteMestre": "Apenas o mestre pode abrir a secretaria.",
+			"Admitido": "{nome} foi admitido(a) na Academia Arcana.",
+			"LimiteSemestres": "O aluno atingiu o limite de semestres do curso.",
+			"AbaixoMinimo": "A matrícula tem {qtd} disciplina(s), abaixo do mínimo de {min}. Iniciar o semestre mesmo assim?",
+			"Maximo": "A matrícula já tem o máximo de {max} disciplinas.",
+			"Pendencias": "Defina a situação final destas disciplinas antes de encerrar: {lista}",
+			"ConfirmaExcluirSemestre": "Excluir o {numero}º semestre e todo o seu registro no boletim?",
+			"ConfirmaDesligar": "Remover todo o registro acadêmico de {nome}? Esta ação não pode ser desfeita.",
+			"Lote": "{qtd} aluno(s) atualizado(s).",
+			"Ignorados": "Semestre não encerrado (disciplinas pendentes): {lista}",
+			"CatalogoSalvo": "Catálogo de disciplinas salvo.",
+			"EscolhaOficio": "Escolha qual ofício será usado em {nome}.",
+			"SemOficio": "Estas disciplinas ainda não têm ofício escolhido: {lista}. Iniciar o semestre mesmo assim? O mestre pode definir depois no boletim."
+		}
+	}
+}

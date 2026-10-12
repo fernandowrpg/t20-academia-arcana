@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0
+
+- Painel de alunos: widget flutuante, sempre visível, com vida (PV), mana (PM), resumo das notas do semestre mais recente e atalho para a matrícula de cada aluno.
+- Painel de ameaças: widget separado que aparece durante o combate, com PV, PM, ND, Defesa, iniciativa e condições de cada ameaça, além do total de PV do encontro.
+- Os painéis podem ser arrastados, recolhidos e desligados por usuário; o mestre escolhe o que os jogadores veem das ameaças (nada, estado aproximado ou valores).
+- Repositório organizado: o código-fonte saiu do arquivo zip e passou a ficar versionado em pastas.
+
 ## 1.0.0
 
 - Ficha do Aluno com grêmio, ingresso, bolsa, situação do curso, desempenho, Teste dos Quatro Elementos e anotações.

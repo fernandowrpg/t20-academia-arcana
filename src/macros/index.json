@@ -1,0 +1,7 @@
+{
+	"macros": [
+		{ "arquivo": "vida-academica.js", "nome": "Vida Acadêmica", "img": "icons/svg/castle.svg" },
+		{ "arquivo": "secretaria.js", "nome": "Secretaria da Academia", "img": "icons/svg/house.svg" },
+		{ "arquivo": "catalogo.js", "nome": "Catálogo de Disciplinas", "img": "icons/svg/book.svg" }
+	]
+}
