@@ -158,27 +158,71 @@ async function abrirConversa(dados) {
 
 export function registrarSocket() {
 	game.socket.on(EVENTO, async (dados) => {
-		if (!game.users.activeGM?.isSelf || dados?.acao !== "criarConversa") return;
-		const usuario = game.users.get(dados.usuario);
-		const criador = game.actors.get(dados.criador);
-		if (!usuario || !criador?.testUserPermission(usuario, "OWNER") || !dados.participantes?.includes(criador.id)) return;
-		if (!opcao("correioJogadores")) return;
-		const nota = await criarNota(dados);
-		if (nota) await nota.setFlag(MODULO, "conversa.pedido", dados.pedido);
+		if (!game.users.activeGM?.isSelf || !opcao("correioJogadores")) return;
+		const usuario = game.users.get(dados?.usuario);
+		const criador = game.actors.get(dados?.criador);
+		if (!usuario || !criador?.testUserPermission(usuario, "OWNER")) return;
+		if (dados.acao === "criarConversa" && dados.participantes?.includes(criador.id)) {
+			const nota = await criarNota(dados);
+			if (nota) await nota.setFlag(MODULO, "conversa.pedido", dados.pedido);
+		}
+		if (dados.acao === "alterarGrupo") {
+			const nota = game.journal.get(dados.nota);
+			if (nota?.getFlag(MODULO, "conversa")?.criador === criador.id) await aplicarParticipantes(nota, dados.participantes, criador.id);
+		}
 	});
+}
+
+async function ajustarDonos(nota, participantes) {
+	const esperado = donosDaConversa(participantes);
+	const atual = nota.ownership ?? {};
+	const chaves = new Set([...Object.keys(esperado), ...Object.keys(atual)]);
+	if (![...chaves].some((k) => (esperado[k] ?? 0) !== (atual[k] ?? 0))) return;
+	await nota.update({ ownership: { ...Object.fromEntries([...chaves].map((k) => [k, 0])), ...esperado } }, { diff: false, recursive: false });
 }
 
 /* O mestre mantém os donos das notas em dia quando um personagem muda de jogador. */
 export async function sincronizarPermissoes() {
 	if (!game.users.activeGM?.isSelf) return;
-	for (const { nota, participantes } of conversas()) {
-		const esperado = donosDaConversa(participantes);
-		const atual = nota.ownership ?? {};
-		const chaves = new Set([...Object.keys(esperado), ...Object.keys(atual)]);
-		if ([...chaves].some((k) => (esperado[k] ?? 0) !== (atual[k] ?? 0))) {
-			await nota.update({ ownership: { ...Object.fromEntries([...chaves].map((k) => [k, 0])), ...esperado } }, { diff: false, recursive: false });
+	for (const { nota, participantes } of conversas()) await ajustarDonos(nota, participantes);
+}
+
+/* Troca os participantes de um grupo, ajusta os donos da nota e registra a mudança na conversa. */
+async function aplicarParticipantes(nota, participantes, autor) {
+	const dados = nota.getFlag(MODULO, "conversa");
+	if (!dados?.grupo || !Array.isArray(participantes)) return;
+	const novos = [...new Set([dados.criador, ...participantes])].filter((id) => ehAluno(game.actors.get(id))).sort();
+	const entraram = novos.filter((id) => !dados.participantes.includes(id));
+	const sairam = dados.participantes.filter((id) => !novos.includes(id));
+	if (novos.length < 2 || (!entraram.length && !sairam.length)) return;
+	const nomes = (ids) => ids.map((id) => escapar(game.actors.get(id)?.name ?? "?")).join(", ");
+	const quando = Date.now();
+	/* O aviso entra antes da troca, para quem saiu ainda recebê-lo. */
+	await nota.createEmbeddedDocuments("JournalEntryPage", [
+		{
+			name: `Participantes · ${new Date(quando).toLocaleString("pt-BR")}`,
+			type: "text",
+			text: { content: `<p><em>${[entraram.length ? `Entrou: ${nomes(entraram)}.` : "", sairam.length ? `Saiu: ${nomes(sairam)}.` : ""].filter(Boolean).join(" ")}</em></p>`, format: 1 },
+			sort: quando,
+			flags: { [MODULO]: { mensagem: { de: autor, usuario: game.user.id, quando, sistema: true, item: null, edicoes: [], revelada: false } } }
 		}
+	]);
+	await nota.update({ [`flags.${MODULO}.conversa.participantes`]: novos });
+	await ajustarDonos(nota, novos);
+}
+
+/* Só o criador do grupo ou o mestre mudam os participantes; quem grava é sempre o cliente do mestre. */
+export async function alterarParticipantes(idDaNota, participantes, de) {
+	const nota = game.journal.get(idDaNota);
+	const dados = nota?.getFlag(MODULO, "conversa");
+	if (!dados?.grupo) return;
+	if (game.user.isGM) return aplicarParticipantes(nota, participantes, de ?? dados.criador);
+	if (dados.criador !== de || !game.actors.get(de)?.isOwner) return;
+	if (!game.users.activeGM) {
+		ui.notifications.warn(game.i18n.localize("ACADEMIA.Aviso.GrupoSemMestre"));
+		return;
 	}
+	game.socket.emit(EVENTO, { acao: "alterarGrupo", nota: idDaNota, participantes, criador: de, usuario: game.user.id });
 }
 
 /* ---------------------------------------------------------------- */

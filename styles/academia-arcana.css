@@ -1678,3 +1678,18 @@
 	cursor: pointer;
 	color: var(--aa-roxo);
 }
+
+.academia-arcana .aa-correio-sistema {
+	margin: 0;
+	text-align: center;
+	font-size: 0.8rem;
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-correio-sistema p {
+	margin: 0;
+}
+
+.academia-arcana .aa-correio-sistema small {
+	font-size: 0.7rem;
+}

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.1
+
+- Correio: o criador do grupo e o mestre podem adicionar e remover participantes. A conversa registra quem entrou e quem saiu, e quem sai deixa de ter acesso à nota.
+
 ## 1.6.0
 
 - Correio: cada conversa agora é uma nota (Journal), na pasta *Correio da Academia*, cujos donos são os jogadores dos alunos participantes. Cada mensagem é uma página da nota. Com isso, enviar e ler mensagens não depende mais do mestre conectado.

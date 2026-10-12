@@ -1,5 +1,6 @@
 import { MODULO, ehAluno, opcao } from "../config.mjs";
 import {
+	alterarParticipantes,
 	alternarRevelacao,
 	conversas,
 	correioDisponivel,
@@ -64,6 +65,7 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			enviar: CorreioApp.#enviar,
 			receber: CorreioApp.#receber,
 			abrirNota: CorreioApp.#abrirNota,
+			participantes: CorreioApp.#participantes,
 			editar: CorreioApp.#editar,
 			revelar: CorreioApp.#revelar
 		}
@@ -130,6 +132,7 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			const dono = game.actors.get(m.item?.para);
 			return {
 				id: m.id,
+				sistema: !!m.sistema,
 				minha: m.de === this.remetente,
 				autor: game.actors.get(m.de)?.name ?? "?",
 				html: m.html,
@@ -158,6 +161,7 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			conversas: lista,
 			aberta: grupo ? { nome: grupo.nome, grupo: true, membros: nomes(grupo.participantes).join(", ") } : outro ? { nome: outro.name, img: outro.img } : null,
 			temNota: !!atual,
+			podeGerir: !!grupo && (gm || (grupo.criador === this.remetente && !!eu?.isOwner)),
 			destinatarios: grupo ? grupo.participantes.filter((id) => id !== this.remetente).map((id) => ({ id, nome: game.actors.get(id)?.name ?? "?" })) : [],
 			mensagens,
 			itens,
@@ -261,6 +265,27 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		if (!atual) return;
 		this.irParaOFim = false;
 		await receberItem(atual.id, alvo.closest("[data-mensagem]")?.dataset.mensagem);
+	}
+
+	static async #participantes() {
+		const atual = this.#conversaAberta();
+		if (!atual?.grupo) return;
+		const colegas = game.actors.filter((a) => ehAluno(a) && a.id !== atual.criador).sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+		const opcoes = colegas
+			.map((a) => `<label style="display:flex;gap:.4rem;align-items:center"><input type="checkbox" name="membro" value="${a.id}" ${atual.participantes.includes(a.id) ? "checked" : ""}> ${escapar(a.name)}</label>`)
+			.join("");
+		const escolhidos = await DialogV2.prompt({
+			window: { title: `Participantes: ${atual.nome}` },
+			content: `<p>Marque quem faz parte do grupo. ${escapar(game.actors.get(atual.criador)?.name ?? "Quem criou")} criou o grupo e sempre participa. Quem sair deixa de ver a conversa.</p><div style="max-height:300px;overflow:auto;display:grid;gap:.2rem">${opcoes}</div>`,
+			ok: { label: "Salvar", callback: (ev, botao) => [...botao.form.querySelectorAll("input[name='membro']:checked")].map((el) => el.value) },
+			rejectClose: false
+		});
+		if (!Array.isArray(escolhidos)) return;
+		if (!escolhidos.length) {
+			ui.notifications.warn(game.i18n.localize("ACADEMIA.Aviso.GrupoVazio"));
+			return;
+		}
+		await alterarParticipantes(atual.id, escolhidos, this.remetente);
 	}
 
 	static #abrirNota() {
