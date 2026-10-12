@@ -1,7 +1,7 @@
 <div class="aa-janela">
 	<section class="aa-conteudo">
 		<fieldset class="aa-cartao">
-			<legend><i class="fa-solid fa-dice-d20"></i> Novo aluno (NPC neutro)</legend>
+			<legend><i class="fa-solid fa-dice-d20"></i> Novo aluno (personagem do mestre)</legend>
 			<div class="aa-gerador-campos">
 				<label>Nível
 					<input type="number" name="aa-nivel" value="{{nivel}}" min="1" max="{{nivelMaximo}}" step="1">
@@ -19,7 +19,7 @@
 					<select name="aa-periodo">{{#each periodos}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>
 				</label>
 			</div>
-			<p class="aa-dica">Escolha o nível; o que ficar em <em>Aleatório</em> é sorteado: nome, raça, classe, período, grêmio, histórico de disciplinas e notas. As fichas vão para a pasta <strong>{{pasta}}</strong>, com as perícias das disciplinas aprovadas e em curso marcadas como treinadas.</p>
+			<p class="aa-dica">Escolha o nível; o que ficar em <em>Aleatório</em> é sorteado: nome, raça, classe, período, grêmio, histórico de disciplinas e notas. As fichas são personagens sem jogador dono, com token neutro, e vão para a pasta <strong>{{pasta}}</strong>, com as perícias das disciplinas aprovadas e em curso marcadas como treinadas.</p>
 			<div class="aa-botoes">
 				<button type="button" data-action="gerar"><i class="fa-solid fa-wand-sparkles"></i> Gerar</button>
 				<button type="button" data-action="calendario"><i class="fa-solid fa-calendar-week"></i> Calendário</button>

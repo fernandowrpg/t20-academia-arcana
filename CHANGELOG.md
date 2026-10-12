@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+- Gerador de Alunos: as fichas passam a ser criadas como personagem do mestre (sem jogador dono), com um item de classe no nível escolhido, em vez de ameaça. Assim nível, PV e PM aparecem como em qualquer personagem.
+
 ## 1.2.0
 
 - Gerador de Alunos: cria fichas de NPC neutro escolhendo o nível e sorteando nome, raça, classe, período, grêmio, histórico de disciplinas e notas. Nomes da Tabela 1-24 de *Heróis de Arton*; classes de *Tormenta20*, *Heróis de Arton* e *Deuses de Arton*. As perícias das disciplinas aprovadas e em curso ficam treinadas na ficha.

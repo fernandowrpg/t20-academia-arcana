@@ -106,7 +106,6 @@ export class GeradorAlunosApp extends HandlebarsApplicationMixin(ApplicationV2) 
 		const usados = new Set(game.actors.map((a) => a.name));
 		const preferidas = disciplinasDosPersonagens();
 		const pasta = game.folders.find((f) => f.type === "Actor" && f.name === PASTA) ?? (await Folder.create({ name: PASTA, type: "Actor" }));
-		const tipo = game.documentTypes?.Actor?.includes("npc") ? "npc" : "character";
 		const novos = [];
 		for (let i = 0; i < quantidade; i++) {
 			const g = gerarAluno({
@@ -125,12 +124,20 @@ export class GeradorAlunosApp extends HandlebarsApplicationMixin(ApplicationV2) 
 			usados.add(g.nome);
 			const actor = await Actor.implementation.create({
 				name: g.nome,
-				type: tipo,
+				type: "character",
 				folder: pasta?.id ?? null,
 				system: {
-					attributes: { nd: String(g.nivel), pv: { value: g.pv, max: g.pv }, pm: { value: g.pm, max: g.pm } },
+					attributes: { pv: { value: g.pv, max: g.pv }, pm: { value: g.pm, max: g.pm } },
 					detalhes: { raca: RACAS[g.raca].nome, biography: { value: biografia(g) } }
 				},
+				/* No sistema Tormenta20, nível, PV e PM do personagem vêm do item de classe. */
+				items: [
+					{
+						name: CLASSES[g.classe].nome,
+						type: "classe",
+						system: { niveis: g.nivel, pvPorNivel: CLASSES[g.classe].pv[1], pmPorNivel: CLASSES[g.classe].pm, inicial: true }
+					}
+				],
 				prototypeToken: { name: g.nome, disposition: CONST.TOKEN_DISPOSITIONS.NEUTRAL, actorLink: true },
 				flags: { [MODULO]: { [FLAG]: g.aluno } }
 			});
