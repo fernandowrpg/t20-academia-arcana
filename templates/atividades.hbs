@@ -16,13 +16,27 @@
 					<select name="aa-atv-vantagem">{{#each vantagens}}<option value="{{id}}">{{nome}}: {{resumo}} ({{porte}})</option>{{/each}}</select>
 				</label>
 			</div>
+			<div class="aa-gerador-campos aa-atv-extra">
+				<label>Recompensa extra (uma cena)
+					<select name="aa-atv-extra-tipo">
+						<option value="">Nenhuma</option>
+						{{#each recompensas}}<option value="{{id}}">{{nome}}</option>{{/each}}
+					</select>
+				</label>
+				<label class="aa-atv-extra-pericia" hidden>Perícia
+					<select name="aa-atv-extra-pericia">{{#each pericias}}<option value="{{id}}">{{nome}}</option>{{/each}}</select>
+				</label>
+				<label class="aa-atv-extra-texto" hidden>Descrição da recompensa
+					<input type="text" name="aa-atv-extra-texto" maxlength="200" placeholder="Nome do poder geral, ou o que a vantagem faz">
+				</label>
+			</div>
 			<label class="aa-atv-descricao">Descrição
 				<textarea name="aa-atv-descricao" rows="2" placeholder="O que o professor pede, prazo, perigos..."></textarea>
 			</label>
 			<div class="aa-atv-alunos">
 				{{#each alunos}}<label><input type="checkbox" name="aa-atv-aluno" value="{{id}}"> {{nome}}{{#if npc}} <small>(NPC)</small>{{/if}}</label>{{else}}<span class="aa-dica">Nenhum aluno registrado.</span>{{/each}}
 			</div>
-			<p class="aa-dica">A vantagem vale para uma disciplina do professor que deu a missão (qualquer disciplina, se ele não tiver ficha ou não lecionar nenhuma). O professor com ficha avisa os alunos pelo correio.</p>
+			<p class="aa-dica">A vantagem de avaliação vale para uma disciplina do professor que deu a missão (qualquer disciplina, se ele não tiver ficha ou não lecionar nenhuma). A recompensa extra é opcional: o aluno a gasta em uma cena, uma única vez. Em perícia, quem não é treinado fica treinado pela cena, e quem já é ganha +2. O professor com ficha avisa os alunos pelo correio.</p>
 			<div class="aa-botoes">
 				<button type="button" data-action="criar"><i class="fa-solid fa-plus"></i> Criar atividade</button>
 			</div>
@@ -33,7 +47,8 @@
 			<legend><i class="fa-solid fa-person-hiking"></i> {{titulo}}</legend>
 			<p>{{#if professor}}<strong><i class="fa-solid fa-chalkboard-user"></i> {{professor}}</strong> · {{/if}}<span class="aa-pilula especial">{{vantagem.nome}}: {{vantagem.resumo}}</span></p>
 			{{#if descricao}}<p class="aa-atv-texto">{{descricao}}</p>{{/if}}
-			<p class="aa-dica">Vale para: {{alcance}}</p>
+			{{#if extra}}<p><i class="fa-solid fa-gift"></i> <strong>Recompensa extra:</strong> {{extra}}</p>{{/if}}
+			<p class="aa-dica">Vantagem de avaliação vale para: {{alcance}}</p>
 			<ul class="aa-lista-simples">
 				{{#each alunos}}
 				<li class="situacao-{{situacao}}">

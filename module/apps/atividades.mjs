@@ -1,5 +1,6 @@
 import { MODULO, corpoDocente, ehAluno, ehNpcGerado } from "../config.mjs";
-import { SITUACOES_ATIVIDADE, VANTAGENS, criarAtividade, definirSituacao, disciplinasDoProfessor, excluirAtividade, lerAtividades } from "../atividades.mjs";
+import { RECOMPENSAS, SITUACOES_ATIVIDADE, VANTAGENS, criarAtividade, definirSituacao, descreverRecompensa, disciplinasDoProfessor, excluirAtividade, lerAtividades } from "../atividades.mjs";
+import { PERICIAS_T20 } from "../data/disciplinas.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 
@@ -53,6 +54,7 @@ export class AtividadesApp extends HandlebarsApplicationMixin(ApplicationV2) {
 					descricao: a.descricao,
 					professor: game.actors.get(a.professor)?.name ?? "",
 					vantagem: VANTAGENS[a.vantagem],
+					extra: descreverRecompensa(a.extra),
 					alcance: leciona.length ? leciona.join(", ") : "qualquer disciplina",
 					alunos: Object.entries(a.alunos)
 						.map(([id, situacao]) => ({
@@ -67,6 +69,11 @@ export class AtividadesApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		return {
 			professores: professores.map((a) => ({ id: a.id, nome: a.name })),
 			vantagens: Object.entries(VANTAGENS).map(([id, v]) => ({ id, ...v })),
+			recompensas: Object.entries(RECOMPENSAS).map(([id, nome]) => ({ id, nome })),
+			pericias: Object.entries(PERICIAS_T20)
+				.filter(([id]) => id !== "oficio")
+				.map(([id, nome]) => ({ id, nome }))
+				.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")),
 			alunos: alunos.map((a) => ({ id: a.id, nome: a.name, npc: ehNpcGerado(a) })),
 			atividades
 		};
@@ -74,6 +81,13 @@ export class AtividadesApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	async _onRender(context, options) {
 		await super._onRender(context, options);
+		const tipo = this.element.querySelector("[name='aa-atv-extra-tipo']");
+		const mostrar = () => {
+			this.element.querySelector(".aa-atv-extra-pericia").hidden = tipo.value !== "pericia";
+			this.element.querySelector(".aa-atv-extra-texto").hidden = !tipo.value;
+		};
+		tipo?.addEventListener("change", mostrar);
+		if (tipo) mostrar();
 		this.element.querySelectorAll("select[data-situacao]").forEach((el) =>
 			el.addEventListener("change", (ev) => definirSituacao(ev.target.closest("[data-atividade]").dataset.atividade, ev.target.dataset.situacao, ev.target.value))
 		);
@@ -86,7 +100,12 @@ export class AtividadesApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			ui.notifications.warn(game.i18n.localize("ACADEMIA.Aviso.AtividadeIncompleta"));
 			return;
 		}
-		await criarAtividade({ titulo: campo("titulo"), descricao: campo("descricao"), professor: campo("professor"), vantagem: campo("vantagem"), alunos });
+		const extra = campo("extra-tipo") ? { tipo: campo("extra-tipo"), pericia: campo("extra-pericia"), texto: campo("extra-texto") } : null;
+		if (extra && extra.tipo !== "pericia" && !extra.texto.trim()) {
+			ui.notifications.warn(game.i18n.localize("ACADEMIA.Aviso.RecompensaSemTexto"));
+			return;
+		}
+		await criarAtividade({ titulo: campo("titulo"), descricao: campo("descricao"), professor: campo("professor"), vantagem: campo("vantagem"), extra, alunos });
 	}
 
 	static async #excluir(event, alvo) {

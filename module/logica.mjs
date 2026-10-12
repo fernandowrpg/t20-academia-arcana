@@ -18,6 +18,7 @@ export function novoAluno() {
 		anotacoes: "",
 		confirmaLeitura: true,
 		vantagens: [],
+		recompensas: [],
 		npc: null
 	};
 }

@@ -82,7 +82,8 @@ Na Secretaria, **Atividades extracurriculares** abre a janela de missões. O mes
 - **Situação**: em cada missão, o mestre marca cada aluno como *Em andamento*, *Concluída* ou *Fracassou*. Ao concluir, o aluno ganha a vantagem; se a conclusão for desfeita antes do uso, ele a perde.
 - **Vantagens**: *Preparo* (+2 no teste de uma prova), *Segunda chamada* (refaz uma prova e fica com o melhor resultado) e *Ponto extra* (+1 na nota final, até 10).
 - **Uso**: no boletim, as disciplinas em que o aluno pode usar uma vantagem ganham a lista *Usar vantagem…*. Vale uma vantagem por disciplina, e só em disciplinas do professor que deu a missão (qualquer uma, se ele não tiver ficha ou não lecionar nenhuma). O *Ponto extra* é somado sozinho à nota, na média, no coeficiente e no painel de alunos; *Preparo* e *Segunda chamada* ficam marcados na disciplina e o mestre aplica o efeito na rolagem.
-- **Para o jogador**: a Ficha do Aluno mostra as atividades dele e as vantagens conquistadas, disponíveis ou já usadas.
+- **Recompensa extra**: opcional em cada missão, configurada pelo mestre e válida por uma cena, uma única vez. Pode ser uma *perícia* (o aluno conta como treinado pela cena, ou recebe +2 se já for treinado; o quadro mostra qual dos dois vale para aquela ficha), um *poder* (você escreve o nome do poder geral) ou *outra* vantagem descrita livremente. No quadro da Ficha do Aluno, o dono do personagem clica em **Usar**; o uso é anunciado no chat e a recompensa fica marcada como usada. O mestre pode devolvê-la. O módulo só registra e anuncia: o bônus ou o poder não são aplicados na ficha.
+- **Para o jogador**: a Ficha do Aluno mostra as atividades dele, as recompensas de cena e as vantagens de avaliação conquistadas, disponíveis ou já usadas.
 
 As regras estão na seção *Atividades extracurriculares* de [docs/regras-da-academia.md](docs/regras-da-academia.md).
 

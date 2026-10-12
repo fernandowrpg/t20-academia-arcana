@@ -128,6 +128,16 @@ Regras de uso:
 - *Preparo* e *Segunda chamada* se usam na hora da prova; o mestre marca a vantagem na disciplina para ela não ser usada duas vezes.
 - Missão que fracassa não dá vantagem nem punição: o aluno só perdeu o tempo.
 
+**Recompensa extra.** Além da vantagem de avaliação, o professor pode oferecer uma recompensa à escolha do mestre, que o aluno gasta em **uma cena**, uma única vez. (Mesa)
+
+| Recompensa | Efeito na cena |
+| --- | --- |
+| Perícia | O aluno conta como treinado na perícia; se já for treinado, recebe +2 nela |
+| Poder | O aluno pode usar um poder geral escolhido pelo mestre, mesmo sem os pré-requisitos |
+| Outra | O que o mestre descrever |
+
+O aluno decide em que cena usar e avisa a mesa. Depois de usada, a recompensa acaba.
+
 ## 5. Situação final e notas do período
 
 | Nota final | Situação | O que acontece |

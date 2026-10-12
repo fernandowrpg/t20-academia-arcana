@@ -78,6 +78,7 @@
 			"CorreioSemMestre": "Para abrir uma conversa nova, o mestre precisa estar conectado (ou liberar a você a permissão de criar notas).",
 			"CorreioSemApagar": "Só o mestre pode apagar a correspondência.",
 			"SomenteMestreAtividades": "Apenas o mestre gerencia as atividades extracurriculares.",
+			"RecompensaSemTexto": "Descreva a recompensa extra (o nome do poder ou o que a vantagem faz).",
 			"AtividadeIncompleta": "Dê um título à atividade e escolha ao menos um aluno.",
 			"AvaliacaoEnviada": "{professor} enviou a avaliação a {aluno} pelo correio.",
 			"GrupoVazio": "O grupo precisa de pelo menos mais um participante além de quem o criou.",

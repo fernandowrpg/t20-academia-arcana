@@ -1870,3 +1870,22 @@
 	margin-top: 0.15rem;
 	font-size: 0.75rem;
 }
+
+.academia-arcana .aa-atv-extra {
+	margin-top: 0.5rem;
+}
+
+.academia-arcana .aa-atv-extra [hidden] {
+	display: none;
+}
+
+.academia-arcana .aa-extras button {
+	flex: 0 0 auto;
+	width: auto;
+	line-height: 1.6;
+}
+
+.academia-arcana .aa-extras li > a {
+	flex: 0 0 auto;
+	cursor: pointer;
+}

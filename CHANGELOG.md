@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.0
+
+- Atividades extracurriculares: cada missão pode ter uma recompensa extra configurada pelo mestre, usada em uma cena: perícia (fica treinado pela cena, ou +2 se já for), poder geral ou outra vantagem descrita livremente.
+- A recompensa aparece no quadro de atividades da Ficha do Aluno. O jogador clica em **Usar** para gastá-la, e o uso é anunciado no chat; o mestre pode devolver.
+
 ## 1.9.0
 
 - Atividades extracurriculares: o mestre cria missões dadas por um professor a um ou mais alunos. Concluir a missão rende uma vantagem para a avaliação de uma disciplina daquele professor: *Preparo* (+2 no teste de uma prova), *Segunda chamada* (refaz uma prova) ou *Ponto extra* (+1 na nota final, até 10).

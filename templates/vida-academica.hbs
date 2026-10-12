@@ -112,7 +112,7 @@
 			<ul class="aa-lista-simples aa-extras">
 				{{#each extracurricular.atividades}}
 				<li class="situacao-{{chave}}">
-					<span><strong>{{titulo}}</strong>{{#if professor}} · Prof. {{professor}}{{/if}}<small>{{#if descricao}}{{descricao}} · {{/if}}Vantagem: {{vantagem.nome}} ({{vantagem.resumo}})</small></span>
+					<span><strong>{{titulo}}</strong>{{#if professor}} · Prof. {{professor}}{{/if}}<small>{{#if descricao}}{{descricao}} · {{/if}}Vantagem: {{vantagem.nome}} ({{vantagem.resumo}}){{#if extra}} · Recompensa extra: {{extra}}{{/if}}</small></span>
 					<span class="aa-pilula">{{situacao}}</span>
 				</li>
 				{{/each}}
@@ -120,8 +120,20 @@
 			{{else}}
 			<p class="aa-dica">Nenhuma atividade no momento. Os professores oferecem missões fora do horário de aula; concluí-las rende vantagens nas avaliações.</p>
 			{{/if}}
+			{{#if extracurricular.recompensas.length}}
+			<p><strong>Recompensas de cena</strong></p>
+			<ul class="aa-lista-simples aa-extras">
+				{{#each extracurricular.recompensas}}
+				<li class="{{#if usada}}situacao-trancado{{/if}}" data-recompensa="{{id}}">
+					<span><strong><i class="fa-solid fa-gift"></i> {{efeito}}</strong><small>{{titulo}}{{#if professor}} · Prof. {{professor}}{{/if}}</small></span>
+					{{#if podeUsar}}<button type="button" data-action="usarRecompensa" data-tooltip="Gastar nesta cena; só pode ser usada uma vez"><i class="fa-solid fa-bolt"></i> Usar</button>{{/if}}
+					{{#if usada}}<span class="aa-pilula">usada em {{usada}}</span>{{#if @root.gm}}<a data-action="devolverRecompensa" data-tooltip="Devolver a recompensa ao aluno"><i class="fa-solid fa-rotate-left"></i></a>{{/if}}{{/if}}
+				</li>
+				{{/each}}
+			</ul>
+			{{/if}}
 			{{#if extracurricular.vantagens.length}}
-			<p><strong>Vantagens conquistadas</strong></p>
+			<p><strong>Vantagens de avaliação</strong></p>
 			<ul class="aa-lista-simples aa-extras">
 				{{#each extracurricular.vantagens}}
 				<li class="{{#if usada}}situacao-trancado{{/if}}">

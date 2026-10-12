@@ -16,7 +16,7 @@ import {
 	preRequisitos
 } from "../logica.mjs";
 import { MODULO, contextoCatalogo, corpoDocente, fichasDoProfessor, lerAluno, opcao, podeMatricular, removerAluno, salvarAluno } from "../config.mjs";
-import { SITUACOES_ATIVIDADE, VANTAGENS, aplicarVantagem, lerAtividades, retirarVantagem, vantagensAplicaveis } from "../atividades.mjs";
+import { SITUACOES_ATIVIDADE, VANTAGENS, aplicarVantagem, descreverRecompensa, devolverRecompensa, lerAtividades, retirarVantagem, usarRecompensa, vantagensAplicaveis } from "../atividades.mjs";
 import { enviar } from "../correio.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
@@ -79,7 +79,9 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 			alternarElemento: VidaAcademicaApp.#alternarElemento,
 			abrirCompendio: VidaAcademicaApp.#abrirCompendio,
 			enviarAvaliacao: VidaAcademicaApp.#enviarAvaliacao,
-			retirarVantagem: VidaAcademicaApp.#retirarVantagem
+			retirarVantagem: VidaAcademicaApp.#retirarVantagem,
+			usarRecompensa: VidaAcademicaApp.#usarRecompensa,
+			devolverRecompensa: VidaAcademicaApp.#devolverRecompensa
 		}
 	};
 
@@ -236,9 +238,18 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 					descricao: a.descricao,
 					professor: game.actors.get(a.professor)?.name ?? "",
 					vantagem: VANTAGENS[a.vantagem],
+					extra: descreverRecompensa(a.extra, this.actor),
 					chave: a.alunos[this.actor.id],
 					situacao: SITUACOES_ATIVIDADE[a.alunos[this.actor.id]]
 				})),
+			recompensas: (aluno.recompensas ?? []).map((r) => ({
+				id: r.id,
+				efeito: descreverRecompensa(r, this.actor),
+				titulo: r.titulo,
+				professor: game.actors.get(r.professor)?.name ?? "",
+				usada: r.usada ? new Date(r.usada).toLocaleDateString("pt-BR") : "",
+				podeUsar: !r.usada && (gm || this.actor.isOwner)
+			})),
 			vantagens: (aluno.vantagens ?? []).map((v) => ({
 				...VANTAGENS[v.tipo],
 				titulo: v.titulo,
@@ -524,6 +535,18 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 			speaker: ChatMessage.getSpeaker({ actor: this.actor }),
 			flavor: `${nomePericia(chave, rotulos)} (${entrada.nome})`
 		});
+	}
+
+	static async #usarRecompensa(event, alvo) {
+		const ok = await DialogV2.confirm({
+			window: { title: "Usar recompensa" },
+			content: "<p>Gastar esta recompensa na cena atual? Ela só pode ser usada uma vez, e o uso é anunciado no chat.</p>"
+		});
+		if (ok) await usarRecompensa(this.actor, alvo.closest("[data-recompensa]")?.dataset.recompensa);
+	}
+
+	static async #devolverRecompensa(event, alvo) {
+		await devolverRecompensa(this.actor, alvo.closest("[data-recompensa]")?.dataset.recompensa);
 	}
 
 	static async #retirarVantagem(event, alvo) {
