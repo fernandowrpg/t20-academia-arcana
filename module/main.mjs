@@ -82,6 +82,7 @@ Hooks.on("updateActor", (actor, mudancas) => {
 	VidaAcademicaApp.atualizar(actor);
 	SecretariaApp.atualizar();
 	CalendarioApp.atualizar();
+	CorreioApp.atualizar();
 });
 
 /* O correio vive em notas: qualquer mudança nelas atualiza a janela, o contador e o aviso. */

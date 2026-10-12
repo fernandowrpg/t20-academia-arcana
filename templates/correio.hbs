@@ -9,6 +9,11 @@
 			{{/if}}
 			{{#if disponivel}}<a data-action="novoGrupo" data-tooltip="Novo grupo"><i class="fa-solid fa-user-group"></i><i class="fa-solid fa-plus"></i></a>{{/if}}
 		</header>
+		{{#if eu.podeConfigurar}}
+		<label class="aa-correio-recibo" data-tooltip="Desmarcado, os colegas não ficam sabendo se {{eu.nome}} leu as mensagens. Você continua vendo o que ainda não leu.">
+			<input type="checkbox" name="aa-correio-informa" {{#if eu.informa}}checked{{/if}}> Avisar quando eu ler
+		</label>
+		{{/if}}
 		<ul class="aa-correio-contatos">
 			{{#each conversas}}
 			<li class="{{#if ativa}}ativo{{/if}}" data-action="abrirConversa" data-conversa="{{id}}">
@@ -42,7 +47,7 @@
 			{{#if sistema}}
 			<li class="aa-correio-sistema">{{{html}}}<small>{{autor}} · {{quando}}</small></li>
 			{{else}}
-			<li class="aa-correio-mensagem {{#if minha}}minha{{/if}}" data-mensagem="{{id}}">
+			<li class="aa-correio-mensagem {{#if minha}}minha{{/if}} {{#if nova}}nova{{/if}}" data-mensagem="{{id}}">
 				<div class="aa-correio-balao">
 					{{#if html}}<div class="aa-correio-texto">{{{html}}}</div>{{/if}}
 					{{#if item}}
@@ -54,6 +59,8 @@
 					{{/if}}
 					<footer>
 						<span>{{autor}} · {{quando}}</span>
+						{{#if nova}}<span class="aa-correio-nova"><i class="fa-solid fa-circle"></i> nova</span>{{/if}}
+						{{#if leitura}}<span class="aa-correio-leitura {{leitura.estado}}" data-tooltip="{{leitura.dica}}"><i class="fa-solid {{leitura.icone}}"></i> {{leitura.rotulo}}</span>{{/if}}
 						{{#if editada}}<span class="aa-correio-editada"><i class="fa-solid fa-pen-nib"></i> editada</span>{{/if}}
 						{{#if @root.gm}}
 						<a data-action="editar" data-tooltip="Editar (o texto anterior fica no histórico)"><i class="fa-solid fa-pen"></i></a>

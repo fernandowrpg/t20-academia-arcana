@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.0
+
+- Correio: confirmação de leitura. Cada mensagem enviada mostra se foi lida (em grupo, por quem), e as mensagens recebidas que você ainda não tinha visto aparecem marcadas como novas.
+- Correio: cada aluno escolhe, em *Avisar quando eu ler*, se os colegas ficam sabendo que ele leu.
+
 ## 1.6.1
 
 - Correio: o criador do grupo e o mestre podem adicionar e remover participantes. A conversa registra quem entrou e quem saiu, e quem sai deixa de ter acesso à nota.

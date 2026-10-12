@@ -1693,3 +1693,46 @@
 .academia-arcana .aa-correio-sistema small {
 	font-size: 0.7rem;
 }
+
+.academia-arcana .aa-correio-recibo {
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0.3rem 0.75rem;
+	border-bottom: 1px solid var(--aa-borda);
+	font-size: 0.8rem;
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-correio-recibo input {
+	flex: 0 0 auto;
+	margin: 0;
+}
+
+.academia-arcana .aa-correio-mensagem.nova .aa-correio-balao {
+	border-left-color: var(--aa-vermelho);
+}
+
+.academia-arcana .aa-correio-nova {
+	color: var(--aa-vermelho);
+	font-weight: bold;
+}
+
+.academia-arcana .aa-correio-nova i {
+	font-size: 0.5em;
+	vertical-align: middle;
+}
+
+.academia-arcana .aa-correio-leitura.lida,
+.academia-arcana .aa-correio-leitura.parcial {
+	color: var(--aa-verde);
+	font-weight: bold;
+}
+
+@container aa-correio (max-width: 520px) {
+	.academia-arcana .aa-correio-recibo {
+		justify-content: center;
+		padding-inline: 0.25rem;
+		font-size: 0;
+	}
+}

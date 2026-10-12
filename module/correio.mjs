@@ -1,4 +1,4 @@
-import { MODULO, ehAluno, opcao } from "./config.mjs";
+import { MODULO, ehAluno, lerAluno, opcao } from "./config.mjs";
 
 /* Cada conversa é uma nota (JournalEntry) cujos donos são os usuários dos alunos participantes.
    Cada mensagem é uma página da nota: o texto fica no conteúdo e os dados (autor, item, edições) nas flags. */
@@ -91,12 +91,40 @@ export function totalNaoLidas(user = game.user) {
 	return Object.values(naoLidas(user)).reduce((soma, n) => soma + n, 0);
 }
 
-export async function marcarLida(conversa) {
-	const lido = foundry.utils.deepClone(opcao("correioLido") ?? {});
+/* O aluno decide, na janela do correio, se os colegas ficam sabendo que ele leu. */
+export function informaLeitura(actor) {
+	return lerAluno(actor)?.confirmaLeitura !== false;
+}
+
+/* Guarda no navegador o que o usuário já viu e, se o aluno permitir, registra a leitura na nota para os colegas.
+   O mestre lendo como personagem de jogador não conta como leitura do personagem. */
+export async function marcarLida(conversa, leitor) {
 	const ultima = conversa?.mensagens.at(-1)?.quando ?? 0;
-	if (!conversa || (Number(lido[conversa.id]) || 0) >= ultima) return;
-	lido[conversa.id] = ultima;
-	await game.settings.set(MODULO, "correioLido", lido);
+	if (!conversa || !ultima) return;
+	const lido = foundry.utils.deepClone(opcao("correioLido") ?? {});
+	if ((Number(lido[conversa.id]) || 0) < ultima) {
+		lido[conversa.id] = ultima;
+		await game.settings.set(MODULO, "correioLido", lido);
+	}
+	const actor = game.actors.get(leitor);
+	if (!actor || !conversa.participantes.includes(leitor) || !actor.isOwner || (game.user.isGM && actor.hasPlayerOwner) || !informaLeitura(actor)) return;
+	if ((Number(conversa.lido?.[leitor]) || 0) < ultima) await conversa.nota.update({ [`flags.${MODULO}.conversa.lido.${leitor}`]: ultima });
+}
+
+/* Quem já leu uma mensagem, entre os outros participantes. Quem desligou a confirmação fica em "ocultos". */
+export function leituraDaMensagem(conversa, mensagem) {
+	const leram = [];
+	const pendentes = [];
+	const ocultos = [];
+	for (const id of conversa.participantes) {
+		if (id === mensagem.de) continue;
+		const actor = game.actors.get(id);
+		const nome = actor?.name ?? "?";
+		if (!informaLeitura(actor)) ocultos.push(nome);
+		else if ((Number(conversa.lido?.[id]) || 0) >= mensagem.quando) leram.push(nome);
+		else pendentes.push(nome);
+	}
+	return { leram, pendentes, ocultos };
 }
 
 /* ---------------------------------------------------------------- */

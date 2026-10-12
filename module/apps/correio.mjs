@@ -1,4 +1,4 @@
-import { MODULO, ehAluno, opcao } from "../config.mjs";
+import { MODULO, ehAluno, lerAluno, opcao, salvarAluno } from "../config.mjs";
 import {
 	alterarParticipantes,
 	alternarRevelacao,
@@ -7,7 +7,9 @@ import {
 	criarGrupo,
 	editarMensagem,
 	enviar,
+	informaLeitura,
 	itensEnviaveis,
+	leituraDaMensagem,
 	marcarLida,
 	naoLidas,
 	paraTexto,
@@ -24,6 +26,16 @@ function dataHora(instante) {
 
 function escapar(texto) {
 	return String(texto).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function marcaDeLeitura({ leram, pendentes, ocultos }) {
+	const partes = [];
+	if (leram.length) partes.push(`Lida por ${leram.join(", ")}`);
+	if (pendentes.length) partes.push(`Ainda não leu: ${pendentes.join(", ")}`);
+	if (ocultos.length) partes.push(`Não informa leitura: ${ocultos.join(", ")}`);
+	const estado = leram.length && !pendentes.length ? "lida" : leram.length ? "parcial" : pendentes.length ? "enviada" : "oculta";
+	const rotulos = { lida: "lida", parcial: `lida por ${leram.length}`, enviada: "não lida", oculta: "leitura não informada" };
+	return { estado, rotulo: rotulos[estado], dica: partes.join(". "), icone: estado === "lida" || estado === "parcial" ? "fa-check-double" : estado === "enviada" ? "fa-check" : "fa-eye-slash" };
 }
 
 function previa(mensagem) {
@@ -84,6 +96,9 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	irParaOFim = true;
 
+	/* Até onde o usuário já tinha lido quando abriu cada conversa; serve para destacar as mensagens novas. */
+	vistos = {};
+
 	async _onClose(options) {
 		await super._onClose(options);
 		CorreioApp.instancia = null;
@@ -127,6 +142,7 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		const atual = this.#conversaAberta(todas);
 		const grupo = atual?.grupo ? atual : null;
 		const outro = grupo ? null : game.actors.get(this.aberta);
+		if (atual) this.vistos[atual.id] ??= Number((opcao("correioLido") ?? {})[atual.id]) || 0;
 		const mensagens = (atual?.mensagens ?? []).map((m) => {
 			const verHistorico = (gm || m.revelada) && m.edicoes.length > 0;
 			const dono = game.actors.get(m.item?.para);
@@ -134,6 +150,8 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 				id: m.id,
 				sistema: !!m.sistema,
 				minha: m.de === this.remetente,
+				nova: m.de !== this.remetente && m.quando > this.vistos[atual.id],
+				leitura: !m.sistema && (m.de === this.remetente || gm) ? marcaDeLeitura(leituraDaMensagem(atual, m)) : null,
 				autor: game.actors.get(m.de)?.name ?? "?",
 				html: m.html,
 				quando: dataHora(m.quando),
@@ -150,14 +168,14 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 				edicoes: verHistorico ? m.edicoes.map((e) => ({ html: e.texto, quando: dataHora(e.quando), por: e.por })) : []
 			};
 		});
-		if (atual) marcarLida(atual);
+		if (atual) marcarLida(atual, this.remetente);
 
 		const itens = eu && (gm || eu.isOwner) ? itensEnviaveis(eu).map((i) => ({ id: i.id, qtd: quantidadeDoItem(i), rotulo: quantidadeDoItem(i) > 1 ? `${i.name} (×${quantidadeDoItem(i)})` : i.name })) : [];
 		return {
 			gm,
 			remetentes: remetentes.map((a) => ({ id: a.id, nome: a.name, selecionado: a.id === this.remetente })),
 			variosRemetentes: remetentes.length > 1,
-			eu: eu ? { nome: eu.name, img: eu.img } : null,
+			eu: eu ? { nome: eu.name, img: eu.img, informa: informaLeitura(eu), podeConfigurar: gm || eu.isOwner } : null,
 			conversas: lista,
 			aberta: grupo ? { nome: grupo.nome, grupo: true, membros: nomes(grupo.participantes).join(", ") } : outro ? { nome: outro.name, img: outro.img } : null,
 			temNota: !!atual,
@@ -176,6 +194,15 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		raiz.querySelector("select[name='aa-correio-remetente']")?.addEventListener("change", (ev) => {
 			this.remetente = ev.target.value;
 			this.aberta = null;
+			this.vistos = {};
+			this.render();
+		});
+		raiz.querySelector("input[name='aa-correio-informa']")?.addEventListener("change", async (ev) => {
+			const actor = game.actors.get(this.remetente);
+			const aluno = lerAluno(actor);
+			if (!aluno || !(game.user.isGM || actor.isOwner)) return;
+			aluno.confirmaLeitura = ev.target.checked;
+			await salvarAluno(actor, aluno);
 			this.render();
 		});
 		const texto = raiz.querySelector("textarea[name='aa-correio-texto']");
@@ -220,6 +247,7 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	static #abrirConversa(event, alvo) {
 		this.aberta = alvo.dataset.conversa;
+		this.vistos = {};
 		this.rascunho = "";
 		this.render();
 	}

@@ -16,6 +16,7 @@ export function novoAluno() {
 		semestres: [],
 		quatroElementos: { vento: false, agua: false, terra: false, fogo: false },
 		anotacoes: "",
+		confirmaLeitura: true,
 		npc: null
 	};
 }
