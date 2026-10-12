@@ -67,6 +67,14 @@ Os dois painéis ficam flutuando sobre a mesa. Arraste pelo título para mover (
 - **Alunos**: lista os alunos ativos ou com o curso trancado. O mestre vê todos; o jogador vê os personagens em que tem permissão de observador ou dono. Cada aluno mostra PV, PM, o semestre mais recente com notas (média, aprovações, reprovações, pendências e, ao clicar, as disciplinas) e o botão **Matrícula**, que abre direto a aba de matrícula e fica destacado enquanto a matrícula está aberta.
 - **Ameaças**: aparece quando o combate é iniciado e some quando ele termina. Lista os combatentes sem jogador dono cujo token não é amistoso, na ordem de iniciativa, com destaque para quem está na vez. Clicar no nome centraliza o token; clicar no retrato abre a ficha. Por padrão só o mestre vê; em **Painel de ameaças para jogadores** ele pode liberar o estado aproximado (sem números) ou os valores completos. Ameaças ocultas nunca aparecem para jogadores.
 
+### Corpo docente
+
+Na Secretaria, o quadro **Corpo docente** lista os professores citados no catálogo de disciplinas. Em cada linha, escolha a ficha (ator) daquele professor ou use o botão para criar uma ficha de NPC com o nome dele, na pasta *Professores da Academia*. Disciplinas com dois professores (como *Prática Aventuresca*) contam para os dois.
+
+- **No correio**: o professor com ficha entra na lista de conversas com o ícone de professor e as disciplinas que leciona, e as mensagens dele saem marcadas como "Prof.". O mestre escreve em nome dele escolhendo a ficha em *Escrever como*.
+- **No boletim**: a coluna **Professor** passa a guardar a ficha de quem lançou cada avaliação. Quando o mestre lança a nota ou a situação, o módulo assina com o professor da disciplina que tiver ficha; o mestre pode trocar a ficha. Os jogadores veem o retrato e o nome de quem lançou.
+- **Enviar a avaliação**: com a situação definida e um professor associado, o ícone de envio na linha manda o resultado ao aluno pelo correio, em nome daquele professor.
+
 ### Correio da Academia
 
 Abre pelo envelope no painel de alunos, pela Secretaria ou pela macro. À esquerda ficam os outros alunos (personagens e NPCs); à direita, a conversa com o histórico completo.

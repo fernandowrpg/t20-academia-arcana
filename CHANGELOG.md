@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.0
+
+- Corpo docente: na Secretaria, o mestre vincula uma ficha a cada professor do catálogo (ou cria uma ficha de NPC com um clique).
+- Correio: professores com ficha participam das conversas e aparecem destacados, com o ícone de professor e as disciplinas que lecionam. O mestre escreve em nome deles.
+- Boletim: cada avaliação guarda a ficha do professor que a lançou. Ao lançar nota ou situação, o módulo assina com o professor da disciplina; o mestre pode trocar. Um botão envia a avaliação ao aluno pelo correio, em nome do professor.
+
 ## 1.7.0
 
 - Correio: confirmação de leitura. Cada mensagem enviada mostra se foi lida (em grupo, por quem), e as mensagens recebidas que você ainda não tinha visto aparecem marcadas como novas.

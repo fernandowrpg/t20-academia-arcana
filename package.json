@@ -1,6 +1,6 @@
 {
 	"name": "t20-academia-arcana",
-	"version": "1.7.0",
+	"version": "1.8.0",
 	"private": true,
 	"description": "Vida acadêmica, matrícula, boletim e compêndio da Academia Arcana para Foundry VTT (Tormenta20).",
 	"type": "module",

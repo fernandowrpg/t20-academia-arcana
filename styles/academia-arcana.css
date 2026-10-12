@@ -1736,3 +1736,49 @@
 		font-size: 0;
 	}
 }
+
+.academia-arcana .aa-docentes summary {
+	cursor: pointer;
+	font-weight: bold;
+}
+
+.academia-arcana .aa-docentes select {
+	width: 100%;
+	min-width: 8rem;
+}
+
+.academia-arcana .aa-col-professor select {
+	width: 100%;
+	min-width: 7rem;
+}
+
+.academia-arcana .aa-avaliador {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+}
+
+.academia-arcana .aa-avaliador .aa-mini {
+	width: 22px;
+	height: 22px;
+}
+
+.academia-arcana .aa-correio-contatos li.professor {
+	border-left-color: var(--aa-ouro);
+}
+
+.academia-arcana .aa-correio-contatos li.professor .aa-mini {
+	border: 2px solid var(--aa-ouro);
+}
+
+.academia-arcana .aa-correio-contato .fa-chalkboard-user,
+.academia-arcana .aa-correio-balao footer .fa-chalkboard-user {
+	color: var(--aa-ouro);
+}
+
+.academia-arcana .aa-correio-mensagem.professor .aa-correio-balao {
+	border-color: var(--aa-ouro);
+	border-left-width: 3px;
+	border-right-width: 3px;
+	background: color-mix(in srgb, var(--aa-ouro) 14%, transparent);
+}

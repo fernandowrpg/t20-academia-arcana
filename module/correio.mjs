@@ -1,4 +1,4 @@
-import { MODULO, ehAluno, lerAluno, opcao } from "./config.mjs";
+import { MODULO, ehAluno, ehProfessor, lerAluno, opcao } from "./config.mjs";
 
 /* Cada conversa é uma nota (JournalEntry) cujos donos são os usuários dos alunos participantes.
    Cada mensagem é uma página da nota: o texto fica no conteúdo e os dados (autor, item, edições) nas flags. */
@@ -32,10 +32,15 @@ export function paraTexto(html) {
 		.trim();
 }
 
-/* Alunos pelos quais o usuário pode escrever: os seus personagens; para o mestre, todos (inclusive NPCs). */
+/* Participam do correio os alunos e os professores com ficha vinculada. */
+export function noCorreio(actor) {
+	return ehAluno(actor) || ehProfessor(actor);
+}
+
+/* Fichas pelas quais o usuário pode escrever: as suas; para o mestre, todas (inclusive NPCs e professores). */
 export function remetentesDoUsuario(user = game.user) {
 	return game.actors
-		.filter((a) => ehAluno(a) && (user.isGM || a.testUserPermission(user, "OWNER")))
+		.filter((a) => noCorreio(a) && (user.isGM || a.testUserPermission(user, "OWNER")))
 		.sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 }
 
@@ -153,7 +158,7 @@ function nomeDaNota({ grupo, nome, participantes }) {
 }
 
 async function criarNota({ grupo = false, nome = "", participantes, criador }) {
-	const ids = [...new Set(participantes)].filter((id) => ehAluno(game.actors.get(id))).sort();
+	const ids = [...new Set(participantes)].filter((id) => noCorreio(game.actors.get(id))).sort();
 	if (ids.length < (grupo ? 3 : 2)) return null;
 	const conversa = { grupo, nome: grupo ? String(nome ?? "").trim().slice(0, LIMITE_NOME) || "Grupo de estudos" : "", participantes: ids, criador };
 	const pasta = await pastaDoCorreio();
@@ -219,7 +224,7 @@ export async function sincronizarPermissoes() {
 async function aplicarParticipantes(nota, participantes, autor) {
 	const dados = nota.getFlag(MODULO, "conversa");
 	if (!dados?.grupo || !Array.isArray(participantes)) return;
-	const novos = [...new Set([dados.criador, ...participantes])].filter((id) => ehAluno(game.actors.get(id))).sort();
+	const novos = [...new Set([dados.criador, ...participantes])].filter((id) => noCorreio(game.actors.get(id))).sort();
 	const entraram = novos.filter((id) => !dados.participantes.includes(id));
 	const sairam = dados.participantes.filter((id) => !novos.includes(id));
 	if (novos.length < 2 || (!entraram.length && !sairam.length)) return;

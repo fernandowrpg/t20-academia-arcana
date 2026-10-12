@@ -1,4 +1,4 @@
-import { MODULO, ehAluno, lerAluno, opcao, salvarAluno } from "../config.mjs";
+import { MODULO, corpoDocente, lerAluno, opcao, salvarAluno } from "../config.mjs";
 import {
 	alterarParticipantes,
 	alternarRevelacao,
@@ -12,6 +12,7 @@ import {
 	leituraDaMensagem,
 	marcarLida,
 	naoLidas,
+	noCorreio,
 	paraTexto,
 	quantidadeDoItem,
 	receberItem,
@@ -124,16 +125,23 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		const todas = conversas().filter((c) => c.participantes.includes(this.remetente));
 		const pendentes = naoLidas();
 		const nomes = (ids) => ids.map((id) => game.actors.get(id)?.name ?? "?");
+		/* Fichas de professor: id -> disciplinas que lecionam. */
+		const docentes = new Map();
+		for (const p of corpoDocente()) {
+			if (!p.actor) continue;
+			docentes.set(p.actor.id, [...new Set([...(docentes.get(p.actor.id) ?? []), ...p.disciplinas])]);
+		}
+		this.docentes = docentes;
 
 		const grupos = todas
 			.filter((c) => c.grupo)
 			.map((c) => ({ id: c.id, grupo: true, nome: c.nome, quando: c.mensagens.at(-1)?.quando ?? 0, previa: previa(c.mensagens.at(-1)) || nomes(c.participantes).join(", "), novas: pendentes[c.id] ?? 0 }));
 		const pessoas = game.actors
-			.filter((a) => ehAluno(a) && a.id !== this.remetente)
+			.filter((a) => noCorreio(a) && a.id !== this.remetente)
 			.map((a) => {
 				const conversa = todas.find((c) => !c.grupo && c.participantes.includes(a.id));
 				const ultima = conversa?.mensagens.at(-1) ?? null;
-				return { id: a.id, nome: a.name, img: a.img, quando: ultima?.quando ?? 0, previa: previa(ultima), novas: conversa ? (pendentes[conversa.id] ?? 0) : 0 };
+				return { id: a.id, nome: a.name, img: a.img, professor: docentes.has(a.id), leciona: (docentes.get(a.id) ?? []).join(", "), quando: ultima?.quando ?? 0, previa: previa(ultima), novas: conversa ? (pendentes[conversa.id] ?? 0) : 0 };
 			});
 		const lista = [...grupos, ...pessoas].sort((a, b) => b.quando - a.quando || Number(!!b.grupo) - Number(!!a.grupo) || a.nome.localeCompare(b.nome, "pt-BR"));
 		if (!lista.some((c) => c.id === this.aberta)) this.aberta = null;
@@ -150,6 +158,7 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 				id: m.id,
 				sistema: !!m.sistema,
 				minha: m.de === this.remetente,
+				professor: docentes.has(m.de),
 				nova: m.de !== this.remetente && m.quando > this.vistos[atual.id],
 				leitura: !m.sistema && (m.de === this.remetente || gm) ? marcaDeLeitura(leituraDaMensagem(atual, m)) : null,
 				autor: game.actors.get(m.de)?.name ?? "?",
@@ -177,7 +186,11 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			variosRemetentes: remetentes.length > 1,
 			eu: eu ? { nome: eu.name, img: eu.img, informa: informaLeitura(eu), podeConfigurar: gm || eu.isOwner } : null,
 			conversas: lista,
-			aberta: grupo ? { nome: grupo.nome, grupo: true, membros: nomes(grupo.participantes).join(", ") } : outro ? { nome: outro.name, img: outro.img } : null,
+			aberta: grupo
+				? { nome: grupo.nome, grupo: true, membros: nomes(grupo.participantes).join(", ") }
+				: outro
+					? { nome: outro.name, img: outro.img, professor: docentes.has(outro.id), membros: docentes.has(outro.id) ? `Professor · ${docentes.get(outro.id).join(", ")}` : "" }
+					: null,
 			temNota: !!atual,
 			podeGerir: !!grupo && (gm || (grupo.criador === this.remetente && !!eu?.isOwner)),
 			destinatarios: grupo ? grupo.participantes.filter((id) => id !== this.remetente).map((id) => ({ id, nome: game.actors.get(id)?.name ?? "?" })) : [],
@@ -253,8 +266,8 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	static async #novoGrupo() {
-		const colegas = game.actors.filter((a) => ehAluno(a) && a.id !== this.remetente).sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
-		const opcoes = colegas.map((a) => `<label style="display:flex;gap:.4rem;align-items:center"><input type="checkbox" name="membro" value="${a.id}"> ${escapar(a.name)}</label>`).join("");
+		const colegas = game.actors.filter((a) => noCorreio(a) && a.id !== this.remetente).sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+		const opcoes = colegas.map((a) => `<label style="display:flex;gap:.4rem;align-items:center"><input type="checkbox" name="membro" value="${a.id}"> ${escapar(a.name)}${this.docentes?.has(a.id) ? " <em>(professor)</em>" : ""}</label>`).join("");
 		const dados = await DialogV2.prompt({
 			window: { title: "Novo grupo" },
 			content: `<label>Nome do grupo<input type="text" name="nome" maxlength="60" placeholder="Grupo de estudos" style="width:100%"></label><p>Escolha ao menos dois colegas:</p><div style="max-height:260px;overflow:auto;display:grid;gap:.2rem">${opcoes}</div>`,
@@ -298,9 +311,9 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 	static async #participantes() {
 		const atual = this.#conversaAberta();
 		if (!atual?.grupo) return;
-		const colegas = game.actors.filter((a) => ehAluno(a) && a.id !== atual.criador).sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+		const colegas = game.actors.filter((a) => noCorreio(a) && a.id !== atual.criador).sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 		const opcoes = colegas
-			.map((a) => `<label style="display:flex;gap:.4rem;align-items:center"><input type="checkbox" name="membro" value="${a.id}" ${atual.participantes.includes(a.id) ? "checked" : ""}> ${escapar(a.name)}</label>`)
+			.map((a) => `<label style="display:flex;gap:.4rem;align-items:center"><input type="checkbox" name="membro" value="${a.id}" ${atual.participantes.includes(a.id) ? "checked" : ""}> ${escapar(a.name)}${this.docentes?.has(a.id) ? " <em>(professor)</em>" : ""}</label>`)
 			.join("");
 		const escolhidos = await DialogV2.prompt({
 			window: { title: `Participantes: ${atual.nome}` },

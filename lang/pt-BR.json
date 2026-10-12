@@ -76,6 +76,7 @@
 			"CorreioSemAluno": "Você precisa de um personagem admitido na Academia para usar o correio.",
 			"CorreioSemMestre": "Para abrir uma conversa nova, o mestre precisa estar conectado (ou liberar a você a permissão de criar notas).",
 			"CorreioSemApagar": "Só o mestre pode apagar a correspondência.",
+			"AvaliacaoEnviada": "{professor} enviou a avaliação a {aluno} pelo correio.",
 			"GrupoVazio": "O grupo precisa de pelo menos mais um participante além de quem o criou.",
 			"GrupoSemMestre": "Para mudar os participantes, o mestre precisa estar conectado.",
 			"GrupoPequeno": "Um grupo precisa de você e de pelo menos mais dois alunos.",

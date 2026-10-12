@@ -14,7 +14,8 @@ import {
 	periciasPredominantes,
 	preRequisitos
 } from "../logica.mjs";
-import { MODULO, contextoCatalogo, lerAluno, opcao, podeMatricular, removerAluno, salvarAluno } from "../config.mjs";
+import { MODULO, contextoCatalogo, corpoDocente, fichasDoProfessor, lerAluno, opcao, podeMatricular, removerAluno, salvarAluno } from "../config.mjs";
+import { enviar } from "../correio.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 
@@ -74,7 +75,8 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 			desmatricular: VidaAcademicaApp.#desmatricular,
 			rolar: VidaAcademicaApp.#rolar,
 			alternarElemento: VidaAcademicaApp.#alternarElemento,
-			abrirCompendio: VidaAcademicaApp.#abrirCompendio
+			abrirCompendio: VidaAcademicaApp.#abrirCompendio,
+			enviarAvaliacao: VidaAcademicaApp.#enviarAvaliacao
 		}
 	};
 
@@ -223,6 +225,8 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 				.filter((g) => g.total > 0)
 		};
 
+		/* Fichas de professor que podem assinar uma avaliação. */
+		const docentes = [...new Map(corpoDocente().filter((p) => p.actor).map((p) => [p.actor.id, p.actor])).values()].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 		contexto.boletim = aluno.semestres
 			.map((s, i) => {
 				const editavel = gm && s.status !== "matricula";
@@ -238,7 +242,14 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 					predominantes: periciasPredominantes(s).map(rotular).join(", "),
 					disciplinas: s.disciplinas.map((d, j) => {
 						const efetiva = periciaEfetiva(d);
+						const professor = catalogo.get(d.id)?.professor ?? "";
+						const avaliador = game.actors.get(d.avaliador) ?? null;
 						return {
+							avaliador: avaliador && { id: avaliador.id, nome: avaliador.name, img: avaliador.img },
+							avaliadores: docentes.length
+								? [{ valor: "", rotulo: professor || "—", selecionado: !avaliador }].concat(docentes.map((a) => ({ valor: a.id, rotulo: a.name, selecionado: a.id === avaliador?.id })))
+								: [],
+							podeEnviar: editavel && !!avaliador && d.situacao !== "cursando",
 							indice: j,
 							id: d.id,
 							nome: d.nome,
@@ -300,6 +311,13 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 		else valor = el.value;
 		if (el.dataset.tipo === "numero" && valor !== null && !Number.isFinite(valor)) return;
 		foundry.utils.setProperty(aluno, caminho, valor);
+		/* Ao lançar nota ou situação, a avaliação fica assinada pela ficha do professor da disciplina. */
+		const lancamento = /^semestres\.(\d+)\.disciplinas\.(\d+)\.(nota|situacao)$/.exec(caminho);
+		const entrada = lancamento ? aluno.semestres[lancamento[1]]?.disciplinas[lancamento[2]] : null;
+		if (entrada && !entrada.avaliador) {
+			const ficha = fichasDoProfessor(contextoCatalogo().catalogo.get(entrada.id)?.professor)[0];
+			if (ficha) entrada.avaliador = ficha.id;
+		}
 		await salvarAluno(this.actor, aluno);
 	}
 
@@ -476,6 +494,20 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 			speaker: ChatMessage.getSpeaker({ actor: this.actor }),
 			flavor: `${nomePericia(chave, rotulos)} (${entrada.nome})`
 		});
+	}
+
+	/* O professor que lançou a avaliação escreve o resultado ao aluno pelo correio. */
+	static async #enviarAvaliacao(event, alvo) {
+		if (!game.user.isGM) return;
+		const linha = alvo.closest("[data-semestre]");
+		const aluno = lerAluno(this.actor);
+		const semestre = aluno?.semestres[Number(linha?.dataset.semestre)];
+		const entrada = semestre?.disciplinas[Number(linha?.dataset.indice)];
+		const professor = game.actors.get(entrada?.avaliador);
+		if (!entrada || !professor) return;
+		const nota = opcao("usarNotas") && entrada.nota !== null && entrada.nota !== undefined ? ` Nota: ${formatarNota(entrada.nota)}.` : "";
+		const pagina = await enviar({ de: professor.id, para: this.actor.id, texto: `Avaliação de ${entrada.nome} (${semestre.numero}º semestre).${nota} Situação: ${SITUACOES[entrada.situacao] ?? entrada.situacao}.` });
+		if (pagina) ui.notifications.info(game.i18n.format("ACADEMIA.Aviso.AvaliacaoEnviada", { professor: professor.name, aluno: this.actor.name }));
 	}
 
 	static async #alternarElemento(event, alvo) {

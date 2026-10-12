@@ -242,7 +242,12 @@
 					<tr class="situacao-{{situacao}}" data-semestre="{{../indice}}" data-indice="{{indice}}">
 						<td>{{nome}}</td>
 						<td>{{#if escolheOficio}}{{#if ../editavel}}<select data-campo="semestres.{{../indice}}.disciplinas.{{indice}}.oficio">{{#each oficios}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>{{else}}{{pericia}}{{/if}}{{else}}{{pericia}}{{/if}}</td>
-						<td>{{professor}}</td>
+						<td class="aa-col-professor">
+							{{#if ../editavel}}{{#if avaliadores.length}}
+							<select data-campo="semestres.{{../indice}}.disciplinas.{{indice}}.avaliador" data-tooltip="Ficha do professor que lançou a avaliação">{{#each avaliadores}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>
+							{{else}}{{professor}}{{/if}}
+							{{else}}{{#if avaliador}}<span class="aa-avaliador" data-tooltip="Avaliação lançada por {{avaliador.nome}}"><img src="{{avaliador.img}}" alt="" class="aa-mini"> {{avaliador.nome}}</span>{{else}}{{professor}}{{/if}}{{/if}}
+						</td>
 						{{#if @root.usarNotas}}
 						<td class="aa-col-nota">
 							{{#if ../editavel}}<input type="number" step="0.1" min="0" data-tipo="numero" data-campo="semestres.{{../indice}}.disciplinas.{{indice}}.nota" value="{{nota}}">{{else}}{{notaTexto}}{{/if}}
@@ -255,7 +260,7 @@
 							</select>
 							{{else}}<span class="aa-situacao">{{situacaoTexto}}</span>{{/if}}
 						</td>
-						<td class="aa-col-acao">{{#if podeRolar}}<a data-action="rolar" data-tooltip="Rolar {{pericia}}"><i class="fa-solid fa-dice-d20"></i></a>{{/if}}</td>
+						<td class="aa-col-acao">{{#if podeEnviar}}<a data-action="enviarAvaliacao" data-tooltip="Enviar a avaliação ao aluno pelo correio, em nome de {{avaliador.nome}}"><i class="fa-solid fa-paper-plane"></i></a> {{/if}}{{#if podeRolar}}<a data-action="rolar" data-tooltip="Rolar {{pericia}}"><i class="fa-solid fa-dice-d20"></i></a>{{/if}}</td>
 					</tr>
 					{{/each}}
 				</tbody>

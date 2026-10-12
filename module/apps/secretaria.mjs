@@ -1,13 +1,15 @@
 import { GREMIOS, STATUS_SEMESTRE } from "../data/disciplinas.mjs";
 import { concluirAleatorio, descricaoNpc, descricaoParceiro, matricularAleatorio, subirNivel } from "../gerador.mjs";
 import { estatisticas, novoAluno, novoSemestre, pendenciasParaEncerrar } from "../logica.mjs";
-import { MODULO, contextoCatalogo, disciplinasDosPersonagens, ehAluno, lerAluno, opcao, salvarAluno, sincronizarFicha } from "../config.mjs";
+import { MODULO, contextoCatalogo, corpoDocente, disciplinasDosPersonagens, ehAluno, vinculosDeProfessores, lerAluno, opcao, salvarAluno, sincronizarFicha } from "../config.mjs";
 import { CalendarioApp } from "./calendario.mjs";
 import { CorreioApp } from "./correio.mjs";
 import { GeradorAlunosApp } from "./gerador.mjs";
 import { VidaAcademicaApp } from "./vida-academica.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
+
+const PASTA_PROFESSORES = "Professores da Academia";
 
 export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 	static instancia = null;
@@ -40,7 +42,9 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			catalogo: SecretariaApp.#catalogo,
 			gerador: SecretariaApp.#gerador,
 			calendario: SecretariaApp.#calendario,
-			correio: SecretariaApp.#correio
+			correio: SecretariaApp.#correio,
+			criarFichaProfessor: SecretariaApp.#criarFichaProfessor,
+			abrirFichaProfessor: SecretariaApp.#abrirFichaProfessor
 		}
 	};
 
@@ -79,7 +83,16 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			.filter((a) => a.type === "character" && !ehAluno(a))
 			.sort((a, b) => a.name.localeCompare(b.name))
 			.map((a) => ({ id: a.id, nome: a.name }));
-		return { alunos, candidatos, temCandidatos: candidatos.length > 0 };
+		const fichas = game.actors.filter((a) => !ehAluno(a)).sort((a, b) => a.name.localeCompare(b.name));
+		const docentes = corpoDocente().map((p) => ({
+			nome: p.nome,
+			disciplinas: p.disciplinas.join(", "),
+			quantidade: p.disciplinas.length,
+			vinculado: !!p.actor,
+			img: p.actor?.img ?? null,
+			fichas: [{ id: "", nome: "— sem ficha —", selecionado: !p.actor }].concat(fichas.map((a) => ({ id: a.id, nome: a.name, selecionado: a.id === p.actor?.id })))
+		}));
+		return { alunos, candidatos, temCandidatos: candidatos.length > 0, docentes };
 	}
 
 	static #abrirAluno(event, alvo) {
@@ -154,6 +167,34 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	static #calendario() {
 		CalendarioApp.abrir();
+	}
+
+	async _onRender(context, options) {
+		await super._onRender(context, options);
+		this.element.querySelectorAll("select[data-professor]").forEach((el) =>
+			el.addEventListener("change", (ev) => this.#vincular(ev.target.dataset.professor, ev.target.value))
+		);
+	}
+
+	async #vincular(nome, idDaFicha) {
+		const vinculos = foundry.utils.deepClone(vinculosDeProfessores());
+		if (idDaFicha) vinculos[nome] = idDaFicha;
+		else delete vinculos[nome];
+		await game.settings.set(MODULO, "professores", vinculos);
+	}
+
+	static async #criarFichaProfessor(event, alvo) {
+		const nome = alvo.closest("[data-docente]")?.dataset.docente;
+		if (!nome) return;
+		const pasta = game.folders.find((f) => f.type === "Actor" && f.name === PASTA_PROFESSORES) ?? (await Folder.create({ name: PASTA_PROFESSORES, type: "Actor" }));
+		const tipo = game.documentTypes?.Actor?.includes("npc") ? "npc" : "character";
+		const actor = await Actor.implementation.create({ name: nome, type: tipo, folder: pasta?.id ?? null, prototypeToken: { name: nome, disposition: CONST.TOKEN_DISPOSITIONS.NEUTRAL, actorLink: true } });
+		if (actor) await this.#vincular(nome, actor.id);
+	}
+
+	static #abrirFichaProfessor(event, alvo) {
+		const nome = alvo.closest("[data-docente]")?.dataset.docente;
+		game.actors.get(vinculosDeProfessores()[nome])?.sheet.render(true);
 	}
 
 	static #correio() {

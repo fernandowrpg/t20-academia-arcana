@@ -124,6 +124,14 @@ export function registrarConfiguracoes(CatalogoApp) {
 		onChange: notificar
 	});
 
+	game.settings.register(MODULO, "professores", {
+		scope: "world",
+		config: false,
+		type: Object,
+		default: {},
+		onChange: notificar
+	});
+
 	game.settings.register(MODULO, "paineis", {
 		scope: "client",
 		config: false,
@@ -194,6 +202,45 @@ export async function salvarAluno(actor, aluno) {
 
 export async function removerAluno(actor) {
 	return actor.unsetFlag(MODULO, FLAG);
+}
+
+/* O catálogo pode trazer dois professores na mesma disciplina, separados por barra. */
+export function nomesDeProfessor(texto) {
+	return String(texto ?? "")
+		.split("/")
+		.map((n) => n.trim())
+		.filter(Boolean);
+}
+
+/* Nome do professor no catálogo -> id da ficha vinculada pelo mestre na Secretaria. */
+export function vinculosDeProfessores() {
+	return opcao("professores") ?? {};
+}
+
+export function ehProfessor(actor) {
+	return !!actor && Object.values(vinculosDeProfessores()).includes(actor.id);
+}
+
+export function fichasDoProfessor(texto) {
+	const vinculos = vinculosDeProfessores();
+	return nomesDeProfessor(texto)
+		.map((n) => game.actors.get(vinculos[n]))
+		.filter(Boolean);
+}
+
+/* Todos os professores citados no catálogo, com as disciplinas e a ficha vinculada (se houver). */
+export function corpoDocente() {
+	const vinculos = vinculosDeProfessores();
+	const porNome = new Map();
+	for (const d of contextoCatalogo().catalogo.values()) {
+		for (const nome of nomesDeProfessor(d.professor)) {
+			if (!porNome.has(nome)) porNome.set(nome, []);
+			porNome.get(nome).push(d.nome);
+		}
+	}
+	return [...porNome.entries()]
+		.map(([nome, disciplinas]) => ({ nome, disciplinas, actor: game.actors.get(vinculos[nome]) ?? null }))
+		.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
 }
 
 export function ehNpcGerado(actor) {
