@@ -1,0 +1,385 @@
+/* Tema Scriptorium: pergaminho claro, hastes de madeira, tinta sépia.
+   body.aa-tema-modulo: só as janelas e painéis do módulo.
+   body.aa-tema-tudo: também as janelas e a interface do Foundry.
+   As regras gerais usam :where() para ficar com especificidade baixa e não brigar com sistemas e outros módulos. */
+
+body.aa-tema-tudo,
+body.aa-tema-modulo {
+	--aa-papel: #ead9b0;
+	--aa-papel-2: #d9c391;
+	--aa-papel-sombra: #b89a5e;
+	--aa-tinta: #3b2a17;
+	--aa-tinta-suave: #6d5636;
+	--aa-traco: rgba(109, 86, 54, 0.55);
+	--aa-arcano: #5b3a8c;
+	--aa-divino: #b8891b;
+	--aa-creme: #f6e7c1;
+	--aa-haste: linear-gradient(#7a5630, #3d2812 55%, #6b4a28);
+	--aa-ponteira: radial-gradient(circle at 35% 30%, #f1d98a, #a8791c 60%, #5d3f0a);
+	--aa-pergaminho:
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .1 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E"),
+		radial-gradient(ellipse at 20% 10%, rgba(255, 255, 255, 0.33) 0, transparent 55%),
+		linear-gradient(90deg, var(--aa-papel-sombra) 0, var(--aa-papel) 5%, var(--aa-papel) 95%, var(--aa-papel-sombra) 100%);
+	--aa-fonte-titulo: "Cinzel", "Modesto Condensed", "Palatino Linotype", serif;
+	--aa-fonte-texto: "IM Fell English", "Palatino Linotype", Georgia, serif;
+}
+
+/* ------------------------------------------------------------------ */
+/* Haste do rolo: o cabeçalho de cada janela                           */
+/* ------------------------------------------------------------------ */
+body.aa-tema-tudo :where(.application, .app.window-app) > .window-header,
+body.aa-tema-modulo .academia-arcana > .window-header {
+	position: relative;
+	padding-inline: 26px;
+	border: none;
+	border-radius: 9px;
+	background: var(--aa-haste);
+	color: var(--aa-creme);
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+	text-shadow: 0 1px 2px #000;
+}
+
+body.aa-tema-tudo :where(.application, .app.window-app) > .window-header::before,
+body.aa-tema-tudo :where(.application, .app.window-app) > .window-header::after,
+body.aa-tema-modulo .academia-arcana > .window-header::before,
+body.aa-tema-modulo .academia-arcana > .window-header::after,
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-topo::before,
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-topo::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	width: 18px;
+	height: 18px;
+	margin-top: -9px;
+	border-radius: 50%;
+	background: var(--aa-ponteira);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+	pointer-events: none;
+}
+
+body.aa-tema-tudo :where(.application, .app.window-app) > .window-header::before,
+body.aa-tema-modulo .academia-arcana > .window-header::before,
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-topo::before {
+	left: 3px;
+}
+
+body.aa-tema-tudo :where(.application, .app.window-app) > .window-header::after,
+body.aa-tema-modulo .academia-arcana > .window-header::after,
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-topo::after {
+	right: 3px;
+}
+
+body.aa-tema-tudo :where(.application, .app.window-app) > .window-header :where(.window-title, h1, h4),
+body.aa-tema-modulo .academia-arcana > .window-header :where(.window-title, h1, h4) {
+	font-family: var(--aa-fonte-titulo);
+	letter-spacing: 0.05em;
+	color: var(--aa-creme);
+}
+
+body.aa-tema-tudo :where(.application, .app.window-app) > .window-header :where(button, a, i),
+body.aa-tema-modulo .academia-arcana > .window-header :where(button, a, i) {
+	color: var(--aa-creme);
+}
+
+/* ------------------------------------------------------------------ */
+/* Folha do rolo: o corpo das janelas                                  */
+/* ------------------------------------------------------------------ */
+:where(body.aa-tema-tudo) :where(.application, .app.window-app),
+body.aa-tema-modulo .academia-arcana.application {
+	--color-text-primary: var(--aa-tinta);
+	--color-text-secondary: var(--aa-tinta-suave);
+	--color-text-subtle: var(--aa-tinta-suave);
+	--color-text-emphatic: #1f150a;
+	--color-border: var(--aa-traco);
+	--color-form-label: var(--aa-tinta);
+	--color-form-hint: var(--aa-tinta-suave);
+	--background: var(--aa-papel);
+	background: var(--aa-pergaminho);
+	background-color: var(--aa-papel);
+	color: var(--aa-tinta);
+	border: 1px solid var(--aa-tinta-suave);
+	border-bottom: 8px solid #4a3118;
+	border-radius: 9px 9px 5px 5px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(90, 61, 20, 0.2);
+}
+
+:where(body.aa-tema-tudo) :where(.application, .app.window-app) > :where(.window-content),
+body.aa-tema-modulo .academia-arcana > .window-content {
+	background: transparent;
+	color: var(--aa-tinta);
+}
+
+:where(body.aa-tema-tudo) :where(.application, .app.window-app) :where(input[type="text"], input[type="number"], input[type="search"], input[type="password"], select, textarea),
+body.aa-tema-modulo .academia-arcana :where(input[type="text"], input[type="number"], input[type="search"], select, textarea) {
+	background: rgba(255, 255, 255, 0.4);
+	border: 1px solid var(--aa-traco);
+	color: var(--aa-tinta);
+}
+
+:where(body.aa-tema-tudo) :where(.application, .app.window-app) :where(.window-content button),
+body.aa-tema-modulo .academia-arcana :where(.window-content button) {
+	background: linear-gradient(rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.1));
+	border: 1px solid var(--aa-tinta-suave);
+	color: var(--aa-tinta);
+}
+
+:where(body.aa-tema-tudo) :where(.application, .app.window-app) :where(.window-content button:hover),
+body.aa-tema-modulo .academia-arcana :where(.window-content button:hover) {
+	box-shadow: 0 0 0 1px var(--aa-divino), 0 0 6px var(--aa-divino);
+}
+
+/* ------------------------------------------------------------------ */
+/* Interface do Foundry (só no modo "tudo")                            */
+/* ------------------------------------------------------------------ */
+:where(body.aa-tema-tudo) :where(#sidebar-content, #players-active, #players-inactive, #context-menu, #tooltip, .locked-tooltip) {
+	--color-text-primary: var(--aa-tinta);
+	--color-text-secondary: var(--aa-tinta-suave);
+	--color-text-subtle: var(--aa-tinta-suave);
+	--color-border: var(--aa-traco);
+	background: var(--aa-pergaminho);
+	background-color: var(--aa-papel);
+	color: var(--aa-tinta);
+	border: 1px solid var(--aa-tinta-suave);
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+}
+
+:where(body.aa-tema-tudo) :where(#sidebar-content) {
+	border-top: 8px solid #4a3118;
+	border-bottom: 8px solid #4a3118;
+	border-radius: 5px;
+}
+
+:where(body.aa-tema-tudo) :where(#sidebar-content) :where(.sidebar-tab, .directory-header, .directory-footer, .directory-list, .chat-log) {
+	background: transparent;
+	color: var(--aa-tinta);
+}
+
+:where(body.aa-tema-tudo) :where(#sidebar-content) :where(input, select, textarea) {
+	background: rgba(255, 255, 255, 0.4);
+	border: 1px solid var(--aa-traco);
+	color: var(--aa-tinta);
+}
+
+:where(body.aa-tema-tudo) :where(#sidebar-content) :where(button) {
+	background: linear-gradient(rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.1));
+	border: 1px solid var(--aa-tinta-suave);
+	color: var(--aa-tinta);
+}
+
+:where(body.aa-tema-tudo) :where(.chat-message) {
+	--color-text-primary: var(--aa-tinta);
+	--color-text-secondary: var(--aa-tinta-suave);
+	background: #f1e3bf;
+	color: var(--aa-tinta);
+	border: 1px solid var(--aa-traco);
+	border-left: 3px solid var(--aa-arcano);
+	border-radius: 2px;
+}
+
+:where(body.aa-tema-tudo) :where(.chat-message) :where(.message-sender, .message-header h4) {
+	font-family: var(--aa-fonte-titulo);
+	color: var(--aa-tinta);
+}
+
+:where(body.aa-tema-tudo) :where(.chat-message) :where(.message-metadata, .message-timestamp) {
+	color: var(--aa-tinta-suave);
+}
+
+:where(body.aa-tema-tudo) :where(.chat-message) :where(.dice-total, .dice-formula) {
+	background: rgba(0, 0, 0, 0.05);
+	border: 1px solid var(--aa-traco);
+	color: var(--aa-arcano);
+}
+
+/* Botões da interface: controles de cena, abas de cena, abas da barra lateral, macros */
+:where(body.aa-tema-tudo) :where(#interface) :where(.ui-control),
+:where(body.aa-tema-tudo) :where(#hotbar) :where(.slot) {
+	--control-bg-color: var(--aa-papel);
+	--control-border-color: var(--aa-tinta-suave);
+	--control-icon-color: var(--aa-tinta);
+	--control-hover-bg-color: #f4e8c8;
+	--control-hover-border-color: var(--aa-divino);
+	--control-hover-icon-color: var(--aa-tinta);
+	--control-active-bg-color: var(--aa-arcano);
+	--control-active-border-color: var(--aa-divino);
+	--control-active-icon-color: var(--aa-creme);
+	background: linear-gradient(var(--aa-papel), var(--aa-papel-2));
+	border: 1px solid var(--aa-tinta-suave);
+	color: var(--aa-tinta);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+:where(body.aa-tema-tudo) :where(#interface) :where(.ui-control:hover),
+:where(body.aa-tema-tudo) :where(#hotbar) :where(.slot:hover) {
+	background: #f4e8c8;
+	border-color: var(--aa-divino);
+	color: var(--aa-tinta);
+}
+
+:where(body.aa-tema-tudo) :where(#interface) :where(.ui-control.active, .ui-control[aria-pressed="true"], .ui-control.toggle.active) {
+	background: linear-gradient(var(--aa-arcano), #3c2660);
+	border-color: var(--aa-divino);
+	color: var(--aa-creme);
+	box-shadow: 0 0 0 1px var(--aa-divino), 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+:where(body.aa-tema-tudo) :where(#scene-navigation) :where(.ui-control, .scene) {
+	font-family: var(--aa-fonte-titulo);
+	letter-spacing: 0.03em;
+}
+
+:where(body.aa-tema-tudo) :where(#context-menu) :where(.context-item:hover) {
+	background: rgba(91, 58, 140, 0.15);
+	color: var(--aa-tinta);
+}
+
+/* ------------------------------------------------------------------ */
+/* Janelas do módulo                                                   */
+/* ------------------------------------------------------------------ */
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana {
+	--aa-roxo: var(--aa-arcano);
+	--aa-roxo-claro: rgba(255, 255, 255, 0.28);
+	--aa-ouro: var(--aa-divino);
+	--aa-verde: #2f7d4a;
+	--aa-vermelho: #9c2f2f;
+	--aa-ambar: #a8660f;
+	--aa-borda: var(--aa-traco);
+	--aa-texto-suave: var(--aa-tinta-suave);
+	font-family: var(--aa-fonte-texto);
+	font-size: 0.95rem;
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana .aa-cabecalho {
+	margin: 0.5rem 0.75rem 0;
+	background: none;
+	color: var(--aa-tinta);
+	border-top: 3px double var(--aa-tinta-suave);
+	border-bottom: 3px double var(--aa-tinta-suave);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana .aa-retrato {
+	border: none;
+	background: var(--aa-papel-2);
+	box-shadow: 0 0 0 3px var(--aa-divino), 0 0 0 5px var(--aa-papel), 0 0 0 6px var(--aa-tinta-suave);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana :is(.aa-identidade h1, .aa-cartao legend, .aa-aba, th, .aa-boletim h2, .aa-cal-dia > h3, .aa-cal-turno-nome, .aa-numeros span) {
+	font-family: var(--aa-fonte-titulo);
+	letter-spacing: 0.04em;
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana .aa-botao-icone {
+	color: var(--aa-tinta);
+	border-color: var(--aa-tinta-suave);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana .aa-aba.ativa {
+	background: rgba(255, 255, 255, 0.35);
+	border: 1px solid var(--aa-tinta-suave);
+	border-bottom: 3px solid var(--aa-arcano);
+	border-radius: 6px 6px 0 0;
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana .aa-cartao {
+	border: 1px solid var(--aa-tinta-suave);
+	border-radius: 3px;
+	background: rgba(255, 255, 255, 0.16);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana .aa-cartao legend {
+	font-size: 0.8rem;
+	text-transform: uppercase;
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana th {
+	font-size: 0.72rem;
+	text-transform: uppercase;
+	color: var(--aa-tinta-suave);
+	border-bottom: 2px solid var(--aa-tinta-suave);
+	background: none;
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana td {
+	border-bottom: 1px dotted var(--aa-tinta-suave);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana :is(.aa-numeros strong, td.aa-col-nota, .aa-media) {
+	font-family: var(--aa-fonte-titulo);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana :is(.aa-botoes, .aa-rodape, .aa-vazio, .aa-cal-topo) button {
+	background: linear-gradient(var(--aa-arcano), #3c2660);
+	border: 1px solid #2a1a45;
+	color: var(--aa-creme);
+	font-family: var(--aa-fonte-titulo);
+	font-size: 0.75rem;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana button.aa-perigo {
+	background: linear-gradient(#9c2f2f, #5e1a1a);
+	border-color: #4a1313;
+	color: var(--aa-creme);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana .aa-cal-dia > h3 {
+	background: var(--aa-haste);
+	color: var(--aa-creme);
+	border-radius: 9px;
+	text-shadow: 0 1px 2px #000;
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana .aa-cal-turma {
+	border-radius: 2px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+/* Painéis flutuantes */
+body:is(.aa-tema-tudo, .aa-tema-modulo) .academia-arcana.aa-painel {
+	--aa-azul: #2f6fb0;
+	--aa-linha: rgba(109, 86, 54, 0.4);
+	color: var(--aa-tinta);
+	background: var(--aa-pergaminho);
+	background-color: var(--aa-papel);
+	border: 1px solid var(--aa-tinta-suave);
+	border-bottom: 8px solid #4a3118;
+	border-radius: 9px 9px 5px 5px;
+	box-shadow: 0 8px 22px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(90, 61, 20, 0.2);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-topo {
+	position: relative;
+	padding-inline: 26px;
+	background: var(--aa-haste);
+	color: var(--aa-creme);
+	border-bottom: none;
+	border-radius: 9px;
+	font-family: var(--aa-fonte-titulo);
+	text-shadow: 0 1px 2px #000;
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-rodada {
+	color: var(--aa-creme);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-nome {
+	font-family: var(--aa-fonte-titulo);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-retrato {
+	background: var(--aa-papel-2);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-barra-trilho {
+	background: rgba(0, 0, 0, 0.2);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel :is(.aa-painel-media strong, .aa-painel-disciplinas span) {
+	color: var(--aa-tinta);
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-item.da-vez {
+	background: rgba(184, 137, 27, 0.2);
+}

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.0
+
+- Tema Scriptorium: aparência de escola de magia com janelas em pergaminho, hastes de madeira com ponteiras de latão, tinta sépia, roxo arcano e dourado divino. Cada usuário escolhe em *Tema Scriptorium* se aplica ao Foundry inteiro, só às janelas do módulo ou a nada.
+- Os três protótipos de interface que deram origem ao tema ficam em `prototipos/interface.html`.
+
 ## 1.3.0
 
 - Gerador de Alunos: depois da compra aleatória, o aluno recebe +2 no atributo da classe e +1 em outros dois atributos sorteados.

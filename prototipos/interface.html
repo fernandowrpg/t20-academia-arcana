@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Academia Arcana · Protótipos de interface</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cinzel+Decorative:wght@700&family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Uncial+Antiqua&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: #17141c; color: #e9e3f2; font-family: "Spectral", Georgia, serif; }
+
+.seletor { position: sticky; top: 0; z-index: 50; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 16px; background: #100d15ee; border-bottom: 1px solid #3a3147; }
+.seletor h1 { margin: 0 12px 0 0; font: 700 16px "Cinzel", serif; letter-spacing: .06em; }
+.seletor button { cursor: pointer; padding: 6px 14px; border-radius: 999px; border: 1px solid #5a4d70; background: transparent; color: inherit; font: 500 13px "Cinzel", serif; }
+.seletor button.ativo { background: #e9d9a6; color: #2a2114; border-color: #e9d9a6; }
+.seletor small { margin-left: auto; opacity: .7; }
+
+.proposta { display: none; padding: 18px 16px 40px; }
+.proposta.ativa { display: block; }
+.proposta > header { max-width: 1280px; margin: 0 auto 14px; }
+.proposta > header h2 { margin: 0 0 4px; font: 700 22px "Cinzel", serif; }
+.proposta > header p { margin: 0; opacity: .85; max-width: 90ch; }
+.paleta { display: flex; gap: 6px; margin-top: 8px; }
+.paleta i { width: 34px; height: 18px; border-radius: 3px; border: 1px solid #0006; }
+
+/* ------------------------------------------------------------------ */
+/* Moldura comum: um "Foundry" de mentira com as telas do módulo       */
+/* ------------------------------------------------------------------ */
+.mesa {
+	--papel: #ead9b0; --papel-2: #d9c391; --papel-sombra: #b89a5e;
+	--tinta: #3b2a17; --tinta-suave: #6d5636;
+	--arcano: #5b3a8c; --divino: #b8891b; --perigo: #9c2f2f; --bom: #2f7d4a; --mana: #2f6fb0;
+	--haste: linear-gradient(#7a5630, #3d2812 55%, #6b4a28);
+	--ponteira: radial-gradient(circle at 35% 30%, #f1d98a, #a8791c 60%, #5d3f0a);
+	--cena: radial-gradient(ellipse at 50% 40%, #46553f, #1e2a22 70%);
+	--fonte-titulo: "Cinzel", serif; --fonte-texto: "Spectral", serif;
+	--brilho: none; --raio: 3px;
+	position: relative; max-width: 1280px; height: 760px; margin: 0 auto; overflow: hidden;
+	border-radius: 8px; background: var(--cena); color: var(--tinta); font-family: var(--fonte-texto); font-size: 14px;
+	box-shadow: 0 20px 60px #000a;
+}
+.mesa::before { content: ""; position: absolute; inset: 0; opacity: .5; pointer-events: none;
+	background: repeating-linear-gradient(0deg, transparent 0 79px, #0002 79px 80px), repeating-linear-gradient(90deg, transparent 0 79px, #0002 79px 80px); }
+
+/* Pergaminho: papel com textura e hastes de rolo nas bordas */
+.rolo {
+	position: absolute; color: var(--tinta);
+	background:
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .1 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E"),
+		radial-gradient(ellipse at 20% 10%, #fff5 0, transparent 55%),
+		linear-gradient(90deg, var(--papel-sombra) 0, var(--papel) 5%, var(--papel) 95%, var(--papel-sombra) 100%),
+		var(--papel);
+	box-shadow: 0 10px 30px #0009, inset 0 0 40px #5a3d1433, var(--brilho);
+	border-radius: var(--raio);
+}
+.rolo > .haste { position: absolute; left: -12px; right: -12px; height: 16px; border-radius: 8px; background: var(--haste); box-shadow: 0 3px 6px #0008; z-index: 3; }
+.rolo > .haste.topo { top: -9px; } .rolo > .haste.base { bottom: -9px; }
+.rolo > .haste::before, .rolo > .haste::after { content: ""; position: absolute; top: -4px; width: 24px; height: 24px; border-radius: 50%; background: var(--ponteira); box-shadow: 0 2px 4px #0008; }
+.rolo > .haste::before { left: -10px; } .rolo > .haste::after { right: -10px; }
+.rolo.lateral > .haste { left: auto; right: auto; top: -12px; bottom: -12px; width: 16px; height: auto; }
+.rolo.lateral > .haste.topo { left: -9px; } .rolo.lateral > .haste.base { right: -9px; left: auto; }
+.rolo.lateral > .haste::before, .rolo.lateral > .haste::after { left: -4px; right: auto; }
+.rolo.lateral > .haste::before { top: -10px; } .rolo.lateral > .haste::after { top: auto; bottom: -10px; }
+
+.titulo { font-family: var(--fonte-titulo); letter-spacing: .04em; }
+.mesa a { color: inherit; }
+
+/* Navegação de cenas */
+.cenas { top: 18px; left: 86px; display: flex; gap: 0; padding: 0; background: none !important; box-shadow: none !important; }
+.cenas span { position: relative; padding: 7px 18px 7px 16px; margin-right: -6px; font: 500 13px var(--fonte-titulo); color: var(--tinta);
+	background: linear-gradient(var(--papel), var(--papel-2)); clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%, 8px 50%); filter: drop-shadow(0 3px 3px #0007); }
+.cenas span.ativa { background: linear-gradient(var(--divino), color-mix(in srgb, var(--divino) 70%, #000)); color: #fff8e1; }
+
+/* Controles */
+.controles { top: 76px; left: 14px; width: 54px; padding: 16px 0; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.controles i { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; font-size: 16px; color: var(--tinta-suave); }
+.controles i.ativo { background: var(--arcano); color: #fff; box-shadow: 0 0 0 2px var(--divino), var(--brilho); }
+
+/* Barra lateral */
+.lateral-foundry { top: 18px; right: 18px; bottom: 22px; width: 280px; display: flex; flex-direction: column; }
+.abas-foundry { display: flex; justify-content: space-around; padding: 14px 12px 8px; border-bottom: 2px double var(--tinta-suave); font-size: 15px; color: var(--tinta-suave); }
+.abas-foundry i.ativa { color: var(--arcano); text-shadow: var(--brilho-texto, none); }
+.chat { flex: 1; overflow: hidden; padding: 10px 14px; display: flex; flex-direction: column; gap: 10px; }
+.msg { padding: 8px 10px; border-left: 3px solid var(--arcano); background: #ffffff38; border-radius: 2px; }
+.msg.divina { border-left-color: var(--divino); }
+.msg b { font-family: var(--fonte-titulo); font-size: 12px; }
+.msg small { float: right; color: var(--tinta-suave); }
+.msg p { margin: 4px 0 0; }
+.dado { margin-top: 6px; padding: 6px; text-align: center; border: 1px solid var(--tinta-suave); border-radius: var(--raio); background: #0000000d; }
+.dado em { display: block; font-size: 11px; color: var(--tinta-suave); }
+.dado strong { font: 700 24px var(--fonte-titulo); color: var(--arcano); }
+.entrada { margin: 0 14px 18px; padding: 8px 10px; min-height: 46px; border: 1px dashed var(--tinta-suave); border-radius: var(--raio); color: var(--tinta-suave); font-style: italic; }
+
+/* Macros e jogadores */
+.atalhos { left: 50%; bottom: 20px; transform: translateX(-62%); display: flex; gap: 6px; padding: 12px 18px; }
+.atalhos b { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--tinta-suave); border-radius: var(--raio); background: #0000000f; color: var(--arcano); font-size: 17px; }
+.atalhos b:nth-child(3n) { color: var(--divino); }
+.jogadores { left: 14px; bottom: 20px; padding: 12px 16px; width: 190px; }
+.jogadores div { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
+.jogadores div::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--c, var(--bom)); box-shadow: 0 0 0 1px var(--tinta-suave); }
+
+/* Janela do módulo */
+.janela { top: 96px; left: 260px; width: 560px; }
+.janela-topo { display: flex; align-items: center; gap: 10px; padding: 16px 18px 8px; }
+.janela-topo .titulo { flex: 1; font-size: 13px; text-transform: uppercase; color: var(--tinta-suave); }
+.janela-topo i { color: var(--tinta-suave); }
+.cabecalho { display: flex; align-items: center; gap: 14px; margin: 0 18px; padding: 12px 14px; border-top: 3px double var(--tinta-suave); border-bottom: 3px double var(--tinta-suave); position: relative; }
+.retrato { position: relative; width: 66px; height: 66px; flex: none; border-radius: 50%; display: grid; place-items: center; font: 700 28px var(--fonte-titulo); color: #fff8e1;
+	background: radial-gradient(circle at 35% 30%, #6fb18a, #23533a); box-shadow: 0 0 0 3px var(--divino), 0 0 0 5px var(--papel), 0 0 0 6px var(--tinta-suave); }
+.cabecalho h3 { margin: 0; font: 700 22px var(--fonte-titulo); color: var(--tinta); }
+.cabecalho p { margin: 2px 0 6px; font-style: italic; color: var(--tinta-suave); }
+.etiqueta { display: inline-flex; align-items: center; gap: 5px; margin-right: 4px; padding: 1px 9px; border: 1px solid var(--c, var(--divino)); border-radius: 999px; background: color-mix(in srgb, var(--c, var(--divino)) 18%, transparent); font-size: 12px; }
+.selo { position: absolute; right: 14px; top: -18px; width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; color: #ffe9c9; font-size: 20px;
+	background: radial-gradient(circle at 35% 30%, #d0554a, #7d1f1f 70%); box-shadow: 0 3px 6px #0008, inset 0 0 0 4px #0002; transform: rotate(-8deg); }
+.abas { display: flex; gap: 4px; margin: 10px 18px 0; border-bottom: 1px solid var(--tinta-suave); }
+.abas span { padding: 6px 14px; font: 500 13px var(--fonte-titulo); color: var(--tinta-suave); border-radius: 6px 6px 0 0; }
+.abas span.ativa { color: var(--tinta); background: #ffffff55; border: 1px solid var(--tinta-suave); border-bottom-color: transparent; margin-bottom: -1px; }
+.corpo { padding: 12px 18px 22px; display: grid; gap: 12px; }
+.numeros { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; }
+.numeros div { padding: 8px 4px; border: 1px solid var(--tinta-suave); border-radius: var(--raio); background: #ffffff30; }
+.numeros strong { display: block; font: 700 22px var(--fonte-titulo); color: var(--arcano); text-shadow: var(--brilho-texto, none); }
+.numeros span { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--tinta-suave); }
+table { width: 100%; border-collapse: collapse; }
+th { padding: 4px 6px; text-align: left; font: 500 11px var(--fonte-titulo); text-transform: uppercase; letter-spacing: .06em; color: var(--tinta-suave); border-bottom: 2px solid var(--tinta-suave); }
+td { padding: 6px; border-bottom: 1px dotted var(--tinta-suave); }
+td small { display: block; color: var(--tinta-suave); }
+td.nota { font: 700 16px var(--fonte-titulo); text-align: center; }
+.ap { color: var(--bom); } .rp { color: var(--perigo); } .cs { color: var(--tinta-suave); }
+.botoes { display: flex; gap: 8px; }
+.botao { flex: 1; padding: 8px 10px; text-align: center; font: 700 12px var(--fonte-titulo); letter-spacing: .05em; text-transform: uppercase; color: #fff8e1; border-radius: var(--raio);
+	background: linear-gradient(var(--arcano), color-mix(in srgb, var(--arcano) 65%, #000)); box-shadow: inset 0 0 0 1px #fff3, 0 2px 4px #0006, var(--brilho); }
+.botao.divino { background: linear-gradient(var(--divino), color-mix(in srgb, var(--divino) 65%, #000)); }
+
+/* Painel de alunos */
+.painel { top: 76px; left: 88px; width: 158px; padding: 14px 10px 16px; }
+.painel h4 { margin: 0 0 8px; font: 700 12px var(--fonte-titulo); text-transform: uppercase; text-align: center; color: var(--tinta-suave); }
+.aluno { padding: 6px 0; border-top: 1px dotted var(--tinta-suave); }
+.aluno b { display: block; font: 700 12px var(--fonte-titulo); }
+.barra { position: relative; height: 9px; margin-top: 4px; border-radius: 5px; background: #0000002b; overflow: hidden; }
+.barra i { position: absolute; inset: 0 auto 0 0; background: var(--perigo); border-radius: 5px; }
+.barra.pm i { background: var(--mana); }
+.aluno small { color: var(--tinta-suave); font-size: 11px; }
+
+/* Cartão do calendário */
+.aula { top: 470px; left: 846px; width: 150px; padding: 14px 10px 14px; transform: rotate(2deg); }
+.aula em { display: block; font: 500 10px var(--fonte-titulo); font-style: normal; text-transform: uppercase; color: var(--tinta-suave); }
+.aula b { display: block; font: 700 14px var(--fonte-titulo); margin: 2px 0; }
+.aula span { display: inline-block; margin: 2px 2px 0 0; padding: 0 7px; border: 1px solid var(--tinta-suave); border-radius: 999px; font-size: 11px; }
+.aula span.pc { border-color: var(--divino); background: color-mix(in srgb, var(--divino) 25%, transparent); font-weight: 600; }
+
+/* ------------------------------------------------------------------ */
+/* Proposta A · Scriptorium (pergaminho claro, madeira e lacre)        */
+/* ------------------------------------------------------------------ */
+.tema-a { --fonte-titulo: "Cinzel", serif; --fonte-texto: "IM Fell English", "Spectral", serif; font-size: 15px; }
+
+/* ------------------------------------------------------------------ */
+/* Proposta B · Vitral (divino: marfim, ouro e vidro colorido)         */
+/* ------------------------------------------------------------------ */
+.tema-b {
+	--papel: #f6efdc; --papel-2: #ebdfbd; --papel-sombra: #d9c58c; --tinta: #2b2540; --tinta-suave: #6f6585;
+	--arcano: #4a3fa3; --divino: #c9972a; --perigo: #b3364a; --bom: #2b8a6a; --mana: #2c7fc4;
+	--haste: linear-gradient(#fff3c4, #c9972a 45%, #8a6312 60%, #f3d681);
+	--ponteira: radial-gradient(circle at 35% 30%, #ffffff, #8fc7ff 45%, #2c5fb5);
+	--cena: radial-gradient(ellipse at 50% 0%, #fff6d4 0, #9cc3e8 30%, #37508a 70%, #1c2550);
+	--fonte-titulo: "Cormorant Garamond", serif; --fonte-texto: "Cormorant Garamond", serif; --raio: 10px; font-size: 16px;
+	--brilho: 0 0 18px #ffe9a366;
+}
+.tema-b .titulo, .tema-b h3, .tema-b h4, .tema-b th, .tema-b .botao, .tema-b .abas span, .tema-b .cenas span { font-weight: 700; letter-spacing: .08em; }
+.tema-b .janela::before, .tema-b .lateral-foundry::before { content: ""; position: absolute; left: 14px; right: 14px; top: 10px; height: 7px; border-radius: 4px; z-index: 2;
+	background: repeating-linear-gradient(90deg, #b3364a 0 18px, #c9972a 18px 22px, #2c7fc4 22px 40px, #c9972a 40px 44px, #2b8a6a 44px 62px, #c9972a 62px 66px, #4a3fa3 66px 84px, #c9972a 84px 88px); }
+.tema-b .retrato { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--divino), 0 0 22px 8px #ffe08a; }
+.tema-b .retrato::after { content: ""; position: absolute; inset: -16px; border-radius: 50%; background: repeating-conic-gradient(#ffe08a55 0 6deg, transparent 6deg 18deg); z-index: -1; }
+.tema-b .selo { background: radial-gradient(circle at 35% 30%, #fff6c9, #c9972a 70%); color: #5a3d06; transform: none; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; }
+.tema-b .cabecalho { border-color: var(--divino); }
+.tema-b .abas span.ativa { background: linear-gradient(#fff, #fff0); border-color: var(--divino); }
+.tema-b .numeros div { border-color: var(--divino); background: linear-gradient(#ffffffaa, #ffffff22); }
+.tema-b .msg { background: #ffffff80; border-radius: 0 10px 10px 0; }
+.tema-b .botao { border-radius: 999px; }
+.tema-b .atalhos b { border-radius: 50%; border-color: var(--divino); background: #ffffff66; }
+
+/* ------------------------------------------------------------------ */
+/* Proposta C · Grimório (arcano: pergaminho escurecido e runas)       */
+/* ------------------------------------------------------------------ */
+.tema-c {
+	--papel: #2a2238; --papel-2: #221b2f; --papel-sombra: #15101f; --tinta: #e8dcc0; --tinta-suave: #a595b8;
+	--arcano: #a67cff; --divino: #e0b84f; --perigo: #e06c75; --bom: #6fd3a0; --mana: #5aa9e6;
+	--haste: linear-gradient(#4b3a66, #120c1c 55%, #3a2b52);
+	--ponteira: radial-gradient(circle at 35% 30%, #f1e4ff, #a67cff 45%, #3d1f85);
+	--cena: radial-gradient(ellipse at 50% 45%, #2b2147, #0c0914 75%);
+	--fonte-titulo: "Uncial Antiqua", "Cinzel", serif; --fonte-texto: "Spectral", serif;
+	--brilho: 0 0 16px #a67cff55; --brilho-texto: 0 0 10px #a67cffaa;
+}
+.tema-c .rolo { box-shadow: 0 10px 30px #000c, inset 0 0 0 1px #a67cff44, inset 0 0 50px #0008, 0 0 22px #a67cff33;
+	background-blend-mode: overlay, normal, normal, normal; }
+.tema-c .rolo > .haste::before, .tema-c .rolo > .haste::after { box-shadow: 0 0 12px 3px #a67cffaa; }
+.tema-c .janela::after { content: ""; position: absolute; right: -70px; top: 40px; width: 300px; height: 300px; border-radius: 50%; pointer-events: none; opacity: .16;
+	border: 2px solid var(--arcano); box-shadow: inset 0 0 0 14px transparent, inset 0 0 0 16px var(--arcano), inset 0 0 0 44px transparent, inset 0 0 0 45px var(--divino);
+	background: repeating-conic-gradient(var(--arcano) 0 1deg, transparent 1deg 30deg); }
+.tema-c .retrato { box-shadow: 0 0 0 2px var(--arcano), 0 0 0 5px var(--papel), 0 0 0 6px var(--divino), 0 0 20px 4px #a67cff88; }
+.tema-c .selo { background: radial-gradient(circle at 35% 30%, #cdb4ff, #5a2fc4 70%); color: #fff; box-shadow: 0 0 16px #a67cffcc; }
+.tema-c .msg { background: #ffffff0d; } .tema-c .numeros div, .tema-c .abas span.ativa { background: #ffffff0f; }
+.tema-c .dado, .tema-c .atalhos b { background: #00000040; }
+.tema-c .cenas span { color: var(--tinta); } .tema-c .cenas span.ativa { background: linear-gradient(#a67cff, #5a2fc4); color: #fff; }
+.tema-c .cabecalho h3, .tema-c .dado strong { text-shadow: var(--brilho-texto); }
+.tema-c .barra { background: #ffffff1f; }
+.tema-c .botao.divino { color: #2a2114; }
+
+.notas { max-width: 1280px; margin: 16px auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.notas div { padding: 10px 14px; border: 1px solid #3a3147; border-radius: 8px; background: #1e1926; }
+.notas b { display: block; margin-bottom: 4px; font: 700 13px "Cinzel", serif; color: #e9d9a6; }
+.notas p { margin: 0; font-size: 14px; opacity: .9; }
+</style>
+</head>
+<body>
+<nav class="seletor">
+	<h1>Academia Arcana · protótipos</h1>
+	<button data-alvo="a" class="ativo">A · Scriptorium</button>
+	<button data-alvo="b">B · Vitral</button>
+	<button data-alvo="c">C · Grimório</button>
+	<small>Dados fictícios. Mostra o Foundry (cenas, controles, barra lateral, macros, jogadores) e as telas do módulo.</small>
+</nav>
+
+<template id="mesa">
+	<div class="mesa">
+		<div class="rolo cenas"><span>Portal de Valkaria</span><span class="ativa">Pátio da Academia</span><span>Biblioteca</span></div>
+
+		<div class="rolo lateral controles"><div class="haste topo"></div><div class="haste base"></div>
+			<i class="fa-solid fa-user ativo"></i><i class="fa-solid fa-ruler-combined"></i><i class="fa-solid fa-cubes"></i><i class="fa-solid fa-pencil"></i><i class="fa-solid fa-lightbulb"></i><i class="fa-solid fa-music"></i><i class="fa-solid fa-bookmark"></i>
+		</div>
+
+		<div class="rolo painel"><div class="haste topo"></div><div class="haste base"></div>
+			<h4><i class="fa-solid fa-hat-wizard"></i> Alunos</h4>
+			<div class="aluno"><b>Lira Ventoclaro</b><div class="barra"><i style="width:75%"></i></div><div class="barra pm"><i style="width:45%"></i></div><small>2º sem. · média 6,4</small></div>
+			<div class="aluno"><b>Brom Punho-de-Ferro</b><div class="barra"><i style="width:15%"></i></div><div class="barra pm"><i style="width:0"></i></div><small>Matrícula aberta</small></div>
+		</div>
+
+		<div class="rolo janela"><div class="haste topo"></div><div class="haste base"></div>
+			<div class="janela-topo"><i class="fa-solid fa-hat-wizard"></i><span class="titulo">Vida Acadêmica: Lira Ventoclaro</span><i class="fa-solid fa-xmark"></i></div>
+			<div class="cabecalho">
+				<div class="retrato">L</div>
+				<div>
+					<h3>Lira Ventoclaro</h3>
+					<p>Grande Academia Arcana · 2º semestre</p>
+					<span class="etiqueta" style="--c: var(--bom)"><i class="fa-solid fa-feather-pointed"></i> Espíritos Livres</span>
+					<span class="etiqueta"><i class="fa-solid fa-scroll"></i> Bolsista</span>
+				</div>
+				<div class="selo"><i class="fa-solid fa-hat-wizard"></i></div>
+			</div>
+			<div class="abas"><span>Ficha do Aluno</span><span>Matrícula</span><span class="ativa">Boletim</span></div>
+			<div class="corpo">
+				<div class="numeros">
+					<div><strong>6,4</strong><span>Média</span></div>
+					<div><strong>4</strong><span>Aprovações</span></div>
+					<div><strong>1</strong><span>Reprovação</span></div>
+					<div><strong>2/8</strong><span>Semestres</span></div>
+				</div>
+				<table>
+					<thead><tr><th>Disciplina</th><th>Perícia</th><th>Nota</th><th>Situação</th></tr></thead>
+					<tbody>
+						<tr><td>Alquimia II<small>Grativo</small></td><td>Ofício: Alquimista</td><td class="nota ap">7,5</td><td class="ap"><i class="fa-solid fa-circle-check"></i> Aprovado</td></tr>
+						<tr><td>Teoria da Magia II<small>Zéphyro</small></td><td>Misticismo</td><td class="nota cs">—</td><td class="cs"><i class="fa-solid fa-hourglass-half"></i> Cursando</td></tr>
+						<tr><td>Os Deuses e seus Portfólios I<small>Irmã Corina</small></td><td>Religião</td><td class="nota ap">8</td><td class="ap"><i class="fa-solid fa-circle-check"></i> Aprovado</td></tr>
+						<tr><td>Introdução aos Ermos<small>Jungle Dore</small></td><td>Sobrevivência</td><td class="nota rp">2</td><td class="rp"><i class="fa-solid fa-circle-xmark"></i> Reprovado</td></tr>
+					</tbody>
+				</table>
+				<div class="botoes"><div class="botao"><i class="fa-solid fa-dice-d20"></i> Rolar prova</div><div class="botao divino"><i class="fa-solid fa-calendar-week"></i> Calendário</div></div>
+			</div>
+		</div>
+
+		<div class="rolo aula"><div class="haste topo"></div>
+			<em>2º dia · manhã</em><b>Alquimia II</b><span class="pc">Lira</span><span>Andara</span><span>Neria</span><span>Vallissaris</span>
+		</div>
+
+		<div class="rolo lateral-foundry"><div class="haste topo"></div><div class="haste base"></div>
+			<div class="abas-foundry"><i class="fa-solid fa-comments ativa"></i><i class="fa-solid fa-swords"></i><i class="fa-solid fa-users"></i><i class="fa-solid fa-suitcase"></i><i class="fa-solid fa-book-open"></i><i class="fa-solid fa-atlas"></i><i class="fa-solid fa-gears"></i></div>
+			<div class="chat">
+				<div class="msg"><b>Mestre Zéphyro</b><small>09:12</small><p>Abram o tomo na página dos círculos de conjuração. Hoje ninguém explode a sala.</p></div>
+				<div class="msg"><b>Lira Ventoclaro</b><small>09:14</small><p><em>Misticismo (Teoria da Magia II)</em></p><div class="dado"><em>1d20 + 9</em><strong>23</strong></div></div>
+				<div class="msg divina"><b>Irmã Corina</b><small>09:20</small><p>Que Wynna ilumine os que estudam e perdoe os que colam.</p></div>
+				<div class="msg"><b>Brom Punho-de-Ferro</b><small>09:21</small><p>Alguém viu meu caldeirão?</p></div>
+			</div>
+			<div class="entrada">Escreva uma mensagem…</div>
+		</div>
+
+		<div class="rolo jogadores"><div class="haste topo"></div>
+			<div>Mestre <small>[GM]</small></div><div style="--c:#2c7fc4">Ana · Lira</div><div style="--c:#b3364a">Caio · Brom</div>
+		</div>
+		<div class="rolo atalhos"><div class="haste topo"></div><div class="haste base"></div>
+			<b><i class="fa-solid fa-hat-wizard"></i></b><b><i class="fa-solid fa-building-columns"></i></b><b><i class="fa-solid fa-book-open"></i></b><b><i class="fa-solid fa-calendar-week"></i></b><b><i class="fa-solid fa-dice-d20"></i></b><b><i class="fa-solid fa-fire"></i></b><b><i class="fa-solid fa-sun"></i></b><b></b><b></b><b></b>
+		</div>
+	</div>
+</template>
+
+<section class="proposta ativa" data-id="a">
+	<header>
+		<h2>A · Scriptorium</h2>
+		<p>Pergaminho claro com hastes de madeira e ponteiras de latão, tinta sépia e lacre de cera. O arcano entra no roxo dos destaques; o divino, no dourado das molduras e botões. É a mais próxima de um documento da secretaria da Academia.</p>
+		<div class="paleta"><i style="background:#ead9b0"></i><i style="background:#3b2a17"></i><i style="background:#5b3a8c"></i><i style="background:#b8891b"></i><i style="background:#9c2f2f"></i></div>
+	</header>
+	<div class="alvo tema-a"></div>
+	<div class="notas">
+		<div><b>Leitura</b><p>Alto contraste em fundo claro; a melhor das três para tabelas longas como boletim e catálogo.</p></div>
+		<div><b>Foundry</b><p>Barra lateral e controles viram rolos pendurados; abas de cena viram fitas de papel.</p></div>
+		<div><b>Risco</b><p>Fica claro demais ao lado de cenas escuras; pede um modo noturno depois.</p></div>
+	</div>
+</section>
+
+<section class="proposta" data-id="b">
+	<header>
+		<h2>B · Vitral</h2>
+		<p>Inspiração divina: pergaminho marfim, hastes douradas com ponteiras de cristal, faixa de vitral no topo das janelas e halo atrás dos retratos. O arcano aparece no índigo dos números e botões. Passa a sensação de capela de Wynna.</p>
+		<div class="paleta"><i style="background:#f6efdc"></i><i style="background:#2b2540"></i><i style="background:#4a3fa3"></i><i style="background:#c9972a"></i><i style="background:#2c7fc4"></i></div>
+	</header>
+	<div class="alvo tema-b"></div>
+	<div class="notas">
+		<div><b>Leitura</b><p>Tipografia mais leve e cantos arredondados; elegante, um pouco menos densa.</p></div>
+		<div><b>Foundry</b><p>Macros redondas como medalhões e mensagens de chat em faixas de luz.</p></div>
+		<div><b>Risco</b><p>O halo e o vitral são os elementos mais trabalhosos de manter em todas as janelas do sistema.</p></div>
+	</div>
+</section>
+
+<section class="proposta" data-id="c">
+	<header>
+		<h2>C · Grimório</h2>
+		<p>Inspiração arcana: pergaminho escurecido, hastes de obsidiana com ponteiras de ametista que brilham, círculo de conjuração ao fundo e títulos em letra uncial. O divino entra no dourado de selos e destaques. Combina com cenas escuras e com o tema escuro do Foundry.</p>
+		<div class="paleta"><i style="background:#2a2238"></i><i style="background:#e8dcc0"></i><i style="background:#a67cff"></i><i style="background:#e0b84f"></i><i style="background:#5aa9e6"></i></div>
+	</header>
+	<div class="alvo tema-c"></div>
+	<div class="notas">
+		<div><b>Leitura</b><p>Texto claro em fundo escuro; confortável à noite, mas a letra uncial só funciona em títulos.</p></div>
+		<div><b>Foundry</b><p>É a que menos briga com módulos de terceiros, que em geral já assumem tema escuro.</p></div>
+		<div><b>Risco</b><p>O brilho precisa de moderação para não cansar em sessões longas.</p></div>
+	</div>
+</section>
+
+<script>
+	const molde = document.getElementById("mesa");
+	document.querySelectorAll(".alvo").forEach((alvo) => {
+		const mesa = molde.content.firstElementChild.cloneNode(true);
+		mesa.classList.add(...alvo.classList);
+		alvo.replaceWith(mesa);
+	});
+	document.querySelectorAll(".seletor button").forEach((botao) =>
+		botao.addEventListener("click", () => {
+			document.querySelectorAll(".seletor button").forEach((b) => b.classList.toggle("ativo", b === botao));
+			document.querySelectorAll(".proposta").forEach((p) => p.classList.toggle("ativa", p.dataset.id === botao.dataset.alvo));
+		})
+	);
+</script>
+</body>
+</html>

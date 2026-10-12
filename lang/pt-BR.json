@@ -50,6 +50,13 @@
 				"Nome": "Jogadores veem o calendário",
 				"Dica": "Permite que os jogadores abram o calendário do período letivo, com as aulas dos personagens e os nomes dos colegas de turma."
 			},
+			"tema": {
+				"Nome": "Tema Scriptorium (pergaminho)",
+				"Dica": "Aparência de escola de magia: janelas como rolos de pergaminho, hastes de madeira e tinta sépia. Vale só para este navegador. As fontes do tema são carregadas do Google Fonts; sem internet, o Foundry usa fontes parecidas.",
+				"Tudo": "Foundry inteiro e janelas do módulo",
+				"Modulo": "Somente as janelas e painéis do módulo",
+				"Desligado": "Desligado"
+			},
 			"catalogoMenu": {
 				"Nome": "Catálogo de disciplinas",
 				"Rotulo": "Editar catálogo",

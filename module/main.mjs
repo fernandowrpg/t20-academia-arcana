@@ -9,6 +9,7 @@ import { PainelAmeacasApp } from "./apps/painel-ameacas.mjs";
 import * as dados from "./data/disciplinas.mjs";
 import * as logica from "./logica.mjs";
 import * as geracao from "./gerador.mjs";
+import { aplicarTema, registrarTema } from "./tema.mjs";
 
 const atualizarPainelAlunos = foundry.utils.debounce(() => PainelAlunosApp.sincronizar(), 100);
 const atualizarPainelAmeacas = foundry.utils.debounce(() => PainelAmeacasApp.sincronizar(), 100);
@@ -20,6 +21,8 @@ function abrir(actor) {
 
 Hooks.once("init", () => {
 	registrarConfiguracoes(CatalogoApp);
+	registrarTema();
+	aplicarTema();
 	aoMudarConfiguracao(() => {
 		VidaAcademicaApp.atualizarTodas();
 		SecretariaApp.atualizar();

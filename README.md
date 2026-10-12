@@ -67,6 +67,16 @@ Os dois painéis ficam flutuando sobre a mesa. Arraste pelo título para mover (
 - **Alunos**: lista os alunos ativos ou com o curso trancado. O mestre vê todos; o jogador vê os personagens em que tem permissão de observador ou dono. Cada aluno mostra PV, PM, o semestre mais recente com notas (média, aprovações, reprovações, pendências e, ao clicar, as disciplinas) e o botão **Matrícula**, que abre direto a aba de matrícula e fica destacado enquanto a matrícula está aberta.
 - **Ameaças**: aparece quando o combate é iniciado e some quando ele termina. Lista os combatentes sem jogador dono cujo token não é amistoso, na ordem de iniciativa, com destaque para quem está na vez. Clicar no nome centraliza o token; clicar no retrato abre a ficha. Por padrão só o mestre vê; em **Painel de ameaças para jogadores** ele pode liberar o estado aproximado (sem números) ou os valores completos. Ameaças ocultas nunca aparecem para jogadores.
 
+### Tema Scriptorium
+
+O módulo traz um tema de escola de magia: janelas como rolos de pergaminho, cabeçalhos em forma de haste de madeira com ponteiras de latão, tinta sépia, roxo arcano e dourado divino. Em **Configure Settings → Academia Arcana → Tema Scriptorium**, cada usuário escolhe:
+
+- **Foundry inteiro e janelas do módulo** (padrão): cobre janelas, barra lateral, chat, controles de cena, abas de cena, macros e lista de jogadores.
+- **Somente as janelas e painéis do módulo**.
+- **Desligado**.
+
+A escolha vale só para aquele navegador e recarrega a página. O tema é claro: as janelas cobertas passam a usar o esquema claro do Foundry. As regras gerais têm prioridade baixa de propósito, para que fichas de sistema e outros módulos com estilo próprio continuem mandando na sua aparência. As fontes (Cinzel e IM Fell English) vêm do Google Fonts; sem internet, o Foundry usa fontes parecidas.
+
 ### Gerador de Alunos
 
 Na Secretaria, **Gerar alunos** cria colegas para povoar a Academia. O mestre pode fixar nível, período, raça e classe; o que ficar em branco ou em *Aleatório* é sorteado, junto com nome, atributos, grêmio, histórico de disciplinas e notas.
