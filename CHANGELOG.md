@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.11.1
+
+- Ficha do Aluno: o cabeçalho mostra a bandeira do grêmio do aluno, igual à do placar, com o mesmo enchimento, os pontos e a coroa de líder.
+
 ## 1.11.0
 
 - Placar dos grêmios: cada aprovação e cada atividade extracurricular concluída rende pontos ao grêmio do aluno (valores configuráveis), além de pontos avulsos do mestre.

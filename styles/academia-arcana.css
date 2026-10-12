@@ -1913,7 +1913,7 @@
 }
 
 /* Flâmula com a ponta em V; o brilho sobe de baixo para cima conforme os pontos. */
-.aa-painel .aa-bandeira {
+.academia-arcana .aa-bandeira {
 	position: relative;
 	display: block;
 	width: 38px;
@@ -1923,7 +1923,7 @@
 	box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--aa-cor) 70%, #fff);
 }
 
-.aa-painel .aa-bandeira > i {
+.academia-arcana .aa-bandeira > i {
 	position: absolute;
 	top: 9px;
 	left: 0;
@@ -1934,7 +1934,7 @@
 	text-shadow: 0 1px 3px #000;
 }
 
-.aa-painel .aa-bandeira-brilho {
+.academia-arcana .aa-bandeira-brilho {
 	position: absolute;
 	left: 0;
 	right: 0;
@@ -1946,8 +1946,8 @@
 	transition: height 0.9s ease;
 }
 
-.aa-painel .aa-bandeira-brilho::before,
-.aa-painel .aa-bandeira-brilho::after {
+.academia-arcana .aa-bandeira-brilho::before,
+.academia-arcana .aa-bandeira-brilho::after {
 	content: "";
 	position: absolute;
 	inset: -34px 0 0;
@@ -1957,7 +1957,7 @@
 	animation: aa-glitter 3.4s linear infinite;
 }
 
-.aa-painel .aa-bandeira-brilho::after {
+.academia-arcana .aa-bandeira-brilho::after {
 	background-size: 11px 34px, 17px 17px, 5px 8.5px;
 	background-position: 6px 20px, 1px 9px, 2px 5px;
 	animation-duration: 5.1s;
@@ -1980,8 +1980,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.aa-painel .aa-bandeira-brilho::before,
-	.aa-painel .aa-bandeira-brilho::after {
+	.academia-arcana .aa-bandeira-brilho::before,
+	.academia-arcana .aa-bandeira-brilho::after {
 		animation: none;
 	}
 }
@@ -1994,7 +1994,7 @@
 	color: var(--aa-ouro);
 }
 
-.aa-painel .aa-bandeira-coroa {
+.academia-arcana .aa-bandeira-coroa {
 	position: absolute;
 	top: -9px;
 	font-size: 0.7rem;
@@ -2020,4 +2020,40 @@
 .academia-arcana .aa-placar-historico small {
 	display: block;
 	color: var(--aa-texto-suave);
+}
+
+/* Bandeira do grêmio no cabeçalho da Ficha do Aluno, igual à do placar. */
+.academia-arcana .aa-bandeira-ficha {
+	position: relative;
+	flex: 0 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.1rem;
+	align-self: flex-start;
+	margin-top: -0.75rem;
+}
+
+.academia-arcana .aa-bandeira-ficha .aa-bandeira {
+	width: 46px;
+	height: 84px;
+}
+
+.academia-arcana .aa-bandeira-ficha .aa-bandeira > i {
+	top: 11px;
+	font-size: 1.15rem;
+}
+
+.academia-arcana .aa-bandeira-ficha strong {
+	font-variant-numeric: tabular-nums;
+	line-height: 1;
+}
+
+.academia-arcana .aa-bandeira-ficha.lider strong {
+	color: var(--aa-ouro);
+}
+
+.academia-arcana .aa-bandeira-ficha .aa-bandeira-coroa {
+	position: static;
+	font-size: 0.75rem;
 }

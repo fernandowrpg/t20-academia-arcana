@@ -16,6 +16,16 @@
 			</div>
 			{{/if}}
 		</div>
+		{{#if ficha.bandeira}}
+		<div class="aa-bandeira-ficha {{#if ficha.bandeira.lider}}lider{{/if}}" style="--aa-cor: {{ficha.bandeira.cor}}; --aa-nivel: {{ficha.bandeira.nivel}}%" data-tooltip="{{ficha.bandeira.dica}}">
+			<span class="aa-bandeira">
+				<span class="aa-bandeira-brilho"></span>
+				<i class="{{ficha.bandeira.icone}}"></i>
+			</span>
+			<strong>{{ficha.bandeira.pontos}}</strong>
+			{{#if ficha.bandeira.lider}}<i class="fa-solid fa-crown aa-bandeira-coroa"></i>{{/if}}
+		</div>
+		{{/if}}
 		<button type="button" class="aa-botao-icone" data-action="abrirCompendio" data-tooltip="Abrir o compêndio da Academia"><i class="fa-solid fa-book"></i></button>
 	</header>
 

@@ -71,6 +71,7 @@ Os dois painéis ficam flutuando sobre a mesa. Arraste pelo título para mover (
 
 Um painel pequeno, sempre visível, mostra uma bandeira por grêmio. Cada bandeira se enche de brilho conforme o grêmio pontua, e a líder ganha uma coroa. Passe o mouse para ver o detalhe; como os outros painéis, ele pode ser arrastado, recolhido e desligado por usuário.
 
+- **Na Ficha do Aluno**: o cabeçalho mostra a bandeira do grêmio do aluno, com o mesmo enchimento, os pontos e a coroa do placar.
 - **O que pontua**: cada disciplina aprovada (10 pontos) e cada atividade extracurricular concluída (15 pontos) por um aluno do grêmio, mais os **pontos avulsos** que o mestre lança na Secretaria para torneios, façanhas e punições. Os valores e a meta que enche a bandeira (100 pontos) são configuráveis.
 - **Quem pontua**: os alunos com grêmio definido. Os NPCs do Gerador de Alunos ficam de fora por padrão; a configuração *Placar: NPCs gerados pontuam* os inclui.
 - **Encerrar o semestre**: na Secretaria, **Encerrar o placar do semestre** pede um nome para o período, registra os pontos e os campeões (empates dividem o título), anuncia o resultado no chat e recomeça a contagem do zero. O histórico fica na Secretaria, e o painel mostra o último campeão. Não dá para desfazer um encerramento.

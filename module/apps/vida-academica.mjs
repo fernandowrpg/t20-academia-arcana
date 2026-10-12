@@ -18,6 +18,7 @@ import {
 import { MODULO, contextoCatalogo, corpoDocente, fichasDoProfessor, lerAluno, opcao, podeMatricular, removerAluno, salvarAluno } from "../config.mjs";
 import { SITUACOES_ATIVIDADE, VANTAGENS, aplicarVantagem, descreverRecompensa, devolverRecompensa, lerAtividades, retirarVantagem, usarRecompensa, vantagensAplicaveis } from "../atividades.mjs";
 import { enviar } from "../correio.mjs";
+import { pontuacao } from "../placar.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 
@@ -140,10 +141,22 @@ export class VidaAcademicaApp extends HandlebarsApplicationMixin(ApplicationV2) 
 		const atual = aluno.semestres[indiceAtual] ?? null;
 		const est = estatisticas(aluno);
 
+		/* Bandeira do grêmio, com o mesmo enchimento do placar. */
+		const placar = pontuacao();
+		const meuGremio = placar.gremios.find((g) => g.id === aluno.gremio);
+		const teto = Math.max(opcao("metaPlacar"), placar.max, 1);
 		contexto.usarNotas = usarNotas;
 		contexto.ficha = {
 			gremio: aluno.gremio,
 			gremioInfo: GREMIOS[aluno.gremio] ?? null,
+			bandeira: meuGremio && {
+				cor: meuGremio.cor,
+				icone: meuGremio.icone,
+				pontos: meuGremio.pontos,
+				nivel: Math.round((meuGremio.pontos / teto) * 100),
+				lider: placar.lideres.includes(meuGremio.id),
+				dica: `${meuGremio.nome}: ${meuGremio.pontos} ponto(s) no placar${placar.lideres.includes(meuGremio.id) ? ", na liderança" : ""}`
+			},
 			gremios: [{ valor: "", rotulo: "— sem grêmio —", selecionado: !aluno.gremio }].concat(
 				Object.entries(GREMIOS).map(([valor, g]) => ({ valor, rotulo: `${g.nome} (${g.tendencias})`, selecionado: valor === aluno.gremio }))
 			),
