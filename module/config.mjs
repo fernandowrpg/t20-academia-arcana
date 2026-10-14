@@ -1,4 +1,5 @@
-import { configPadrao, montarCatalogo, novoAluno, periciasDoCatalogo } from "./logica.mjs";
+import { DISCIPLINAS } from "./data/disciplinas.mjs";
+import { configPadrao, montarCatalogo, normalizarPersonalizada, novoAluno, periciasDoCatalogo } from "./logica.mjs";
 import { atualizarResumoNpc, periciasEstudadas } from "./gerador.mjs";
 
 export const MODULO = "t20-academia-arcana";
@@ -163,6 +164,14 @@ export function registrarConfiguracoes(CatalogoApp) {
 		onChange: notificar
 	});
 
+	game.settings.register(MODULO, "docentes", {
+		scope: "world",
+		config: false,
+		type: Array,
+		default: [],
+		onChange: notificar
+	});
+
 	game.settings.register(MODULO, "paineis", {
 		scope: "client",
 		config: false,
@@ -259,10 +268,17 @@ export function fichasDoProfessor(texto) {
 		.filter(Boolean);
 }
 
-/* Todos os professores citados no catálogo, com as disciplinas e a ficha vinculada (se houver). */
+/* Professores cadastrados pelo mestre na Secretaria, além dos citados no catálogo. */
+export function docentesCadastrados() {
+	return opcao("docentes") ?? [];
+}
+
+/* Todos os professores: os citados no catálogo, os cadastrados e os que têm ficha vinculada, com disciplinas e ficha. */
 export function corpoDocente() {
 	const vinculos = vinculosDeProfessores();
+	const cadastrados = new Set(docentesCadastrados());
 	const porNome = new Map();
+	for (const nome of [...cadastrados, ...Object.keys(vinculos)]) porNome.set(nome, []);
 	for (const d of contextoCatalogo().catalogo.values()) {
 		for (const nome of nomesDeProfessor(d.professor)) {
 			if (!porNome.has(nome)) porNome.set(nome, []);
@@ -270,8 +286,56 @@ export function corpoDocente() {
 		}
 	}
 	return [...porNome.entries()]
-		.map(([nome, disciplinas]) => ({ nome, disciplinas, actor: game.actors.get(vinculos[nome]) ?? null }))
+		.map(([nome, disciplinas]) => ({ nome, disciplinas, cadastrado: cadastrados.has(nome), actor: game.actors.get(vinculos[nome]) ?? null }))
 		.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+}
+
+export async function vincularProfessor(nome, idDaFicha) {
+	const vinculos = foundry.utils.deepClone(vinculosDeProfessores());
+	if (idDaFicha) vinculos[nome] = idDaFicha;
+	else delete vinculos[nome];
+	await game.settings.set(MODULO, "professores", vinculos);
+}
+
+export async function cadastrarProfessor(nome) {
+	const lista = docentesCadastrados();
+	if (!lista.includes(nome)) await game.settings.set(MODULO, "docentes", [...lista, nome]);
+}
+
+/*
+ * Define quais disciplinas o professor leciona, sem tirar os colegas que dividem a turma.
+ * Só mexe nas disciplinas de `escopo` (ids); sem escopo, em todas, inclusive as ocultas.
+ * Nas do livro grava a troca em `catalogo.professores`; nas da mesa, no próprio registro.
+ */
+export async function definirDisciplinasDoProfessor(nome, ids, escopo = null) {
+	const config = lerConfigCatalogo();
+	const marcadas = new Set(ids);
+	const ajustar = (texto, id) => {
+		if (escopo && !escopo.has(id)) return null;
+		const antes = nomesDeProfessor(texto);
+		const depois = antes.filter((n) => n !== nome);
+		if (marcadas.has(id)) depois.push(nome);
+		return antes.join("|") === depois.join("|") ? null : depois.join(" / ");
+	};
+	config.professores ??= {};
+	for (const d of DISCIPLINAS) {
+		const novo = ajustar(config.professores[d.id] ?? d.professor, d.id);
+		if (novo === null) continue;
+		if (novo === d.professor) delete config.professores[d.id];
+		else config.professores[d.id] = novo;
+	}
+	for (const p of config.personalizadas) {
+		const novo = ajustar(p.professor, normalizarPersonalizada(p).id);
+		if (novo !== null) p.professor = novo;
+	}
+	await game.settings.set(MODULO, "catalogo", config);
+}
+
+/* Tira o professor das disciplinas, do cadastro e desfaz o vínculo com a ficha (a ficha continua no mundo). */
+export async function removerProfessor(nome) {
+	await definirDisciplinasDoProfessor(nome, []);
+	await game.settings.set(MODULO, "docentes", docentesCadastrados().filter((n) => n !== nome));
+	await vincularProfessor(nome, "");
 }
 
 export function ehNpcGerado(actor) {

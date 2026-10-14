@@ -1,7 +1,23 @@
 import { GREMIOS, STATUS_SEMESTRE } from "../data/disciplinas.mjs";
 import { concluirAleatorio, descricaoNpc, descricaoParceiro, matricularAleatorio, subirNivel } from "../gerador.mjs";
-import { estatisticas, novoAluno, novoSemestre, pendenciasParaEncerrar } from "../logica.mjs";
-import { MODULO, contextoCatalogo, corpoDocente, disciplinasDosPersonagens, ehAluno, vinculosDeProfessores, lerAluno, opcao, salvarAluno, sincronizarFicha } from "../config.mjs";
+import { estatisticas, nomePericia, novoAluno, novoSemestre, ordenarPericias, pendenciasParaEncerrar } from "../logica.mjs";
+import {
+	MODULO,
+	cadastrarProfessor,
+	contextoCatalogo,
+	corpoDocente,
+	definirDisciplinasDoProfessor,
+	disciplinasDosPersonagens,
+	ehAluno,
+	lerAluno,
+	nomesDeProfessor,
+	opcao,
+	removerProfessor,
+	salvarAluno,
+	sincronizarFicha,
+	vincularProfessor,
+	vinculosDeProfessores
+} from "../config.mjs";
 import { AtividadesApp } from "./atividades.mjs";
 import { CalendarioApp } from "./calendario.mjs";
 import { CorreioApp } from "./correio.mjs";
@@ -12,6 +28,16 @@ import { VidaAcademicaApp } from "./vida-academica.mjs";
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 
 const PASTA_PROFESSORES = "Professores da Academia";
+
+function escapar(texto) {
+	return String(texto).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+async function criarFichaDeProfessor(nome) {
+	const pasta = game.folders.find((f) => f.type === "Actor" && f.name === PASTA_PROFESSORES) ?? (await Folder.create({ name: PASTA_PROFESSORES, type: "Actor" }));
+	const tipo = game.documentTypes?.Actor?.includes("npc") ? "npc" : "character";
+	return Actor.implementation.create({ name: nome, type: tipo, folder: pasta?.id ?? null, prototypeToken: { name: nome, disposition: CONST.TOKEN_DISPOSITIONS.NEUTRAL, actorLink: true } });
+}
 
 export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 	static instancia = null;
@@ -46,6 +72,9 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			calendario: SecretariaApp.#calendario,
 			correio: SecretariaApp.#correio,
 			criarFichaProfessor: SecretariaApp.#criarFichaProfessor,
+			cadastrarProfessor: SecretariaApp.#cadastrarProfessor,
+			disciplinasProfessor: SecretariaApp.#disciplinasProfessor,
+			removerProfessor: SecretariaApp.#removerProfessor,
 			atividades: SecretariaApp.#atividades,
 			encerrarPlacar: SecretariaApp.#encerrarPlacar,
 			abrirFichaProfessor: SecretariaApp.#abrirFichaProfessor
@@ -93,6 +122,7 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			disciplinas: p.disciplinas.join(", "),
 			quantidade: p.disciplinas.length,
 			vinculado: !!p.actor,
+			cadastrado: p.cadastrado,
 			img: p.actor?.img ?? null,
 			fichas: [{ id: "", nome: "— sem ficha —", selecionado: !p.actor }].concat(fichas.map((a) => ({ id: a.id, nome: a.name, selecionado: a.id === p.actor?.id })))
 		}));
@@ -111,7 +141,8 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 				}))
 				.reverse()
 		};
-		return { alunos, candidatos, temCandidatos: candidatos.length > 0, docentes, placar };
+		const fichasNovoProfessor = fichas.map((a) => ({ id: a.id, nome: a.name }));
+		return { alunos, candidatos, temCandidatos: candidatos.length > 0, docentes, docentesAbertos: this.docentesAbertos, fichasNovoProfessor, placar };
 	}
 
 	static #abrirAluno(event, alvo) {
@@ -191,25 +222,91 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 	async _onRender(context, options) {
 		await super._onRender(context, options);
 		this.element.querySelectorAll("input[data-avulsos]").forEach((el) => el.addEventListener("change", (ev) => definirAvulsos(ev.target.dataset.avulsos, ev.target.value)));
+		this.element.querySelector("details.aa-docentes")?.addEventListener("toggle", (ev) => (this.docentesAbertos = ev.target.open));
 		this.element.querySelectorAll("select[data-professor]").forEach((el) =>
-			el.addEventListener("change", (ev) => this.#vincular(ev.target.dataset.professor, ev.target.value))
+			el.addEventListener("change", (ev) => vincularProfessor(ev.target.dataset.professor, ev.target.value))
 		);
-	}
-
-	async #vincular(nome, idDaFicha) {
-		const vinculos = foundry.utils.deepClone(vinculosDeProfessores());
-		if (idDaFicha) vinculos[nome] = idDaFicha;
-		else delete vinculos[nome];
-		await game.settings.set(MODULO, "professores", vinculos);
 	}
 
 	static async #criarFichaProfessor(event, alvo) {
 		const nome = alvo.closest("[data-docente]")?.dataset.docente;
 		if (!nome) return;
-		const pasta = game.folders.find((f) => f.type === "Actor" && f.name === PASTA_PROFESSORES) ?? (await Folder.create({ name: PASTA_PROFESSORES, type: "Actor" }));
-		const tipo = game.documentTypes?.Actor?.includes("npc") ? "npc" : "character";
-		const actor = await Actor.implementation.create({ name: nome, type: tipo, folder: pasta?.id ?? null, prototypeToken: { name: nome, disposition: CONST.TOKEN_DISPOSITIONS.NEUTRAL, actorLink: true } });
-		if (actor) await this.#vincular(nome, actor.id);
+		const actor = await criarFichaDeProfessor(nome);
+		if (actor) await vincularProfessor(nome, actor.id);
+	}
+
+	static async #cadastrarProfessor() {
+		const nome = this.element.querySelector("input[name='aa-novo-professor']")?.value.trim().replace(/\s+/g, " ") ?? "";
+		const ficha = this.element.querySelector("select[name='aa-novo-professor-ficha']")?.value ?? "";
+		if (!nome) return ui.notifications.warn("Dê um nome ao professor.");
+		if (nome.includes("/")) return ui.notifications.warn("O nome do professor não pode ter barra (/): ela separa os professores que dividem uma disciplina.");
+		if (corpoDocente().some((p) => p.nome.localeCompare(nome, "pt-BR", { sensitivity: "base" }) === 0)) return ui.notifications.warn(`${nome} já está no corpo docente.`);
+		this.docentesAbertos = true;
+		await cadastrarProfessor(nome);
+		if (ficha === "nova") {
+			const actor = await criarFichaDeProfessor(nome);
+			if (actor) await vincularProfessor(nome, actor.id);
+		} else if (ficha) await vincularProfessor(nome, ficha);
+		ui.notifications.info(`${nome} entrou para o corpo docente.`);
+		await SecretariaApp.#abrirDisciplinas(nome);
+	}
+
+	static #disciplinasProfessor(event, alvo) {
+		const nome = alvo.closest("[data-docente]")?.dataset.docente;
+		if (nome) SecretariaApp.#abrirDisciplinas(nome);
+	}
+
+	/* Janela com as disciplinas do catálogo, por perícia, marcadas as que o professor leciona. */
+	static async #abrirDisciplinas(nome) {
+		const { catalogo } = contextoCatalogo();
+		const lista = [...catalogo.values()];
+		const grupos = ordenarPericias(lista.map((d) => d.pericia)).map((chave) => {
+			const itens = lista
+				.filter((d) => d.pericia === chave)
+				.map((d) => {
+					const nomes = nomesDeProfessor(d.professor);
+					return { id: d.id, nome: d.nome, marcada: nomes.includes(nome), colegas: nomes.filter((n) => n !== nome).join(", ") };
+				});
+			return { nome: nomePericia(chave), itens, marcadas: itens.filter((i) => i.marcada).length };
+		});
+		const html = grupos
+			.map(
+				(g) => `<details class="aa-grupo" ${g.marcadas ? "open" : ""}>
+					<summary><span class="aa-grupo-nome">${escapar(g.nome)}</span><span class="aa-pilula">${g.marcadas}/${g.itens.length}</span></summary>
+					${g.itens
+						.map(
+							(i) =>
+								`<label class="aa-check aa-escolha-disciplina"><input type="checkbox" name="disciplina" value="${escapar(i.id)}" ${i.marcada ? "checked" : ""}> ${escapar(i.nome)}${i.colegas ? ` <small>(${escapar(i.colegas)})</small>` : ""}</label>`
+						)
+						.join("")}
+				</details>`
+			)
+			.join("");
+		const ids = await DialogV2.prompt({
+			window: { title: `Disciplinas de ${nome}`, icon: "fa-solid fa-chalkboard-user" },
+			classes: ["academia-arcana", "aa-dialogo-disciplinas"],
+			position: { width: 520 },
+			content: `<p class="aa-dica">Marque as disciplinas que ${escapar(nome)} leciona. Quem já divide a disciplina continua nela (entre parênteses).</p><div class="aa-escolha-disciplinas">${html}</div>`,
+			ok: {
+				label: "Salvar disciplinas",
+				icon: "fa-solid fa-floppy-disk",
+				callback: (ev, botao) => [...botao.form.querySelectorAll("input[name='disciplina']:checked")].map((el) => el.value)
+			},
+			rejectClose: false
+		});
+		if (!Array.isArray(ids)) return;
+		await definirDisciplinasDoProfessor(nome, ids, new Set(catalogo.keys()));
+		ui.notifications.info(`${nome}: ${ids.length} disciplina(s).`);
+	}
+
+	static async #removerProfessor(event, alvo) {
+		const nome = alvo.closest("[data-docente]")?.dataset.docente;
+		if (!nome) return;
+		const ok = await DialogV2.confirm({
+			window: { title: "Remover professor" },
+			content: `<p>Tirar <strong>${escapar(nome)}</strong> do corpo docente? O professor sai de todas as disciplinas e perde o vínculo com a ficha; a ficha continua no mundo. Para devolver um professor do livro às disciplinas originais, use <em>Restaurar padrão</em> no catálogo.</p>`
+		});
+		if (ok) await removerProfessor(nome);
 	}
 
 	static #abrirFichaProfessor(event, alvo) {

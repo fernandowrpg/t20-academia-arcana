@@ -81,7 +81,12 @@ Um painel pequeno, sempre visível, mostra uma bandeira por grêmio. Cada bandei
 
 ### Corpo docente
 
-Na Secretaria, o quadro **Corpo docente** lista os professores citados no catálogo de disciplinas. Em cada linha, escolha a ficha (ator) daquele professor ou use o botão para criar uma ficha de NPC com o nome dele, na pasta *Professores da Academia*. Disciplinas com dois professores (como *Prática Aventuresca*) contam para os dois.
+Na Secretaria, o quadro **Corpo docente** lista os professores citados no catálogo de disciplinas e os cadastrados pelo mestre. Em cada linha, escolha a ficha (ator) daquele professor ou use o botão para criar uma ficha de NPC com o nome dele, na pasta *Professores da Academia*. Disciplinas com dois professores (como *Prática Aventuresca*) contam para os dois.
+
+- **Novo professor**: digite o nome, escolha a ficha (criar uma de NPC, nenhuma ou uma já existente) e clique em **Cadastrar professor**. Em seguida abre a janela de disciplinas.
+- **Disciplinas**: o botão com o livro e o número de disciplinas abre a lista do catálogo por perícia; marque o que o professor leciona. Quem já divide a disciplina continua nela. Vale para professores do livro e cadastrados, e para disciplinas do livro e da mesa.
+- **Remover**: a lixeira tira o professor de todas as disciplinas e desfaz o vínculo; a ficha continua no mundo. *Restaurar padrão* no catálogo devolve os professores do livro às disciplinas originais.
+- No **Catálogo de disciplinas**, o professor de cada disciplina do livro também pode ser editado direto (dois professores separados por barra).
 
 - **No correio**: o professor com ficha entra na lista de conversas com o ícone de professor e as disciplinas que leciona, e as mensagens dele saem marcadas como "Prof.". O mestre escreve em nome dele escolhendo a ficha em *Escrever como*.
 - **No boletim**: a coluna **Professor** passa a guardar a ficha de quem lançou cada avaliação. Quando o mestre lança a nota ou a situação, o módulo assina com o professor da disciplina que tiver ficha; o mestre pode trocar a ficha. Os jogadores veem o retrato e o nome de quem lançou.

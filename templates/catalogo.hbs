@@ -2,7 +2,7 @@
 	<section class="aa-conteudo">
 		<p class="aa-dica">
 			Ajuste o catálogo da sua mesa: troque a perícia de Tormenta20 de qualquer disciplina, oculte disciplinas, oferte disciplinas
-			especiais e crie disciplinas novas. Em "Ofício (à escolha)", o aluno escolhe na matrícula qual ofício usar (os oficiais ou um
+			especiais e crie disciplinas novas. O professor de cada disciplina também pode ser trocado aqui ou, por professor, no quadro <em>Corpo docente</em> da Secretaria. Em "Ofício (à escolha)", o aluno escolhe na matrícula qual ofício usar (os oficiais ou um
 			ofício personalizado da ficha). Disciplinas terminadas em numeral romano (I, II, III...) exigem automaticamente as anteriores da
 			mesma série. Uma disciplina da mesa com o mesmo nome de uma do livro a substitui.
 		</p>
@@ -38,7 +38,7 @@
 				<ul class="aa-disciplinas">
 					{{#each disciplinas}}
 					<li class="aa-disciplina aa-disciplina-catalogo {{#if oculta}}estado-bloqueada{{/if}}">
-						<div class="aa-disciplina-info"><strong>{{nome}}</strong>{{#if alterada}} <span class="aa-pilula especial">perícia alterada</span>{{/if}}<small>{{professor}}</small></div>
+						<div class="aa-disciplina-info"><strong>{{nome}}</strong>{{#if alterada}} <span class="aa-pilula especial">perícia alterada</span>{{/if}}<input type="text" class="aa-professor-catalogo" name="professores.{{id}}" value="{{professor}}" placeholder="sem professor" aria-label="Professor de {{nome}}" data-tooltip="Professor (no livro: {{#if professorPadrao}}{{professorPadrao}}{{else}}nenhum{{/if}}). Separe dois professores com barra (/)."></div>
 						<select name="pericias.{{id}}">{{#each opcoes}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>
 						<span class="aa-checks">
 							{{#if especial}}<label class="aa-check"><input type="checkbox" name="ofertas.{{id}}" {{checked ofertada}}> ofertada</label>{{/if}}

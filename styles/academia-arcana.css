@@ -498,6 +498,15 @@
 	width: 14rem;
 }
 
+.academia-arcana .aa-disciplina-catalogo input.aa-professor-catalogo {
+	display: block;
+	width: 100%;
+	max-width: 22rem;
+	height: 1.5rem;
+	margin-top: 0.15rem;
+	font-size: 0.8rem;
+}
+
 .academia-arcana .aa-checks {
 	display: flex;
 	gap: 0.5rem;
@@ -1745,6 +1754,41 @@
 .academia-arcana .aa-docentes select {
 	width: 100%;
 	min-width: 8rem;
+}
+
+.academia-arcana .aa-novo-professor {
+	margin-bottom: 0.5rem;
+}
+
+.academia-arcana .aa-novo-professor input[type="text"] {
+	flex: 1 1 auto;
+}
+
+.academia-arcana .aa-novo-professor select {
+	flex: 0 1 14rem;
+}
+
+.academia-arcana .aa-tabela-alunos td button.aa-qtd-disciplinas {
+	width: auto;
+	white-space: nowrap;
+}
+
+.academia-arcana .aa-acoes-docente {
+	white-space: nowrap;
+}
+
+.academia-arcana .aa-escolha-disciplinas {
+	max-height: 55vh;
+	overflow-y: auto;
+}
+
+.academia-arcana .aa-escolha-disciplinas .aa-check.aa-escolha-disciplina {
+	padding: 0.15rem 0.6rem;
+	white-space: normal;
+}
+
+.academia-arcana .aa-escolha-disciplina small {
+	color: var(--aa-texto-suave);
 }
 
 .academia-arcana .aa-col-professor select {

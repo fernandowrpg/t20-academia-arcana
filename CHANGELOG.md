@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.13.0
+
+- Secretaria, *Corpo docente*: cadastre professores novos, com uma ficha de NPC criada na hora, sem ficha ou com uma ficha existente.
+- Cada professor, do livro ou cadastrado, tem um botão de disciplinas: uma janela com o catálogo por perícia para marcar o que ele leciona, sem tirar os colegas que dividem a turma. Vale para disciplinas do livro e da mesa.
+- Botão para remover o professor do corpo docente: sai das disciplinas e perde o vínculo, mas a ficha continua no mundo.
+- Catálogo de disciplinas: o professor das disciplinas do livro passa a ser editável. *Restaurar padrão* devolve os professores originais.
+
 ## 1.12.0
 
 - Compêndio *Academia Arcana: Ambientes*: uma página por lugar da Academia (14 ambientes e um índice), com descrição, uso em jogo pelas regras do Tormenta20 Jogo do Ano, ganchos e um bloco secreto para notas do mestre. Biblioteca (+5 em pesquisa e em Misticismo para Identificar Magia), Laboratório Alquímico (+2 e matéria-prima a ¼ do preço), Enfermaria (+5 em Cura), câmaras do Centro de Testes (Metamágicas, agora com Magia Ilimitada, e Inesgotável) e Observatório (CD 15 e 20) adaptados para T20.

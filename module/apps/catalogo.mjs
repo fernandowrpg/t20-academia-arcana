@@ -46,7 +46,8 @@ export class CatalogoApp extends HandlebarsApplicationMixin(ApplicationV2) {
 					return {
 						id: d.id,
 						nome: d.nome,
-						professor: d.professor,
+						professor: typeof r.professores?.[d.id] === "string" ? r.professores[d.id] : d.professor,
+						professorPadrao: d.professor,
 						oculta: ocultas.has(d.id),
 						especial: d.especial,
 						ofertada: ofertas.has(d.id),
@@ -92,8 +93,15 @@ export class CatalogoApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		}
 		const padrao = new Map(DISCIPLINAS.map((d) => [d.id, d.pericia]));
 		const pericias = Object.fromEntries(Object.entries(dados.pericias ?? {}).filter(([id, chave]) => chave && chave !== padrao.get(id)));
+		const professorPadrao = new Map(DISCIPLINAS.map((d) => [d.id, d.professor]));
+		const professores = Object.fromEntries(
+			Object.entries(dados.professores ?? {})
+				.map(([id, nome]) => [id, String(nome ?? "").trim()])
+				.filter(([id, nome]) => professorPadrao.has(id) && nome !== professorPadrao.get(id))
+		);
 		this.rascunho = {
 			pericias,
+			professores,
 			ocultas: marcados(dados.ocultas),
 			ofertas: [...new Set(ofertas)],
 			personalizadas

@@ -3,7 +3,7 @@ import { DISCIPLINAS, OFICIO_LIVRE, OFICIOS_T20, PERICIAS_T20, ROMANOS, SITUACOE
 const REGEX_SERIE = new RegExp(`^(.*\\S)\\s+(${ROMANOS.slice(1).reverse().join("|")})$`);
 
 export function configPadrao() {
-	return { ocultas: [], ofertas: [], pericias: {}, personalizadas: [] };
+	return { ocultas: [], ofertas: [], pericias: {}, professores: {}, personalizadas: [] };
 }
 
 export function novoAluno() {
@@ -62,7 +62,10 @@ export function montarCatalogo(config = configPadrao()) {
 	for (const d of [...base, ...extras]) {
 		if (ocultas.has(d.id)) continue;
 		const pericia = PERICIAS_T20[config.pericias?.[d.id]] ? config.pericias[d.id] : d.pericia;
-		mapa.set(d.id, { ...d, pericia, ...identificarSerie(d.nome) });
+		/* O professor de uma disciplina do livro pode ser trocado pelo mestre; as da mesa guardam o próprio. */
+		const trocado = config.professores?.[d.id];
+		const professor = !d.personalizada && typeof trocado === "string" ? trocado : d.professor;
+		mapa.set(d.id, { ...d, pericia, professor, ...identificarSerie(d.nome) });
 	}
 	return mapa;
 }
