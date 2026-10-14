@@ -74,31 +74,14 @@ function paginaDisciplinas() {
 function conteudoDaPagina(p) {
 	if (p.gerado === "disciplinas") return paginaDisciplinas();
 	if (p.markdown) return semTituloInicial(markdownParaHtml(readFileSync(join(RAIZ, p.markdown), "utf8")));
-	return semTituloInicial(readFileSync(join(SRC, "compendio", p.arquivo), "utf8"));
+	const html = semTituloInicial(readFileSync(join(SRC, "compendio", p.arquivo), "utf8"));
+	const dados = lerJson(join(SRC, "ambientes", "index.json"));
+	return html.replace(/\{\{ambientes\}\}/g, `@UUID[Compendium.${MODULO}.ambientes.JournalEntry.${idsDosAmbientes(dados).jid}]{${dados.journal}}`);
 }
 
 function documentoJournal(journal, indiceJournal) {
 	const jid = idEstavel(`journal:${journal.nome}`);
-	const pages = journal.paginas.map((p, i) => {
-		const pid = idEstavel(`page:${journal.nome}:${p.titulo}`);
-		const conteudo = conteudoDaPagina(p);
-		return {
-			_id: pid,
-			_key: `!journal.pages!${jid}.${pid}`,
-			name: p.titulo,
-			type: "text",
-			title: { show: true, level: 1 },
-			text: { format: 1, content: conteudo },
-			image: {},
-			video: { controls: true, volume: 0.5 },
-			src: null,
-			system: {},
-			sort: (i + 1) * 100000,
-			ownership: { default: -1 },
-			flags: {},
-			_stats: STATS
-		};
-	});
+	const pages = journal.paginas.map((p, i) => documentoPagina(jid, idEstavel(`page:${journal.nome}:${p.titulo}`), p.titulo, conteudoDaPagina(p), i));
 	return {
 		_id: jid,
 		_key: `!journal!${jid}`,
@@ -131,6 +114,188 @@ function documentoMacro(m, i) {
 	};
 }
 
+const MODULO = "t20-academia-arcana";
+const OBSERVADOR = 2;
+
+function idsDosAmbientes(dados) {
+	const jid = idEstavel(`journal:${dados.journal}`);
+	const paginas = new Map(dados.ambientes.map((a) => [a.chave, idEstavel(`page:${dados.journal}:${a.chave}`)]));
+	return {
+		jid,
+		indice: idEstavel(`page:${dados.journal}:indice`),
+		paginas,
+		cena: idEstavel(`scene:${dados.cena.nome}`),
+		aventura: idEstavel(`adventure:${dados.cena.nome}`),
+		pastaJournal: idEstavel("folder:JournalEntry:Academia Arcana"),
+		pastaCena: idEstavel("folder:Scene:Academia Arcana")
+	};
+}
+
+// {{link:chave}} vira um link relativo para a página irmã, que funciona tanto no compêndio quanto no mundo.
+function ligarAmbientes(html, dados, ids, chave) {
+	return html
+		.replace(/\{\{link:([a-z-]+)\}\}/g, (_, alvo) => {
+			const ambiente = dados.ambientes.find((a) => a.chave === alvo);
+			if (!ambiente) throw new Error(`Ambiente desconhecido em {{link:${alvo}}} (${chave}).`);
+			return `@UUID[.${ids.paginas.get(alvo)}]{${ambiente.titulo}}`;
+		})
+		.replace(/\{\{segredo\}\}/g, () => `secret-${idEstavel(`segredo:${chave}`)}`);
+}
+
+function paginaIndiceAmbientes(dados, ids) {
+	const itens = dados.ambientes.map((a) => `<li>@UUID[.${ids.paginas.get(a.chave)}]{${a.titulo}}</li>`).join("\n");
+	return [
+		"<p><em>Manual do Arcano, p. 91–95 (mapa na p. 93).</em></p>",
+		"<p>Um guia dos lugares da Grande Academia Arcana, com o que há em cada um, como usar o lugar em jogo com as regras de Tormenta20 e ganchos de aventura. Clique em um nome para abrir a página.</p>",
+		`<ul>\n${itens}\n</ul>`,
+		"<h2>O mapa no Foundry</h2>",
+		"<ul>",
+		`<li>Importe a aventura <em>${escapar(dados.cena.nome)}</em> do compêndio <em>Academia Arcana: Mapa</em>. Ela cria a cena com o mapa e estas notas na pasta <em>Academia Arcana</em>, já ligadas entre si.</li>`,
+		"<li>Cada ambiente tem um pino no mapa. Clique duas vezes no pino para abrir a página; o mestre arrasta o pino para mudá-lo de lugar ou abre a configuração dele para trocar o ícone e o texto.</li>",
+		"<li>Depois de importadas, as páginas são suas: edite descrições, regras e notas à vontade. Para criar um ambiente novo, adicione uma página a esta nota e um pino na cena (camada de Notas), escolhendo a página nova.</li>",
+		`<li>A imagem do mapa é a arte do livro e não acompanha o módulo: gere a sua com <code>tools/extrair-mapa.py</code> a partir do seu PDF e coloque em <code>${escapar(dados.cena.imagem)}</code>, ou troque o fundo da cena por outra imagem.</li>`,
+		"</ul>",
+		'<div class="aa-quadro"><p><strong>Regras.</strong> As regras de cada ambiente seguem o Tormenta20 Jogo do Ano. Onde o livro antigo não tem equivalente direto, a adaptação vem explicada na própria página.</p></div>'
+	].join("\n");
+}
+
+function documentoPagina(jid, pid, nome, conteudo, i) {
+	return {
+		_id: pid,
+		_key: `!journal.pages!${jid}.${pid}`,
+		name: nome,
+		type: "text",
+		title: { show: true, level: 1 },
+		text: { format: 1, content: conteudo },
+		image: {},
+		video: { controls: true, volume: 0.5 },
+		src: null,
+		system: {},
+		sort: (i + 1) * 100000,
+		ownership: { default: -1 },
+		flags: {},
+		_stats: STATS
+	};
+}
+
+function journalAmbientes(dados, ids) {
+	const pages = [documentoPagina(ids.jid, ids.indice, dados.indice, paginaIndiceAmbientes(dados, ids), 0)];
+	dados.ambientes.forEach((a, i) => {
+		const html = semTituloInicial(readFileSync(join(SRC, "ambientes", a.arquivo), "utf8"));
+		pages.push(documentoPagina(ids.jid, ids.paginas.get(a.chave), a.titulo, ligarAmbientes(html, dados, ids, a.chave), i + 1));
+	});
+	return {
+		_id: ids.jid,
+		_key: `!journal!${ids.jid}`,
+		name: dados.journal,
+		pages,
+		folder: null,
+		categories: [],
+		sort: 100000,
+		ownership: { default: OBSERVADOR },
+		flags: {},
+		_stats: STATS
+	};
+}
+
+function cenaDoMapa(dados, ids) {
+	const { cena } = dados;
+	const notes = dados.ambientes.map((a, i) => ({
+		_id: idEstavel(`note:${cena.nome}:${a.chave}`),
+		entryId: ids.jid,
+		pageId: ids.paginas.get(a.chave),
+		x: a.x,
+		y: a.y,
+		elevation: 0,
+		sort: i,
+		texture: { src: a.icone, tint: "#ffffff" },
+		iconSize: cena.tamanhoPino,
+		text: a.titulo,
+		fontFamily: "Signika",
+		fontSize: 24,
+		textAnchor: 1,
+		textColor: "#ffffff",
+		global: true,
+		flags: {}
+	}));
+	return {
+		_id: ids.cena,
+		name: cena.nome,
+		active: false,
+		navigation: false,
+		navOrder: 0,
+		navName: "",
+		background: { src: cena.imagem, tint: "#ffffff" },
+		foreground: null,
+		thumb: null,
+		width: cena.largura,
+		height: cena.altura,
+		padding: 0,
+		initial: { x: cena.largura / 2, y: cena.altura / 2, scale: 0.6 },
+		backgroundColor: "#0b0a12",
+		grid: { type: 0, size: 100, distance: 5, units: "m" },
+		tokenVision: false,
+		fog: { exploration: false },
+		journal: ids.jid,
+		journalEntryPage: ids.indice,
+		notes,
+		drawings: [],
+		tokens: [],
+		lights: [],
+		sounds: [],
+		regions: [],
+		templates: [],
+		tiles: [],
+		walls: [],
+		playlist: null,
+		playlistSound: null,
+		weather: "",
+		folder: ids.pastaCena,
+		sort: 0,
+		ownership: { default: 0 },
+		flags: {},
+		_stats: STATS
+	};
+}
+
+function semChaves(doc) {
+	const { _key, ...resto } = doc;
+	if (Array.isArray(resto.pages)) resto.pages = resto.pages.map(semChaves);
+	return resto;
+}
+
+function aventuraDoMapa(dados, ids, journal) {
+	const pasta = (id, type) => ({ _id: id, name: "Academia Arcana", type, folder: null, sorting: "m", sort: 0, color: "#5b3a8c", description: "", flags: {} });
+	return {
+		_id: ids.aventura,
+		_key: `!adventures!${ids.aventura}`,
+		name: dados.cena.nome,
+		img: dados.cena.imagem,
+		caption: "O mapa do Manual do Arcano com um pino para cada ambiente, ligado às notas dos ambientes.",
+		description: [
+			"<p>Cria no mundo, na pasta <strong>Academia Arcana</strong>:</p>",
+			`<ul><li>a cena <em>${escapar(dados.cena.nome)}</em>, com ${dados.ambientes.length} pinos clicáveis;</li>`,
+			`<li>a nota <em>${escapar(dados.journal)}</em>, com uma página por ambiente.</li></ul>`,
+			"<p>Tudo fica editável depois de importado. Importar de novo substitui a cena e a nota pelas versões do módulo.</p>",
+			`<p>A imagem do mapa não acompanha o módulo: gere a sua com <code>tools/extrair-mapa.py</code> a partir do seu PDF do <em>Manual do Arcano</em>.</p>`
+		].join(""),
+		actors: [],
+		combats: [],
+		items: [],
+		journal: [{ ...semChaves(journal), folder: ids.pastaJournal }],
+		scenes: [cenaDoMapa(dados, ids)],
+		tables: [],
+		macros: [],
+		cards: [],
+		playlists: [],
+		folders: [pasta(ids.pastaJournal, "JournalEntry"), pasta(ids.pastaCena, "Scene")],
+		folder: null,
+		sort: 100000,
+		flags: {},
+		_stats: STATS
+	};
+}
+
 function prepararFonte(nome, docs) {
 	const dir = join(TMP, nome);
 	mkdirSync(dir, { recursive: true });
@@ -142,7 +307,16 @@ async function main() {
 	rmSync(TMP, { recursive: true, force: true });
 	const journals = lerJson(join(SRC, "compendio", "index.json")).journals.map(documentoJournal);
 	const macros = lerJson(join(SRC, "macros", "index.json")).macros.map(documentoMacro);
-	const fontes = { compendio: prepararFonte("compendio", journals), macros: prepararFonte("macros", macros) };
+	const dadosAmbientes = lerJson(join(SRC, "ambientes", "index.json"));
+	const idsAmbientes = idsDosAmbientes(dadosAmbientes);
+	const ambientes = journalAmbientes(dadosAmbientes, idsAmbientes);
+	const aventura = aventuraDoMapa(dadosAmbientes, idsAmbientes, ambientes);
+	const fontes = {
+		compendio: prepararFonte("compendio", journals),
+		macros: prepararFonte("macros", macros),
+		ambientes: prepararFonte("ambientes", [ambientes]),
+		mapa: prepararFonte("mapa", [aventura])
+	};
 	for (const [nome, fonte] of Object.entries(fontes)) {
 		const destino = join(PACKS, nome);
 		rmSync(destino, { recursive: true, force: true });
@@ -150,7 +324,7 @@ async function main() {
 	}
 	rmSync(TMP, { recursive: true, force: true });
 	const paginas = journals.reduce((n, j) => n + j.pages.length, 0);
-	console.log(`Packs compilados: ${journals.length} diário(s) com ${paginas} página(s), ${macros.length} macro(s).`);
+	console.log(`Packs compilados: ${journals.length} diário(s) com ${paginas} página(s), ${macros.length} macro(s), ${ambientes.pages.length} página(s) de ambientes e o mapa com ${aventura.scenes[0].notes.length} pino(s).`);
 }
 
 main().catch((erro) => {

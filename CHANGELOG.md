@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.12.0
+
+- Compêndio *Academia Arcana: Ambientes*: uma página por lugar da Academia (14 ambientes e um índice), com descrição, uso em jogo pelas regras do Tormenta20 Jogo do Ano, ganchos e um bloco secreto para notas do mestre. Biblioteca (+5 em pesquisa e em Misticismo para Identificar Magia), Laboratório Alquímico (+2 e matéria-prima a ¼ do preço), Enfermaria (+5 em Cura), câmaras do Centro de Testes (Metamágicas, agora com Magia Ilimitada, e Inesgotável) e Observatório (CD 15 e 20) adaptados para T20.
+- Compêndio *Academia Arcana: Mapa*: aventura que cria a cena do mapa da Academia com um pino clicável por ambiente, ligado à página dele. Cena, pinos e páginas ficam editáveis no mundo.
+- `tools/extrair-mapa.py` gera a imagem do mapa a partir do PDF do *Manual do Arcano*; a arte não vai para o repositório nem para a release.
+- A página *O Campus* do compêndio principal aponta para os ambientes.
+
 ## 1.11.1
 
 - Ficha do Aluno: o cabeçalho mostra a bandeira do grêmio do aluno, igual à do placar, com o mesmo enchimento, os pontos e a coroa de líder.

@@ -17,6 +17,8 @@ Módulo para **Foundry VTT v13** e o sistema **Tormenta20** que acompanha a vida
 - **Secretaria** (mestre): admissão de personagens e ações em lote (abrir matrículas, iniciar e encerrar semestre).
 - **Catálogo editável** (mestre): trocar a perícia de T20 de qualquer disciplina, ocultar disciplinas, ofertar disciplinas especiais e criar disciplinas da mesa. Disciplinas com numeral romano encadeiam pré-requisitos automaticamente.
 - **Compêndio** *Academia Arcana: Compêndio* com 16 páginas: visão geral, acesso, período letivo, admissão, classes, campus, grêmios, disciplinas, Teste dos Quatro Elementos, corpo docente, Raschid, itens e guia de uso.
+- **Ambientes** no compêndio *Academia Arcana: Ambientes*: uma página para cada lugar do semiplano (Administração, Biblioteca, Centro de Testes, Zoo e os demais), com descrição, uso em jogo pelas regras de Tormenta20, ganchos de aventura e um bloco secreto para as notas do mestre. As regras sem equivalente direto em T20 foram adaptadas e vêm explicadas em cada página.
+- **Mapa** no compêndio *Academia Arcana: Mapa*: uma aventura que cria a cena com o mapa da Academia e um pino clicável por ambiente, ligado à página correspondente. Depois de importados, cena, pinos e páginas são editáveis. A imagem do mapa é gerada a partir do seu PDF (veja [Mapa da Academia](#mapa-da-academia)).
 - **Macros** prontas no compêndio *Academia Arcana: Macros*.
 
 As regras de **vida estudantil** do livro (atividades do semestre e os testes de Estudo, Frustração e Convívio Social) **não** são automatizadas: o compêndio tem uma página reservada para a adaptação a T20, e o resultado de cada semestre é lançado pelo mestre.
@@ -148,6 +150,19 @@ Abre pela Secretaria, pelo ícone de calendário no painel de alunos ou pela mac
 
 As regras de matrícula e avaliação estão em [docs/regras-da-academia.md](docs/regras-da-academia.md), em Markdown compatível com o Notion.
 
+### Mapa da Academia
+
+1. Abra o compêndio *Academia Arcana: Mapa* e importe a aventura *Mapa da Grande Academia Arcana*. Ela cria, na pasta *Academia Arcana*, a cena do mapa e a nota *Ambientes da Academia Arcana*, já ligadas.
+2. Clique duas vezes num pino para abrir a página do ambiente. O mestre move o pino arrastando e muda ícone ou texto na configuração dele (camada de Notas). Para um ambiente novo, crie uma página na nota e um pino apontando para ela.
+3. A imagem do mapa é a arte da p. 93 do *Manual do Arcano* e **não** vem com o módulo. Gere a sua a partir do seu PDF:
+
+```bash
+pip install pymupdf pillow
+python tools/extrair-mapa.py "caminho/Manual do Arcano.pdf"
+```
+
+A imagem vai para `assets/mapas/academia-arcana.webp` (1275×1650), o caminho que a cena usa. Se o módulo foi instalado pelo manifesto, copie o arquivo para essa pasta dentro de `Data/modules/t20-academia-arcana` ou troque o fundo da cena por um upload seu (fora da pasta do módulo, a imagem sobrevive às atualizações).
+
 ### API
 
 ```js
@@ -176,8 +191,8 @@ npm install
 npm run build
 ```
 
-- `npm run build:packs`: gera os compêndios LevelDB em `packs/` a partir de `src/compendio` (páginas HTML) e `src/macros`. A página **Disciplinas** é gerada a partir de `module/data/disciplinas.mjs`, a mesma fonte usada pela interface.
-- `npm run build:release`: atualiza `module.json` (versão e URLs) e cria `dist/module.json` e `dist/module.zip`.
+- `npm run build:packs`: gera os compêndios LevelDB em `packs/` a partir de `src/compendio` (páginas HTML), `src/ambientes` (páginas dos ambientes e posição dos pinos no mapa) e `src/macros`. A página **Disciplinas** é gerada a partir de `module/data/disciplinas.mjs`, a mesma fonte usada pela interface.
+- `npm run build:release`: atualiza `module.json` (versão e URLs) e cria `dist/module.json` e `dist/module.zip`. A imagem do mapa fica fora do zip; para um zip de uso próprio com ela, rode `node tools/build-release.mjs --com-mapa` (não publique esse zip).
 - `npm run unpack`: extrai os packs para `extraido/`, só para conferência.
 
 Para testar localmente, copie (ou crie um link simbólico para) a pasta do projeto em `Data/modules/t20-academia-arcana` depois de rodar `npm run build:packs`.
@@ -190,7 +205,9 @@ templates/         templates Handlebars das janelas
 styles/            CSS
 lang/              traduções
 src/compendio/     páginas do compêndio (HTML) e index.json com a ordem
+src/ambientes/     páginas dos ambientes e index.json com a ordem, os ícones e a posição dos pinos
 src/macros/        macros do compêndio
+assets/mapas/      imagem do mapa gerada por tools/extrair-mapa.py (fora do git)
 tools/             scripts de build
 ```
 
@@ -234,6 +251,6 @@ Para aparecer na busca do Foundry, cadastre o pacote em <https://foundryvtt.com/
 
 ## Aviso legal
 
-Módulo de fã, **não oficial**. *Tormenta*, *Arton*, a Academia Arcana e seus personagens são propriedade da **Jambô Editora**. O compêndio traz apenas resumos em texto próprio e a lista de nomes de disciplinas do *Manual do Arcano* (2012), não uma reprodução do livro. Para o conteúdo completo, adquira a obra.
+Módulo de fã, **não oficial**. *Tormenta*, *Arton*, a Academia Arcana e seus personagens são propriedade da **Jambô Editora**. O compêndio traz apenas resumos em texto próprio e a lista de nomes de disciplinas do *Manual do Arcano* (2012), não uma reprodução do livro. A arte do mapa não é distribuída: cada mestre a gera a partir do próprio exemplar. Para o conteúdo completo, adquira a obra.
 
 O código está sob a licença MIT (veja `LICENSE`).

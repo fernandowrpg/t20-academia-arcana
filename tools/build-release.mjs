@@ -7,6 +7,8 @@ const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = join(RAIZ, "dist");
 const PASTAS = ["module", "templates", "styles", "lang", "packs", "assets"];
 const ARQUIVOS = ["README.md", "CHANGELOG.md", "LICENSE"];
+// A imagem do mapa é arte do Manual do Arcano: só entra no zip com --com-mapa (para uso próprio, nunca na release pública).
+const COM_MAPA = process.argv.includes("--com-mapa");
 
 const pkg = JSON.parse(readFileSync(join(RAIZ, "package.json"), "utf8"));
 const repo = pkg.foundry?.github;
@@ -41,7 +43,8 @@ const zip = new AdmZip();
 zip.addFile("module.json", Buffer.from(json, "utf8"));
 for (const pasta of PASTAS) {
 	const origem = join(RAIZ, pasta);
-	if (existsSync(origem)) zip.addLocalFolder(origem, pasta, (nome) => !/(^|[\\/])(LOCK|LOG(\.old)?)$/.test(nome));
+	const incluir = (nome) => !/(^|[\\/])(LOCK|LOG(\.old)?)$/.test(nome) && (COM_MAPA || !/^assets[\\/]mapas[\\/]/.test(nome));
+	if (existsSync(origem)) zip.addLocalFolder(origem, pasta, incluir);
 }
 for (const arquivo of ARQUIVOS) {
 	const origem = join(RAIZ, arquivo);

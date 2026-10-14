@@ -1,0 +1,27 @@
+{
+	"journal": "Ambientes da Academia Arcana",
+	"indice": "Mapa e Índice",
+	"cena": {
+		"nome": "Mapa da Grande Academia Arcana",
+		"imagem": "modules/t20-academia-arcana/assets/mapas/academia-arcana.webp",
+		"largura": 1275,
+		"altura": 1650,
+		"tamanhoPino": 40
+	},
+	"ambientes": [
+		{ "chave": "semiplano", "arquivo": "01-semiplano.html", "titulo": "O Semiplano", "icone": "icons/svg/city.svg", "x": 630, "y": 1150 },
+		{ "chave": "administracao", "arquivo": "02-administracao.html", "titulo": "Administração", "icone": "icons/svg/temple.svg", "x": 612, "y": 420 },
+		{ "chave": "templo-aulas", "arquivo": "03-templo-de-aulas.html", "titulo": "Templo de Aulas Teóricas", "icone": "icons/svg/castle.svg", "x": 735, "y": 440 },
+		{ "chave": "biblioteca", "arquivo": "04-biblioteca.html", "titulo": "Biblioteca e Área de Estudos", "icone": "icons/svg/book.svg", "x": 455, "y": 465 },
+		{ "chave": "centro-testes", "arquivo": "05-centro-de-testes.html", "titulo": "Centro de Testes", "icone": "icons/svg/fire.svg", "x": 440, "y": 535 },
+		{ "chave": "alqlab", "arquivo": "06-laboratorio-alquimico.html", "titulo": "Laboratório Alquímico", "icone": "icons/svg/barrel.svg", "x": 500, "y": 560 },
+		{ "chave": "observatorio", "arquivo": "07-observatorio.html", "titulo": "Observatório", "icone": "icons/svg/tower.svg", "x": 402, "y": 398 },
+		{ "chave": "necroterio", "arquivo": "08-necroterio.html", "titulo": "Necrotério", "icone": "icons/svg/skull.svg", "x": 568, "y": 545 },
+		{ "chave": "enfermaria", "arquivo": "09-enfermaria.html", "titulo": "Enfermaria", "icone": "icons/svg/chest.svg", "x": 826, "y": 425 },
+		{ "chave": "alojamento", "arquivo": "10-alojamento.html", "titulo": "Alojamento dos Alunos", "icone": "icons/svg/house.svg", "x": 840, "y": 530 },
+		{ "chave": "complexo-esportivo", "arquivo": "11-complexo-esportivo.html", "titulo": "Complexo Esportivo", "icone": "icons/svg/sword.svg", "x": 690, "y": 1255 },
+		{ "chave": "ermos", "arquivo": "12-ermos.html", "titulo": "Ermos", "icone": "icons/svg/cave.svg", "x": 230, "y": 1225 },
+		{ "chave": "vila-professores", "arquivo": "13-vila-dos-professores.html", "titulo": "Vila dos Professores", "icone": "icons/svg/village.svg", "x": 605, "y": 1085 },
+		{ "chave": "zoo", "arquivo": "14-zoo.html", "titulo": "Zoo", "icone": "icons/svg/pawprint.svg", "x": 895, "y": 1125 }
+	]
+}
