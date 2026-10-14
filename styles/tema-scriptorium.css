@@ -233,6 +233,36 @@ body.aa-tema-modulo .academia-arcana :where(.window-content button:hover) {
 	color: var(--aa-tinta);
 }
 
+/* Índice lateral dos diários: o Foundry mantém as cores do tema escuro aqui,
+   então os títulos das páginas ficavam brancos sobre o pergaminho. */
+body.aa-tema-tudo .journal-entry .journal-sidebar {
+	--color-text-primary: var(--aa-tinta);
+	--color-text-secondary: var(--aa-tinta-suave);
+	--color-text-subtle: var(--aa-tinta-suave);
+	--color-text-emphatic: #1f150a;
+	--color-border: var(--aa-traco);
+	color: var(--aa-tinta);
+}
+
+body.aa-tema-tudo .journal-entry .journal-sidebar .toc :is(.page-heading, .page-title, .page-number, .heading, .heading-link, a) {
+	color: var(--aa-tinta);
+	text-shadow: none;
+}
+
+body.aa-tema-tudo .journal-entry .journal-sidebar .toc :is(.page-number, .heading, .heading-link) {
+	color: var(--aa-tinta-suave);
+}
+
+body.aa-tema-tudo .journal-entry .journal-sidebar .toc .page.active > .page-heading :is(.page-title, .page-number) {
+	color: var(--aa-arcano);
+	font-weight: bold;
+}
+
+body.aa-tema-tudo .journal-entry .journal-sidebar .toc :is(.page-heading, .heading-link):hover :is(.page-title, .page-number),
+body.aa-tema-tudo .journal-entry .journal-sidebar .toc .heading-link:hover {
+	color: var(--aa-arcano);
+}
+
 /* ------------------------------------------------------------------ */
 /* Janelas do módulo                                                   */
 /* ------------------------------------------------------------------ */

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.13.1
+
+- Tema Scriptorium (modo "tudo"): os títulos das páginas no índice lateral dos diários e compêndios ficavam brancos sobre o pergaminho. Agora usam a tinta sépia, e a página aberta aparece em roxo.
+
 ## 1.13.0
 
 - Secretaria, *Corpo docente*: cadastre professores novos, com uma ficha de NPC criada na hora, sem ficha ou com uma ficha existente.
