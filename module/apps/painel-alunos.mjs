@@ -86,7 +86,7 @@ export class PainelAlunosApp extends PainelFlutuante {
 				}
 			};
 		});
-		return { gm, usarNotas, calendario: gm || opcao("calendarioJogadores"), correio: gm || opcao("correioJogadores"), cartas: totalNaoLidas(), recolhido: this.recolhido, alunos };
+		return { gm, usarNotas, calendario: gm || opcao("calendarioJogadores"), correio: gm || opcao("correioJogadores"), cartas: totalNaoLidas(), recolhido: this.recolhido, minimizado: this.minimizado, alunos };
 	}
 
 	#ator(alvo) {

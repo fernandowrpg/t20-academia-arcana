@@ -38,6 +38,7 @@ export class PainelPlacarApp extends PainelFlutuante {
 		return {
 			gm: game.user.isGM,
 			recolhido: this.recolhido,
+			minimizado: this.minimizado,
 			gremios: gremios.map((g) => ({
 				id: g.id,
 				apelido: g.apelido,

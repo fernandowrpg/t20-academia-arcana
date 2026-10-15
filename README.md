@@ -64,14 +64,14 @@ Configurações em **Configure Settings → Academia Arcana**: mínimo e máximo
 
 ### Painéis
 
-Os dois painéis ficam flutuando sobre a mesa. Arraste pelo título para mover (clique duplo no título volta à posição padrão) e use a seta para alternar entre a versão completa e a compacta. A posição e o modo ficam salvos por navegador, e cada usuário pode desligar um painel nas configurações do módulo.
+Os dois painéis ficam flutuando sobre a mesa. Arraste pelo título para mover (clique duplo no título volta à posição padrão) use a seta para alternar entre a versão completa e a compacta e o botão de minimizar para deixar só a barra do título. A posição e o modo ficam salvos por navegador, e cada usuário pode desligar um painel nas configurações do módulo.
 
 - **Alunos**: lista os alunos ativos ou com o curso trancado. O mestre vê todos; o jogador vê os personagens em que tem permissão de observador ou dono. Cada aluno mostra PV, PM, o semestre mais recente com notas (média, aprovações, reprovações, pendências e, ao clicar, as disciplinas) e o botão **Matrícula**, que abre direto a aba de matrícula e fica destacado enquanto a matrícula está aberta.
 - **Ameaças**: aparece quando o combate é iniciado e some quando ele termina. Lista os combatentes sem jogador dono cujo token não é amistoso, na ordem de iniciativa, com destaque para quem está na vez. Clicar no nome centraliza o token; clicar no retrato abre a ficha. Por padrão só o mestre vê; em **Painel de ameaças para jogadores** ele pode liberar o estado aproximado (sem números) ou os valores completos. Ameaças ocultas nunca aparecem para jogadores.
 
 ### Placar dos grêmios
 
-Um painel pequeno, sempre visível, mostra uma bandeira por grêmio. Cada bandeira se enche de brilho conforme o grêmio pontua, e a líder ganha uma coroa. Passe o mouse para ver o detalhe; como os outros painéis, ele pode ser arrastado, recolhido e desligado por usuário.
+Um painel pequeno, sempre visível, mostra uma bandeira por grêmio. Cada bandeira se enche de brilho conforme o grêmio pontua, e a líder ganha uma coroa. Passe o mouse para ver o detalhe; como os outros painéis, ele pode ser arrastado, recolhido, minimizado e desligado por usuário.
 
 - **Na Ficha do Aluno**: o cabeçalho mostra a bandeira do grêmio do aluno, com o mesmo enchimento, os pontos e a coroa do placar.
 - **O que pontua**: cada disciplina aprovada (10 pontos) e cada atividade extracurricular concluída (15 pontos) por um aluno do grêmio, mais os **pontos avulsos** que o mestre lança na Secretaria para torneios, façanhas e punições. Os valores e a meta que enche a bandeira (100 pontos) são configuráveis.

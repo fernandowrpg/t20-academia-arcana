@@ -4,7 +4,8 @@
 		<strong>Ameaças</strong>
 		<span class="aa-painel-rodada">Rodada {{rodada}}</span>
 		<span class="aa-painel-acoes">
-			<a data-action="recolher" data-tooltip="{{#if recolhido}}Mostrar ND, Defesa e condições{{else}}Mostrar só vida e mana{{/if}}"><i class="fa-solid {{#if recolhido}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i></a>
+			{{#unless minimizado}}<a data-action="recolher" data-tooltip="{{#if recolhido}}Mostrar ND, Defesa e condições{{else}}Mostrar só vida e mana{{/if}}"><i class="fa-solid {{#if recolhido}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i></a>{{/unless}}
+			<a data-action="minimizar" data-tooltip="{{#if minimizado}}Mostrar o painel{{else}}Minimizar o painel{{/if}}"><i class="fa-solid {{#if minimizado}}fa-window-maximize{{else}}fa-window-minimize{{/if}}"></i></a>
 		</span>
 	</header>
 	<ul class="aa-painel-lista">

@@ -50,7 +50,8 @@ export class PainelFlutuante extends HandlebarsApplicationMixin(ApplicationV2) {
 		classes: ["academia-arcana", "aa-painel"],
 		window: { frame: false, positioned: false },
 		actions: {
-			recolher: PainelFlutuante.#recolher
+			recolher: PainelFlutuante.#recolher,
+			minimizar: PainelFlutuante.#minimizar
 		}
 	};
 
@@ -58,6 +59,11 @@ export class PainelFlutuante extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	get recolhido() {
 		return !!estadoPainel(this.constructor.CHAVE).recolhido;
+	}
+
+	/* Minimizado, o painel mostra só a barra do topo. Fica salvo por usuário. */
+	get minimizado() {
+		return !!estadoPainel(this.constructor.CHAVE).minimizado;
 	}
 
 	posicaoPadrao() {
@@ -77,6 +83,7 @@ export class PainelFlutuante extends HandlebarsApplicationMixin(ApplicationV2) {
 	async _onRender(context, options) {
 		await super._onRender(context, options);
 		this.element.classList.toggle("recolhido", this.recolhido);
+		this.element.classList.toggle("minimizado", this.minimizado);
 		const topo = this.element.querySelector(".aa-painel-topo");
 		topo?.addEventListener("pointerdown", (ev) => this.#arrastar(ev));
 		topo?.addEventListener("dblclick", (ev) => this.#restaurarPosicao(ev));
@@ -139,6 +146,11 @@ export class PainelFlutuante extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	static async #recolher() {
 		await salvarEstadoPainel(this.constructor.CHAVE, { recolhido: !this.recolhido });
+		this.render();
+	}
+
+	static async #minimizar() {
+		await salvarEstadoPainel(this.constructor.CHAVE, { minimizado: !this.minimizado });
 		this.render();
 	}
 }

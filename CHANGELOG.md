@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.15.0
+
+- Painéis flutuantes (alunos, ameaças e grêmios): novo botão de minimizar no título, que deixa só a barra do topo à vista. Clique de novo para mostrar o painel. Cada usuário escolhe por conta própria e a escolha fica salva no navegador, junto com a posição.
+
 ## 1.14.0
 
 - Calendário: os dias da semana passam a ser os de Arton. As aulas acontecem de Valk a Dallia (Valk, Hedryl, Luna, Astar e Dallia), e Haya e Leen são a folga. Os horários já salvos continuam nos mesmos lugares.

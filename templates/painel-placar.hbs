@@ -4,7 +4,8 @@
 		<strong>Grêmios</strong>
 		<span class="aa-painel-acoes">
 			{{#if gm}}<a data-action="secretaria" data-tooltip="Placar na Secretaria"><i class="fa-solid fa-building-columns"></i></a>{{/if}}
-			<a data-action="recolher" data-tooltip="{{#if recolhido}}Mostrar o último campeão{{else}}Mostrar só as bandeiras{{/if}}"><i class="fa-solid {{#if recolhido}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i></a>
+			{{#unless minimizado}}<a data-action="recolher" data-tooltip="{{#if recolhido}}Mostrar o último campeão{{else}}Mostrar só as bandeiras{{/if}}"><i class="fa-solid {{#if recolhido}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i></a>{{/unless}}
+			<a data-action="minimizar" data-tooltip="{{#if minimizado}}Mostrar o painel{{else}}Minimizar o painel{{/if}}"><i class="fa-solid {{#if minimizado}}fa-window-maximize{{else}}fa-window-minimize{{/if}}"></i></a>
 		</span>
 	</header>
 	<ul class="aa-bandeiras">

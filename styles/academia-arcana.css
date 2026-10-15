@@ -752,6 +752,14 @@
 	cursor: grabbing;
 }
 
+.aa-painel.minimizado .aa-painel-conteudo > :not(.aa-painel-topo) {
+	display: none;
+}
+
+.aa-painel.minimizado .aa-painel-topo {
+	border-bottom: none;
+}
+
 .aa-painel .aa-painel-topo strong {
 	flex: 1;
 	letter-spacing: 0.03em;

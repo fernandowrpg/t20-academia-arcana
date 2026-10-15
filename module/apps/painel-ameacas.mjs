@@ -88,6 +88,7 @@ export class PainelAmeacasApp extends PainelFlutuante {
 		return {
 			completo,
 			recolhido: this.recolhido,
+			minimizado: this.minimizado,
 			rodada: combate?.round ?? 0,
 			ameacas,
 			total: ameacas.length,
