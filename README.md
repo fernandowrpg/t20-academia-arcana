@@ -146,11 +146,12 @@ Na Secretaria, **Gerar alunos** cria colegas para povoar a Academia. O mestre po
 
 ### Calendário do Período Letivo
 
-Abre pela Secretaria, pelo ícone de calendário no painel de alunos ou pela macro. Mostra a semana letiva (5 dias, 3 turnos) com uma aula por disciplina e quem está em cada turma: personagens em destaque e NPCs ao lado. Abaixo da grade, a lista **Colegas de turma** resume quais NPCs dividem aula com quais personagens.
+Abre pela Secretaria, pelo ícone de calendário no painel de alunos ou pela macro. Mostra a semana letiva com os dias de Arton (Valk, Hedryl, Luna, Astar e Dallia, com Haya e Leen de folga; 3 turnos) com uma aula por disciplina e quem está em cada turma: personagens em destaque e NPCs ao lado. Abaixo da grade, a lista **Colegas de turma** resume quais NPCs dividem aula com quais personagens.
 
 - O filtro alterna entre as aulas dos personagens, as de um personagem só e todas as aulas da Academia.
 - Os horários são distribuídos evitando choque entre as aulas de um mesmo aluno e ficam salvos no mundo. O mestre muda o horário de uma turma no próprio cartão ou usa **Redistribuir**.
 - A grade se adapta à largura da janela: cinco colunas quando há espaço, um dia por linha em janelas médias e uma lista em janelas estreitas.
+- **Resumo do mestre** (só para o mestre): lista, em ordem de dia e turno, as aulas em que dois ou mais personagens estão juntos, ou, pelo filtro, as aulas que os personagens dividem com um aluno NPC ou um professor específico. Marca quando todos os personagens estão na mesma aula.
 - A configuração **Jogadores veem o calendário** controla o acesso dos jogadores.
 
 As regras de matrícula e avaliação estão em [docs/regras-da-academia.md](docs/regras-da-academia.md), em Markdown compatível com o Notion.

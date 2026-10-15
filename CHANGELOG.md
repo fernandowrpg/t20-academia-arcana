@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.14.0
+
+- Calendário: os dias da semana passam a ser os de Arton. As aulas acontecem de Valk a Dallia (Valk, Hedryl, Luna, Astar e Dallia), e Haya e Leen são a folga. Os horários já salvos continuam nos mesmos lugares.
+- Calendário, *Resumo do mestre*: quadro só para o mestre com os momentos da semana, em ordem de dia e turno, em que os personagens têm aula juntos. O filtro troca para as aulas que os personagens dividem com um aluno NPC ou com um professor específico; o número ao lado do nome é quantas aulas em comum. Uma marca avisa quando todos os personagens estão na mesma aula.
+
 ## 1.13.1
 
 - Tema Scriptorium (modo "tudo"): os títulos das páginas no índice lateral dos diários e compêndios ficavam brancos sobre o pergaminho. Agora usam a tinta sépia, e a página aberta aparece em roxo.

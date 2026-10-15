@@ -108,6 +108,9 @@ export const PARCEIROS = {
 	vigilante: { nome: "Vigilante", graus: ["+2 em Percepção e Iniciativa", "Esquiva Sobrenatural", "Olhos nas Costas"] }
 };
 
-export const DIAS_LETIVOS = ["1º dia", "2º dia", "3º dia", "4º dia", "5º dia"];
+/* Dias da semana de Arton. Haya (festas) e Leen ("descanso dos mortos") são a folga da semana. */
+export const DIAS_LETIVOS = ["Valk", "Hedryl", "Luna", "Astar", "Dallia"];
+
+export const DIAS_DE_FOLGA = ["Haya", "Leen"];
 
 export const TURNOS = ["Manhã", "Começo da tarde", "Fim da tarde"];

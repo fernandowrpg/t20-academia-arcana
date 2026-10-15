@@ -1,8 +1,8 @@
-import { DIAS_LETIVOS, TURNOS } from "../data/alunos.mjs";
-import { TOTAL_HORARIOS, choquesDeHorario, colegasDeTurma, distribuirHorarios, montarTurmas, rotuloHorario, semestreVigente } from "../calendario.mjs";
+import { DIAS_DE_FOLGA, DIAS_LETIVOS, TURNOS } from "../data/alunos.mjs";
+import { TOTAL_HORARIOS, choquesDeHorario, colegasDeTurma, distribuirHorarios, encontrosDaSemana, montarTurmas, rotuloHorario, semestreVigente } from "../calendario.mjs";
 import { descricaoNpc, descricaoParceiro } from "../gerador.mjs";
 import { nomePericia } from "../logica.mjs";
-import { MODULO, contextoCatalogo, ehAluno, lerAluno, opcao } from "../config.mjs";
+import { MODULO, contextoCatalogo, ehAluno, lerAluno, nomesDeProfessor, opcao } from "../config.mjs";
 import { VidaAcademicaApp } from "./vida-academica.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
@@ -60,6 +60,9 @@ export class CalendarioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 	};
 
 	filtro = null;
+
+	/* Filtro do resumo do mestre: "juntos", "aluno:<id>" ou "prof:<nome>". */
+	resumo = "juntos";
 
 	async _onClose(options) {
 		await super._onClose(options);
@@ -122,6 +125,8 @@ export class CalendarioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		return {
 			gm,
 			dias,
+			folga: DIAS_DE_FOLGA.join(" e "),
+			resumo: gm ? this.#resumoDoMestre(turmas, horarios, catalogo, aluno) : null,
 			colegas,
 			vazio: !visiveis.length,
 			semAlunos: !todos.length,
@@ -134,10 +139,60 @@ export class CalendarioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		};
 	}
 
+	/* Momentos da semana em que os personagens têm aula juntos, ou com um NPC escolhido. */
+	#resumoDoMestre(turmas, horarios, catalogo, aluno) {
+		const professoresDe = (id) => nomesDeProfessor(catalogo.get(id)?.professor);
+		const comPc = turmas.filter((t) => t.alunos.some((a) => a.pc));
+		const npcs = colegasDeTurma(turmas).map((c) => ({ valor: `aluno:${c.id}`, rotulo: `${c.nome} (${c.aulas.length})` }));
+		const contagem = new Map();
+		for (const t of comPc) for (const nome of professoresDe(t.id)) contagem.set(nome, (contagem.get(nome) ?? 0) + 1);
+		const professores = [...contagem]
+			.sort((a, b) => a[0].localeCompare(b[0], "pt-BR"))
+			.map(([nome, total]) => ({ valor: `prof:${nome}`, rotulo: `${nome} (${total})` }));
+
+		let alvo = this.resumo;
+		if (![...npcs, ...professores].some((o) => o.valor === alvo)) alvo = "juntos";
+		const marcar = (o) => ({ ...o, selecionado: o.valor === alvo });
+		const totalPcs = new Set(comPc.flatMap((t) => t.alunos.filter((a) => a.pc).map((a) => a.id))).size;
+		const destaque = alvo.startsWith("aluno:") ? alvo.slice(6) : null;
+		const chip = (a) => ({ ...aluno(a), destaque: a.id === destaque });
+
+		const encontros = encontrosDaSemana(turmas, horarios, alvo, professoresDe);
+		const dias = DIAS_LETIVOS.map((nome, d) => ({
+			nome,
+			aulas: encontros
+				.filter((e) => Math.floor(e.horario / TURNOS.length) === d)
+				.map(({ turma: t, horario }) => {
+					const pcs = t.alunos.filter((a) => a.pc);
+					return {
+						turno: TURNOS[horario % TURNOS.length],
+						nome: t.nome,
+						professor: catalogo.get(t.id)?.professor ?? "",
+						pcs: pcs.map(chip),
+						npcs: t.alunos.filter((a) => !a.pc).map(chip),
+						todos: totalPcs > 1 && pcs.length === totalPcs
+					};
+				})
+		})).filter((d) => d.aulas.length);
+
+		return {
+			dias,
+			total: encontros.length,
+			juntos: alvo === "juntos",
+			npcs: npcs.map(marcar),
+			professores: professores.map(marcar),
+			vazio: alvo === "juntos" ? "Nenhuma aula reúne dois ou mais personagens nesta semana." : "Esse NPC não divide aula com os personagens nesta semana."
+		};
+	}
+
 	async _onRender(context, options) {
 		await super._onRender(context, options);
 		this.element.querySelector("select[name='aa-cal-filtro']")?.addEventListener("change", (ev) => {
 			this.filtro = ev.target.value;
+			this.render();
+		});
+		this.element.querySelector("select[name='aa-cal-mestre']")?.addEventListener("change", (ev) => {
+			this.resumo = ev.target.value;
 			this.render();
 		});
 		this.element.querySelectorAll("select[data-horario]").forEach((el) =>

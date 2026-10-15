@@ -97,3 +97,21 @@ export function colegasDeTurma(turmas) {
 	}
 	return [...colegas.values()].sort((a, b) => b.aulas.length - a.aulas.length || a.nome.localeCompare(b.nome, "pt-BR"));
 }
+
+/*
+ * Resumo do mestre: as aulas da semana, em ordem de horário, em que os personagens se encontram.
+ * alvo: "juntos" (dois ou mais personagens), "aluno:<id>" (um NPC aluno) ou "prof:<nome>" (um professor).
+ * professoresDe(idDaTurma) devolve os nomes dos professores da turma.
+ */
+export function encontrosDaSemana(turmas, horarios, alvo, professoresDe = () => []) {
+	const [tipo, chave] = alvo.split(/:(.*)/s);
+	return turmas
+		.filter((t) => {
+			const pcs = t.alunos.filter((a) => a.pc).length;
+			if (tipo === "aluno") return pcs > 0 && t.alunos.some((a) => a.id === chave);
+			if (tipo === "prof") return pcs > 0 && professoresDe(t.id).includes(chave);
+			return pcs > 1;
+		})
+		.map((t) => ({ turma: t, horario: horarios[t.id] }))
+		.sort((a, b) => a.horario - b.horario || a.turma.nome.localeCompare(b.turma.nome, "pt-BR"));
+}

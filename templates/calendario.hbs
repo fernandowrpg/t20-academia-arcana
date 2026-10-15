@@ -4,6 +4,7 @@
 			<select name="aa-cal-filtro">{{#each filtros}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>
 		</label>
 		<span class="aa-cal-resumo">{{totalTurmas}} turma(s) · {{colegas.length}} colega(s) NPC</span>
+		<span class="aa-cal-resumo">{{folga}}: folga</span>
 		<span class="aa-cal-legenda"><span class="aa-cal-chip pc">personagem</span><span class="aa-cal-chip">NPC</span></span>
 		{{#if gm}}<button type="button" data-action="redistribuir" data-tooltip="Descarta os horários e distribui as turmas de novo"><i class="fa-solid fa-shuffle"></i> Redistribuir</button>{{/if}}
 	</header>
@@ -45,6 +46,45 @@
 			</section>
 			{{/each}}
 		</div>
+
+		{{#if resumo}}
+		<fieldset class="aa-cartao aa-cal-mestre">
+			<legend><i class="fa-solid fa-eye"></i> Resumo do mestre</legend>
+			<header class="aa-cal-mestre-topo">
+				<label class="aa-cal-filtro"><i class="fa-solid fa-filter"></i>
+					<select name="aa-cal-mestre" aria-label="Filtro do resumo">
+						<option value="juntos" {{#if resumo.juntos}}selected{{/if}}>Personagens juntos</option>
+						{{#if resumo.npcs.length}}<optgroup label="Com um aluno NPC">{{#each resumo.npcs}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</optgroup>{{/if}}
+						{{#if resumo.professores.length}}<optgroup label="Com um professor">{{#each resumo.professores}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</optgroup>{{/if}}
+					</select>
+				</label>
+				<span class="aa-cal-resumo">{{resumo.total}} momento(s) na semana</span>
+			</header>
+			{{#if resumo.dias.length}}
+			<ol class="aa-cal-momentos">
+				{{#each resumo.dias}}
+				<li>
+					<h4>{{nome}}</h4>
+					<ul>
+						{{#each aulas}}
+						<li>
+							<span class="aa-cal-momento-hora">{{turno}}</span>
+							<span><strong>{{nome}}</strong>{{#if professor}} <small>· {{professor}}</small>{{/if}}{{#if todos}} <span class="aa-cal-chip todos" data-tooltip="Todos os personagens estão nesta aula">todos</span>{{/if}}</span>
+							<span class="aa-cal-alunos">
+								{{#each pcs}}<a class="aa-cal-chip pc" {{#if abre}}data-action="abrirAluno" data-actor="{{id}}"{{/if}}><img src="{{img}}" alt="">{{nome}}</a>{{/each}}
+								{{#each npcs}}<a class="aa-cal-chip {{#if destaque}}destaque{{/if}}" {{#if abre}}data-action="abrirAluno" data-actor="{{id}}"{{/if}} {{#if detalhe}}data-tooltip="{{detalhe}}"{{/if}}>{{nome}}</a>{{/each}}
+							</span>
+						</li>
+						{{/each}}
+					</ul>
+				</li>
+				{{/each}}
+			</ol>
+			{{else}}
+			<p class="aa-dica">{{resumo.vazio}}</p>
+			{{/if}}
+		</fieldset>
+		{{/if}}
 
 		<fieldset class="aa-cartao">
 			<legend><i class="fa-solid fa-user-group"></i> Colegas de turma dos personagens</legend>

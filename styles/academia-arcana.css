@@ -1364,6 +1364,51 @@
 	display: block;
 }
 
+.academia-arcana .aa-cal-mestre-topo {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem 0.75rem;
+	margin-bottom: 0.5rem;
+}
+
+.academia-arcana .aa-cal-momentos,
+.academia-arcana .aa-cal-momentos ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+}
+
+.academia-arcana .aa-cal-momentos h4 {
+	margin: 0 0 0.2rem;
+	border-bottom: 1px solid var(--aa-borda);
+}
+
+.academia-arcana .aa-cal-momentos ul > li {
+	display: grid;
+	grid-template-columns: 8.5rem minmax(0, 1fr);
+	gap: 0.15rem 0.5rem;
+	align-items: baseline;
+	font-size: 0.85rem;
+}
+
+.academia-arcana .aa-cal-momentos .aa-cal-alunos {
+	grid-column: 2;
+}
+
+.academia-arcana .aa-cal-momentos small,
+.academia-arcana .aa-cal-momento-hora {
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-cal-chip.todos {
+	border-color: var(--aa-roxo);
+	color: var(--aa-roxo);
+}
+
 .academia-arcana .aa-correio {
 	flex-direction: row;
 	container: aa-correio / inline-size;
