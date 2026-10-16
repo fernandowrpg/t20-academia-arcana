@@ -1,14 +1,57 @@
 <div class="aa-janela aa-correio">
 	<aside class="aa-correio-lado">
 		<header class="aa-correio-eu">
-			{{#if eu}}<img src="{{eu.img}}" alt="" class="aa-mini">{{/if}}
 			{{#if variosRemetentes}}
-			<select name="aa-correio-remetente" aria-label="Escrever como">{{#each remetentes}}<option value="{{id}}" {{#if selecionado}}selected{{/if}}>{{nome}}</option>{{/each}}</select>
+			<button type="button" class="aa-correio-identidade {{#if escolhendo}}aberto{{/if}}" data-action="alternarIdentidades" aria-expanded="{{#if escolhendo}}true{{else}}false{{/if}}" data-tooltip="{{#if totalOutrasNovas}}Mensagens novas para outros personagens{{else}}Trocar quem escreve{{/if}}">
+				{{#if eu}}<img src="{{eu.img}}" alt="" class="aa-mini">{{/if}}
+				<span class="aa-correio-contato">
+					<small>Escrevendo como</small>
+					<strong>{{eu.nome}}</strong>
+				</span>
+				{{#if totalOutrasNovas}}<span class="aa-correio-novas">{{totalOutrasNovas}}</span>{{/if}}
+				<i class="fa-solid {{#if escolhendo}}fa-chevron-up{{else}}fa-chevron-down{{/if}}"></i>
+			</button>
 			{{else}}
+			{{#if eu}}<img src="{{eu.img}}" alt="" class="aa-mini">{{/if}}
 			<strong>{{eu.nome}}</strong>
 			{{/if}}
 			{{#if disponivel}}<a data-action="novoGrupo" data-tooltip="Novo grupo"><i class="fa-solid fa-user-group"></i><i class="fa-solid fa-plus"></i></a>{{/if}}
 		</header>
+		{{#if escolhendo}}
+		<div class="aa-correio-identidades">
+			{{#if buscavel}}<input type="search" name="aa-correio-busca" placeholder="Buscar personagem…" aria-label="Buscar personagem">{{/if}}
+			<div class="aa-correio-identidades-lista">
+				{{#each secoes}}
+				<section>
+					<h4>{{rotulo}}</h4>
+					<ul>
+						{{#each itens}}
+						<li class="{{#if selecionado}}ativo{{/if}} {{#if professor}}professor{{/if}}" data-action="escolherRemetente" data-remetente="{{id}}" tabindex="0">
+							<img src="{{img}}" alt="" class="aa-mini">
+							<span class="aa-correio-contato">
+								<strong>{{nome}}</strong>
+								{{#if detalhe}}<small>{{detalhe}}</small>{{/if}}
+							</span>
+							{{#if novas}}<span class="aa-correio-novas" data-tooltip="Mensagens não lidas">{{novas}}</span>{{/if}}
+							{{#if selecionado}}<i class="fa-solid fa-check"></i>{{/if}}
+						</li>
+						{{/each}}
+					</ul>
+				</section>
+				{{/each}}
+			</div>
+		</div>
+		{{else}}
+		{{#if outrasNovas.length}}
+		<div class="aa-correio-alerta">
+			<small><i class="fa-solid fa-envelope"></i> Novas para:</small>
+			{{#each outrasNovas}}
+			<a data-action="escolherRemetente" data-remetente="{{id}}" data-tooltip="{{nome}}: {{novas}} nova(s). Clique para responder como {{nome}}">
+				<img src="{{img}}" alt="" class="aa-mini"><span>{{nome}}</span><b>{{novas}}</b>
+			</a>
+			{{/each}}
+		</div>
+		{{/if}}
 		{{#if eu.podeConfigurar}}
 		<label class="aa-correio-recibo" data-tooltip="Desmarcado, os colegas não ficam sabendo se {{eu.nome}} leu as mensagens. Você continua vendo o que ainda não leu.">
 			<input type="checkbox" name="aa-correio-informa" {{#if eu.informa}}checked{{/if}}> Avisar quando eu ler
@@ -28,11 +71,13 @@
 			<li class="aa-dica">Nenhum outro aluno registrado.</li>
 			{{/each}}
 		</ul>
+		{{/if}}
 	</aside>
 
 	<section class="aa-correio-conversa">
 		{{#if aberta}}
 		<header class="aa-correio-topo">
+			{{#if eu}}<span class="aa-correio-fluxo" data-tooltip="De {{eu.nome}} para {{aberta.nome}}"><img src="{{eu.img}}" alt="" class="aa-mini"><i class="fa-solid fa-arrow-right"></i></span>{{/if}}
 			{{#if aberta.grupo}}<span class="aa-mini aa-correio-grupo"><i class="fa-solid fa-user-group"></i></span>{{else}}<img src="{{aberta.img}}" alt="" class="aa-mini">{{/if}}
 			<span class="aa-correio-contato">
 				<strong>{{#if aberta.professor}}<i class="fa-solid fa-chalkboard-user"></i> {{/if}}{{aberta.nome}}</strong>
@@ -84,7 +129,7 @@
 		</ol>
 		<footer class="aa-correio-escrever">
 			{{#if disponivel}}
-			<textarea name="aa-correio-texto" rows="2" placeholder="Escreva para {{aberta.nome}}… (Enter envia, Shift+Enter quebra a linha)">{{rascunho}}</textarea>
+			<textarea name="aa-correio-texto" rows="2" placeholder="{{eu.nome}} para {{aberta.nome}}… (Enter envia, Shift+Enter quebra a linha)">{{rascunho}}</textarea>
 			<div class="aa-correio-acoes">
 				{{#if itens.length}}
 				<select name="aa-correio-item" aria-label="Item a enviar" data-tooltip="Enviar um item junto (ou arraste da ficha para cá)">

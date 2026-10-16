@@ -92,6 +92,23 @@ export function naoLidas(user = game.user, lido = opcao("correioLido") ?? {}) {
 	return porConversa;
 }
 
+/* As mesmas mensagens novas, contadas por quem as recebeu: diz ao mestre qual NPC tem correspondência. */
+export function naoLidasPorRemetente(user = game.user, lido = opcao("correioLido") ?? {}) {
+	const meus = new Set(remetentesDoUsuario(user).filter((a) => !user.isGM || !a.hasPlayerOwner).map((a) => a.id));
+	const porRemetente = {};
+	for (const conversa of conversas(user)) {
+		const visto = Number(lido[conversa.id]) || 0;
+		const novas = conversa.mensagens.filter((m) => m.quando > visto && !meus.has(m.de));
+		if (!novas.length) continue;
+		for (const id of conversa.participantes) {
+			if (!meus.has(id)) continue;
+			const quantas = novas.filter((m) => m.de !== id).length;
+			if (quantas) porRemetente[id] = (porRemetente[id] ?? 0) + quantas;
+		}
+	}
+	return porRemetente;
+}
+
 export function totalNaoLidas(user = game.user) {
 	return Object.values(naoLidas(user)).reduce((soma, n) => soma + n, 0);
 }

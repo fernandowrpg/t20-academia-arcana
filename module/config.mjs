@@ -122,6 +122,15 @@ export function registrarConfiguracoes(CatalogoApp) {
 		onChange: notificar
 	});
 
+	/* A data de Arton em que a campanha está: { ano, mes (0 a 11), dia (1 a 28) }. */
+	game.settings.register(MODULO, "dataArton", {
+		scope: "world",
+		config: false,
+		type: Object,
+		default: { ano: 1420, mes: 0, dia: 1 },
+		onChange: notificar
+	});
+
 	game.settings.register(MODULO, "correioJogadores", {
 		name: "ACADEMIA.Config.correioJogadores.Nome",
 		hint: "ACADEMIA.Config.correioJogadores.Dica",

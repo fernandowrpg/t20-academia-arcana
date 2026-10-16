@@ -1,10 +1,36 @@
 <div class="aa-janela aa-cal">
+	<header class="aa-cal-data {{#if calendario.folga}}folga{{/if}}">
+		{{#if gm}}
+		<a data-action="mudarDia" data-dias="-7" data-tooltip="Semana anterior"><i class="fa-solid fa-angles-left"></i></a>
+		<a data-action="mudarDia" data-dias="-1" data-tooltip="Dia anterior"><i class="fa-solid fa-angle-left"></i></a>
+		{{/if}}
+		<span class="aa-cal-hoje">
+			<strong data-tooltip="{{calendario.deus}}">{{calendario.rotulo}}</strong>
+			<small data-tooltip="{{calendario.sobre}}"><span class="aa-cal-estacao {{calendario.estacao}}">{{calendario.estacao}}</span> · {{calendario.sobre}}</small>
+		</span>
+		{{#if gm}}
+		<a data-action="mudarDia" data-dias="1" data-tooltip="Próximo dia"><i class="fa-solid fa-angle-right"></i></a>
+		<a data-action="mudarDia" data-dias="7" data-tooltip="Próxima semana"><i class="fa-solid fa-angles-right"></i></a>
+		<a data-action="definirData" data-tooltip="Definir a data"><i class="fa-solid fa-calendar-day"></i></a>
+		{{/if}}
+	</header>
+	<details class="aa-cal-mes" {{#if calendario.aberto}}open{{/if}}>
+		<summary>Mês de {{calendario.mes}}</summary>
+		<table>
+			<thead><tr>{{#each calendario.cabecalho}}<th class="{{#if folga}}folga{{/if}}">{{nome}}</th>{{/each}}</tr></thead>
+			<tbody>
+				{{#each calendario.semanas}}
+				<tr>{{#each this}}<td class="{{#if hoje}}hoje{{/if}} {{#if folga}}folga{{/if}} {{#if semana}}semana{{/if}}">{{#if @root.gm}}<a data-action="escolherDia" data-dia="{{dia}}">{{dia}}</a>{{else}}{{dia}}{{/if}}</td>{{/each}}</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</details>
 	<header class="aa-cal-topo">
 		<label class="aa-cal-filtro"><i class="fa-solid fa-filter"></i>
 			<select name="aa-cal-filtro">{{#each filtros}}<option value="{{valor}}" {{#if selecionado}}selected{{/if}}>{{rotulo}}</option>{{/each}}</select>
 		</label>
 		<span class="aa-cal-resumo">{{totalTurmas}} turma(s) · {{colegas.length}} colega(s) NPC</span>
-		<span class="aa-cal-resumo">{{folga}}: folga</span>
+		<span class="aa-cal-resumo">Folga: {{#each folgas}}<span class="{{#if hoje}}aa-cal-folga-hoje{{/if}}" data-tooltip="{{deus}}">{{nome}} ({{data}})</span>{{#unless @last}} e {{/unless}}{{/each}}</span>
 		<span class="aa-cal-legenda"><span class="aa-cal-chip pc">personagem</span><span class="aa-cal-chip">NPC</span></span>
 		{{#if gm}}<button type="button" data-action="redistribuir" data-tooltip="Descarta os horários e distribui as turmas de novo"><i class="fa-solid fa-shuffle"></i> Redistribuir</button>{{/if}}
 	</header>
@@ -21,8 +47,8 @@
 		{{else}}
 		<div class="aa-cal-grade">
 			{{#each dias}}
-			<section class="aa-cal-dia {{#if vazio}}vazio{{/if}}">
-				<h3>{{nome}}</h3>
+			<section class="aa-cal-dia {{#if vazio}}vazio{{/if}} {{#if hoje}}hoje{{/if}}">
+				<h3 data-tooltip="{{deus}}">{{nome}} <small>{{data}}</small>{{#if hoje}} <span class="aa-cal-marca-hoje">hoje</span>{{/if}}</h3>
 				{{#each turnos}}
 				<div class="aa-cal-turno {{#unless turmas.length}}vazio{{/unless}}">
 					<span class="aa-cal-turno-nome">{{nome}}</span>
