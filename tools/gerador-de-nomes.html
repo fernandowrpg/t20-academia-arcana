@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gerador de Nomes</title>
+<style>
+	:root {
+		--fundo: #f4ecd8;
+		--papel: #fbf6ea;
+		--tinta: #2b2118;
+		--suave: #6b5a48;
+		--borda: #c9b48f;
+		--destaque: #7a2e1f;
+		--destaque-tinta: #fbf6ea;
+	}
+	@media (prefers-color-scheme: dark) {
+		:root:not([data-theme="light"]) {
+			--fundo: #1c1712;
+			--papel: #26201a;
+			--tinta: #eee3cf;
+			--suave: #a8977f;
+			--borda: #4a3d2e;
+			--destaque: #c9774f;
+			--destaque-tinta: #1c1712;
+		}
+	}
+	* { box-sizing: border-box; }
+	body {
+		margin: 0;
+		padding: 24px 16px 48px;
+		background: var(--fundo);
+		color: var(--tinta);
+		font: 16px/1.5 Georgia, "Times New Roman", serif;
+	}
+	main { max-width: 720px; margin: 0 auto; }
+	h1 { margin: 0 0 4px; font-size: 1.8rem; letter-spacing: .02em; }
+	.subtitulo { margin: 0 0 24px; color: var(--suave); font-style: italic; }
+	form {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		gap: 12px;
+		align-items: end;
+		padding: 16px;
+		background: var(--papel);
+		border: 1px solid var(--borda);
+		border-radius: 8px;
+	}
+	label { display: flex; flex-direction: column; gap: 4px; font-size: .85rem; color: var(--suave); }
+	select, input, button { font: inherit; color: var(--tinta); }
+	select, input[type="number"] {
+		padding: 6px 8px;
+		background: var(--fundo);
+		border: 1px solid var(--borda);
+		border-radius: 6px;
+	}
+	label.marcar { flex-direction: row; align-items: center; gap: 8px; color: var(--tinta); }
+	button {
+		padding: 8px 14px;
+		background: var(--destaque);
+		color: var(--destaque-tinta);
+		border: 0;
+		border-radius: 6px;
+		cursor: pointer;
+		font-weight: bold;
+	}
+	button.secundario { background: transparent; color: var(--destaque); border: 1px solid var(--borda); font-weight: normal; }
+	.acoes { display: flex; gap: 8px; margin: 16px 0 8px; flex-wrap: wrap; }
+	ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+	li {
+		padding: 10px 12px;
+		background: var(--papel);
+		border: 1px solid var(--borda);
+		border-radius: 6px;
+		cursor: pointer;
+	}
+	li:hover { border-color: var(--destaque); }
+	li .nome { display: block; font-size: 1.1rem; }
+	li .raca { font-size: .8rem; color: var(--suave); }
+	li.copiado { border-color: var(--destaque); }
+	.dica { color: var(--suave); font-size: .85rem; }
+	footer { margin-top: 32px; color: var(--suave); font-size: .8rem; }
+</style>
+</head>
+<body>
+<main>
+	<h1>Gerador de Nomes</h1>
+	<p class="subtitulo">Tabela 1-24 de <em>Heróis de Arton</em>, com as mesmas regras do Gerador de Alunos da Academia Arcana.</p>
+
+	<form id="opcoes">
+		<label>Raça
+			<select id="raca"><option value="">Aleatória</option></select>
+		</label>
+		<label>Quantidade
+			<input id="quantidade" type="number" min="1" max="100" value="12">
+		</label>
+		<label class="marcar"><input id="sobrenome" type="checkbox" checked> Nome composto</label>
+		<button type="submit">Gerar</button>
+	</form>
+
+	<div class="acoes">
+		<button type="button" class="secundario" id="copiar-todos">Copiar todos</button>
+		<span class="dica" id="dica">Clique num nome para copiar.</span>
+	</div>
+
+	<ul id="lista"></ul>
+
+	<footer>Raças sem tabela própria usam a humana; eiradaan usa a élfica; meio-elfo, a humana ou a élfica; lefou, qualquer uma.</footer>
+</main>
+
+<script>
+	const NOMES = {"humano":["Hekker","Dinlana","Mouvo","Khalmyrian","Pidder","Baziare","Vikkander","Andara","Darezio","Natuwa","Orsen","Kevan","Tariana","Valk","Ergol","Rilena","Neria","Vosser","Zilth","Xandara","Belazio","Egriana","Molden","Nilga","Phadra","Riales","Portina","Holdavir","Yohll","Astri","Merthik","Zasdre","Agnigg","Shivar"],"anao":["Bobrum","Arthoram","Dharumm","Dharva","Khodharann","Thyrmah","Movadhimm","Kharadhan","Vosthanum","Dhenomm","Khetradann","Vorthrerem","Theratra","Mondhom","Dhozardhum","Hiradramm","Ghoridri","Mondharum","Dhervadhara","Heredrimatrim","Dhorelonn","Khedrurenn","Thovattor","Mortherimm","Vothramin","Gaudrimm","Darandor","Vormmir","Dondarann","Thammira","Gadhara","Rhommar","Drovathir","Bovidharimm"],"dahllan":["Calixta","Tulipa","Briara","Nalia","Íris","Lily","Suyane","Rennia","Asteria","Dahl","Ione","Estrelícia","Fresia","Ianth","Gardenia","Ninfania","Zandedia","Dianthia","Calen","Neruma","Flora","Gerbera","Hortensia","Ixare","Choe","Trelitzia","Echaea","Alpinia","Limeria","Crisântemo","Ergilla","Hedera","Ocarya","Lisana"],"elfo":["Assalan","Dandalla","Thissalorian","Yollaria","Mivandre","Aerillodala","Phasdalian","Govandar","Morvalane","Cissalia","Erhamadoren","Tallamasser","Nielerendalan","Yavallan","Manalliare","Ellanva","Gillianare","Narallandan","Ansalloron","Ollarandhan","Gandolarane","Glorillaniavar","Nidallarian","Denore","Allava","Ceris","Mantalla","Dallantalla","Talleslena","Allarandre","Vallissaris","Nillandra","Missariel","Yanara"],"goblin":["Molon","Kralik","Tarak","Blakon","Xismo","Zakor","Takor","Tuzu","Tapak","Kinika","Tavog","Golak","Bogg","Zitt","Vulma","Karcar","Gogola","Gork","Pakkug","Dondon","Raska","Digg","Pottak","Kazunk","Bink","Fahuk","Matran","Xesto","Kovvo","Badum","Geria","Kekke","Orgg","Nithuk"],"hynne":["Dulla","Donatto","Minna","Colita","Melano","Ortho","Guévio","Lelia","Diggo","Bolim","Everla","Nando","Moringa","Basil","Tenga","Malvio","Tom","Dida","Gelisa","Binoto","Tutu","Lanito","Aggario","Prilla","Poltan","Bilda","Moira","Vanne","Gombo","Erdesta","Lazzo","Pimb","Orrs","Ollir"],"minotauro":["Caius","Lorcus","Crassis","Tissius","Mantorio","Astilus","Khoskar","Blarandus","Taelio","Cradus","Zhabur","Halssinos","Ianaris","Iosalis","Tarkan","Erius","Eradorio","Ocretio","Maxandus","Issius","Lekariu","Pallis","Ghandor","Quindalio","Spurtius","Pondus","Sarius","Tenalidis","Lortamus","Gaellio","Daxidus","Flanattus","Maxxius","Avenius"],"qareen":["Narav","Quedan","Sarid","Ahtan","Alzon","Maquet","Arid","Bihalla","Tahid","Ubb","Rahllira","Jehel","Murad","Zilla","Hesan","Pharid","Narud","Suhed","Dazalid","Zorima","Quotora","Ynari","Jolid","Tazif","Palan","Zaldonay","Alnari","Jeddar","Ishazar","Belnira","Haddan","Olara","Persite","Razzi"]};
+	const RACAS = {"humano":{"nome":"Humano","nomes":["humano"],"peso":12},"anao":{"nome":"Anão","nomes":["anao"],"peso":4},"dahllan":{"nome":"Dahllan","nomes":["dahllan"],"peso":3},"elfo":{"nome":"Elfo","nomes":["elfo"],"peso":5},"goblin":{"nome":"Goblin","nomes":["goblin"],"peso":4},"lefou":{"nome":"Lefou","nomes":["humano","anao","dahllan","elfo","goblin","hynne","minotauro","qareen"],"peso":3},"minotauro":{"nome":"Minotauro","nomes":["minotauro"],"peso":2},"qareen":{"nome":"Qareen","nomes":["qareen"],"peso":5},"golem":{"nome":"Golem","nomes":["humano"],"peso":1},"hynne":{"nome":"Hynne","nomes":["hynne"],"peso":4},"kliren":{"nome":"Kliren","nomes":["humano"],"peso":2},"medusa":{"nome":"Medusa","nomes":["humano"],"peso":1},"osteon":{"nome":"Osteon","nomes":["humano"],"peso":1},"sereia":{"nome":"Sereia/Tritão","nomes":["humano"],"peso":1},"silfide":{"nome":"Sílfide","nomes":["humano"],"peso":2},"suraggel":{"nome":"Suraggel","nomes":["humano"],"peso":2},"trog":{"nome":"Trog","nomes":["humano"],"peso":1},"duende":{"nome":"Duende","nomes":["humano"],"peso":1},"eiradaan":{"nome":"Eiradaan","nomes":["elfo"],"peso":1},"galokk":{"nome":"Galokk","nomes":["humano"],"peso":1},"meio-elfo":{"nome":"Meio-Elfo","nomes":["humano","elfo"],"peso":3},"satiro":{"nome":"Sátiro","nomes":["humano"],"peso":1}};
+
+	const sortear = (lista) => lista[Math.floor(Math.random() * lista.length)];
+
+	function sortearRaca() {
+		const total = Object.values(RACAS).reduce((s, r) => s + r.peso, 0);
+		let n = Math.random() * total;
+		for (const [chave, r] of Object.entries(RACAS)) {
+			n -= r.peso;
+			if (n < 0) return chave;
+		}
+		return "humano";
+	}
+
+	function gerarNome(raca, composto, usados) {
+		const tabela = NOMES[sortear(RACAS[raca].nomes)];
+		for (let i = 0; i < 50; i++) {
+			const nome = composto ? `${sortear(tabela)} ${sortear(tabela)}` : sortear(tabela);
+			if (!usados.has(nome)) return nome;
+		}
+		return sortear(tabela);
+	}
+
+	const $ = (id) => document.getElementById(id);
+	const selectRaca = $("raca");
+	for (const [chave, r] of Object.entries(RACAS).sort((a, b) => a[1].nome.localeCompare(b[1].nome, "pt-BR"))) {
+		selectRaca.add(new Option(r.nome, chave));
+	}
+
+	function copiar(texto, aviso) {
+		navigator.clipboard?.writeText(texto).then(() => { $("dica").textContent = aviso; }, () => { $("dica").textContent = "Não foi possível copiar."; });
+	}
+
+	function gerar() {
+		const quantidade = Math.min(100, Math.max(1, Number($("quantidade").value) || 1));
+		const composto = $("sobrenome").checked;
+		const usados = new Set();
+		const lista = $("lista");
+		lista.replaceChildren();
+		for (let i = 0; i < quantidade; i++) {
+			const raca = selectRaca.value || sortearRaca();
+			const nome = gerarNome(raca, composto, usados);
+			usados.add(nome);
+			const li = document.createElement("li");
+			li.innerHTML = `<span class="nome"></span><span class="raca"></span>`;
+			li.querySelector(".nome").textContent = nome;
+			li.querySelector(".raca").textContent = RACAS[raca].nome;
+			li.dataset.nome = nome;
+			li.addEventListener("click", () => {
+				lista.querySelectorAll(".copiado").forEach((e) => e.classList.remove("copiado"));
+				li.classList.add("copiado");
+				copiar(nome, `“${nome}” copiado.`);
+			});
+			lista.append(li);
+		}
+		$("dica").textContent = "Clique num nome para copiar.";
+	}
+
+	$("opcoes").addEventListener("submit", (e) => { e.preventDefault(); gerar(); });
+	$("copiar-todos").addEventListener("click", () => {
+		const nomes = [...$("lista").children].map((li) => li.dataset.nome);
+		if (nomes.length) copiar(nomes.join("\n"), `${nomes.length} nomes copiados.`);
+	});
+	gerar();
+</script>
+</body>
+</html>
