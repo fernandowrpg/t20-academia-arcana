@@ -77,7 +77,8 @@
 	li:hover { border-color: var(--destaque); }
 	li .nome { display: block; font-size: 1.1rem; }
 	li .raca { font-size: .8rem; color: var(--suave); }
-	li.copiado { border-color: var(--destaque); }
+	li.copiado { border-color: var(--destaque); opacity: .6; }
+	li.copiado .nome { text-decoration: line-through; }
 	.dica { color: var(--suave); font-size: .85rem; }
 	footer { margin-top: 32px; color: var(--suave); font-size: .8rem; }
 </style>
@@ -100,6 +101,7 @@
 
 	<div class="acoes">
 		<button type="button" class="secundario" id="copiar-todos">Copiar todos</button>
+		<button type="button" class="secundario" id="liberar">Liberar usados (<span id="total-usados">0</span>)</button>
 		<span class="dica" id="dica">Clique num nome para copiar.</span>
 	</div>
 
@@ -124,13 +126,26 @@
 		return "humano";
 	}
 
+	/* Nomes já copiados ficam guardados neste navegador e não voltam a ser sorteados. */
+	const CHAVE = "gerador-de-nomes:usados";
+	let copiados = new Set();
+	try { copiados = new Set(JSON.parse(localStorage.getItem(CHAVE)) ?? []); } catch {}
+
+	function marcarUsados(nomes) {
+		for (const nome of nomes) copiados.add(nome);
+		try { localStorage.setItem(CHAVE, JSON.stringify([...copiados])); } catch {}
+		$("total-usados").textContent = copiados.size;
+	}
+
 	function gerarNome(raca, composto, usados) {
 		const tabela = NOMES[sortear(RACAS[raca].nomes)];
+		const livre = (nome) => !usados.has(nome) && !copiados.has(nome);
 		for (let i = 0; i < 50; i++) {
 			const nome = composto ? `${sortear(tabela)} ${sortear(tabela)}` : sortear(tabela);
-			if (!usados.has(nome)) return nome;
+			if (livre(nome)) return nome;
 		}
-		return sortear(tabela);
+		const restantes = (composto ? tabela.flatMap((a) => tabela.map((b) => `${a} ${b}`)) : tabela).filter(livre);
+		return restantes.length ? sortear(restantes) : null;
 	}
 
 	const $ = (id) => document.getElementById(id);
@@ -138,9 +153,14 @@
 	for (const [chave, r] of Object.entries(RACAS).sort((a, b) => a[1].nome.localeCompare(b[1].nome, "pt-BR"))) {
 		selectRaca.add(new Option(r.nome, chave));
 	}
+	$("total-usados").textContent = copiados.size;
 
-	function copiar(texto, aviso) {
-		navigator.clipboard?.writeText(texto).then(() => { $("dica").textContent = aviso; }, () => { $("dica").textContent = "Não foi possível copiar."; });
+	function copiar(nomes, aviso) {
+		navigator.clipboard?.writeText(nomes.join("\n")).then(() => {
+			marcarUsados(nomes);
+			for (const li of $("lista").children) if (nomes.includes(li.dataset.nome)) li.classList.add("copiado");
+			$("dica").textContent = aviso;
+		}, () => { $("dica").textContent = "Não foi possível copiar."; });
 	}
 
 	function gerar() {
@@ -148,30 +168,37 @@
 		const composto = $("sobrenome").checked;
 		const usados = new Set();
 		const lista = $("lista");
+		let esgotados = 0;
 		lista.replaceChildren();
 		for (let i = 0; i < quantidade; i++) {
 			const raca = selectRaca.value || sortearRaca();
 			const nome = gerarNome(raca, composto, usados);
+			if (!nome) { esgotados++; continue; }
 			usados.add(nome);
 			const li = document.createElement("li");
 			li.innerHTML = `<span class="nome"></span><span class="raca"></span>`;
 			li.querySelector(".nome").textContent = nome;
 			li.querySelector(".raca").textContent = RACAS[raca].nome;
 			li.dataset.nome = nome;
-			li.addEventListener("click", () => {
-				lista.querySelectorAll(".copiado").forEach((e) => e.classList.remove("copiado"));
-				li.classList.add("copiado");
-				copiar(nome, `“${nome}” copiado.`);
-			});
+			li.addEventListener("click", () => copiar([nome], `“${nome}” copiado e marcado como usado.`));
 			lista.append(li);
 		}
-		$("dica").textContent = "Clique num nome para copiar.";
+		$("dica").textContent = esgotados
+			? `Faltaram ${esgotados} nomes: a tabela não tem mais nomes livres. Use nome composto ou libere os usados.`
+			: "Clique num nome para copiar.";
 	}
 
 	$("opcoes").addEventListener("submit", (e) => { e.preventDefault(); gerar(); });
 	$("copiar-todos").addEventListener("click", () => {
 		const nomes = [...$("lista").children].map((li) => li.dataset.nome);
-		if (nomes.length) copiar(nomes.join("\n"), `${nomes.length} nomes copiados.`);
+		if (nomes.length) copiar(nomes, `${nomes.length} nomes copiados e marcados como usados.`);
+	});
+	$("liberar").addEventListener("click", () => {
+		if (!copiados.size || !confirm(`Liberar os ${copiados.size} nomes usados para que voltem a ser sorteados?`)) return;
+		copiados = new Set();
+		marcarUsados([]);
+		for (const li of $("lista").children) li.classList.remove("copiado");
+		$("dica").textContent = "Nomes usados liberados.";
 	});
 	gerar();
 </script>
