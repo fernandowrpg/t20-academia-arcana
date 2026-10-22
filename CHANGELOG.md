@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.16.0
+
+- Correio, *Escrevendo como*: o seletor de remetente virou um botão com retrato e nome que abre a lista de identidades, com busca quando há muitas. Quem tem mensagens novas aparece primeiro, com o número de cada um; depois vêm professores, NPCs e personagens dos jogadores. O botão mostra quantas mensagens novas esperam em outras identidades.
+- Correio: a faixa *Novas para* lista, acima das conversas, os outros personagens ou NPCs que receberam mensagens. Um clique troca para ele e já abre a conversa mais recente com novidade. Ao abrir o correio, o mestre começa pela identidade com mensagens novas.
+- Correio: o topo da conversa mostra de quem para quem (retrato do remetente → destinatário), e a caixa de texto diz "Fulano para Beltrano…".
+- Calendário: data da campanha no calendário de Arton, com dia da semana, mês, ano, estação e o significado de cada mês. Os 12 meses vão de Caravana (início da primavera) a Pyra (fim do inverno); cada um tem quatro semanas de Valk a Leen (28 dias). As colunas da grade e a folga mostram a data de cada dia, e o dia de hoje fica marcado. O mestre avança ou volta um dia ou uma semana, define a data ou escolhe um dia na tabela do mês.
+
 ## 1.15.0
 
 - Painéis flutuantes (alunos, ameaças e grêmios): novo botão de minimizar no título, que deixa só a barra do topo à vista. Clique de novo para mostrar o painel. Cada usuário escolhe por conta própria e a escolha fica salva no navegador, junto com a posição.

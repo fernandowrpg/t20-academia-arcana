@@ -12,6 +12,7 @@ import {
 	leituraDaMensagem,
 	marcarLida,
 	naoLidas,
+	naoLidasPorRemetente,
 	noCorreio,
 	paraTexto,
 	quantidadeDoItem,
@@ -80,7 +81,9 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			abrirNota: CorreioApp.#abrirNota,
 			participantes: CorreioApp.#participantes,
 			editar: CorreioApp.#editar,
-			revelar: CorreioApp.#revelar
+			revelar: CorreioApp.#revelar,
+			alternarIdentidades: CorreioApp.#alternarIdentidades,
+			escolherRemetente: CorreioApp.#escolherRemetente
 		}
 	};
 
@@ -94,6 +97,9 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 	aberta = null;
 
 	rascunho = "";
+
+	/* A lista de "escrever como" aberta no lugar dos contatos. */
+	escolhendo = false;
 
 	irParaOFim = true;
 
@@ -118,8 +124,10 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 	async _prepareContext() {
 		const gm = game.user.isGM;
 		const remetentes = remetentesDoUsuario();
+		const porRemetente = naoLidasPorRemetente();
 		if (!remetentes.some((a) => a.id === this.remetente)) {
-			this.remetente = (remetentes.find((a) => a.id === game.user.character?.id) ?? remetentes[0])?.id ?? null;
+			const comNovas = [...remetentes].sort((a, b) => (porRemetente[b.id] ?? 0) - (porRemetente[a.id] ?? 0)).find((a) => porRemetente[a.id]);
+			this.remetente = (remetentes.find((a) => a.id === game.user.character?.id) ?? comNovas ?? remetentes[0])?.id ?? null;
 		}
 		const eu = game.actors.get(this.remetente);
 		const todas = conversas().filter((c) => c.participantes.includes(this.remetente));
@@ -132,6 +140,31 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			docentes.set(p.actor.id, [...new Set([...(docentes.get(p.actor.id) ?? []), ...p.disciplinas])]);
 		}
 		this.docentes = docentes;
+
+		/* Quem o usuário pode ser no correio, com as mensagens novas de cada um. */
+		const donoDe = (a) => game.users.find((u) => !u.isGM && a.testUserPermission(u, "OWNER"))?.name ?? null;
+		const identidades = remetentes.map((a) => {
+			const leciona = (docentes.get(a.id) ?? []).join(", ");
+			const jogador = gm && a.hasPlayerOwner ? donoDe(a) : null;
+			return {
+				id: a.id,
+				nome: a.name,
+				img: a.img,
+				professor: docentes.has(a.id),
+				detalhe: leciona ? `Professor · ${leciona}` : jogador ? `Personagem de ${jogador}` : gm && a.hasPlayerOwner ? "Personagem de jogador" : gm ? "NPC" : "",
+				novas: porRemetente[a.id] ?? 0,
+				selecionado: a.id === this.remetente,
+				tipo: docentes.has(a.id) ? "professor" : gm && a.hasPlayerOwner ? "jogador" : "npc"
+			};
+		});
+		const secoes = [
+			{ rotulo: "Com mensagens novas", itens: identidades.filter((i) => i.novas).sort((a, b) => b.novas - a.novas) },
+			{ rotulo: "Professores", itens: identidades.filter((i) => !i.novas && i.tipo === "professor") },
+			{ rotulo: gm ? "NPCs" : "Seus personagens", itens: identidades.filter((i) => !i.novas && i.tipo === "npc") },
+			{ rotulo: "Personagens dos jogadores", itens: identidades.filter((i) => !i.novas && i.tipo === "jogador") }
+		].filter((s) => s.itens.length);
+		const outrasNovas = identidades.filter((i) => i.novas && !i.selecionado);
+		if (remetentes.length < 2) this.escolhendo = false;
 
 		const grupos = todas
 			.filter((c) => c.grupo)
@@ -182,9 +215,15 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		const itens = eu && (gm || eu.isOwner) ? itensEnviaveis(eu).map((i) => ({ id: i.id, qtd: quantidadeDoItem(i), rotulo: quantidadeDoItem(i) > 1 ? `${i.name} (×${quantidadeDoItem(i)})` : i.name })) : [];
 		return {
 			gm,
-			remetentes: remetentes.map((a) => ({ id: a.id, nome: a.name, selecionado: a.id === this.remetente })),
 			variosRemetentes: remetentes.length > 1,
-			eu: eu ? { nome: eu.name, img: eu.img, informa: informaLeitura(eu), podeConfigurar: gm || eu.isOwner } : null,
+			escolhendo: this.escolhendo,
+			secoes,
+			buscavel: remetentes.length > 6,
+			outrasNovas,
+			totalOutrasNovas: outrasNovas.reduce((soma, i) => soma + i.novas, 0),
+			eu: eu
+				? { id: eu.id, nome: eu.name, img: eu.img, detalhe: identidades.find((i) => i.selecionado)?.detalhe ?? "", informa: informaLeitura(eu), podeConfigurar: gm || eu.isOwner }
+				: null,
 			conversas: lista,
 			aberta: grupo
 				? { nome: grupo.nome, grupo: true, membros: nomes(grupo.participantes).join(", ") }
@@ -204,12 +243,37 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 	async _onRender(context, options) {
 		await super._onRender(context, options);
 		const raiz = this.element;
-		raiz.querySelector("select[name='aa-correio-remetente']")?.addEventListener("change", (ev) => {
-			this.remetente = ev.target.value;
-			this.aberta = null;
-			this.vistos = {};
-			this.render();
+		const busca = raiz.querySelector("input[name='aa-correio-busca']");
+		busca?.addEventListener("input", () => {
+			const termo = busca.value.trim().toLocaleLowerCase("pt-BR");
+			for (const secao of raiz.querySelectorAll(".aa-correio-identidades section")) {
+				let visiveis = 0;
+				for (const li of secao.querySelectorAll("li[data-remetente]")) {
+					li.hidden = !!termo && !li.textContent.toLocaleLowerCase("pt-BR").includes(termo);
+					if (!li.hidden) visiveis++;
+				}
+				secao.hidden = !visiveis;
+			}
 		});
+		busca?.addEventListener("keydown", (ev) => {
+			if (ev.key === "Escape") {
+				ev.preventDefault();
+				ev.stopPropagation();
+				this.escolhendo = false;
+				this.render();
+			} else if (ev.key === "Enter") {
+				ev.preventDefault();
+				raiz.querySelector(".aa-correio-identidades li[data-remetente]:not([hidden])")?.click();
+			}
+		});
+		for (const li of raiz.querySelectorAll(".aa-correio-identidades li[data-remetente]")) {
+			li.addEventListener("keydown", (ev) => {
+				if (ev.key !== "Enter" && ev.key !== " ") return;
+				ev.preventDefault();
+				li.click();
+			});
+		}
+		if (this.escolhendo) (busca ?? raiz.querySelector(".aa-correio-identidades li[data-remetente]"))?.focus();
 		raiz.querySelector("input[name='aa-correio-informa']")?.addEventListener("change", async (ev) => {
 			const actor = game.actors.get(this.remetente);
 			const aluno = lerAluno(actor);
@@ -256,6 +320,29 @@ export class CorreioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		const lista = raiz.querySelector(".aa-correio-mensagens");
 		if (lista && this.irParaOFim) lista.scrollTop = lista.scrollHeight;
 		this.irParaOFim = true;
+	}
+
+	static #alternarIdentidades() {
+		this.escolhendo = !this.escolhendo;
+		this.render();
+	}
+
+	static #escolherRemetente(event, alvo) {
+		const id = alvo.dataset.remetente;
+		this.escolhendo = false;
+		if (id && id !== this.remetente) {
+			this.remetente = id;
+			this.aberta = null;
+			this.vistos = {};
+			this.rascunho = "";
+			/* Já abre a conversa mais recente com mensagens novas para essa identidade. */
+			const pendentes = naoLidas();
+			const nova = conversas()
+				.filter((c) => c.participantes.includes(id) && pendentes[c.id] && c.mensagens.some((m) => m.de !== id))
+				.sort((a, b) => (b.mensagens.at(-1)?.quando ?? 0) - (a.mensagens.at(-1)?.quando ?? 0))[0];
+			if (nova) this.aberta = nova.grupo ? nova.id : nova.participantes.find((p) => p !== id);
+		}
+		this.render();
 	}
 
 	static #abrirConversa(event, alvo) {

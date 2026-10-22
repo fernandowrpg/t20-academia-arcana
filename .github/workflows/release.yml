@@ -1,0 +1,68 @@
+# Publica a release do módulo: build dos compêndios, module.zip e module.json.
+# Roda sozinho quando a versão do package.json muda na main e ainda não existe a tag v<versão>.
+# Também pode ser disparado à mão (aba Actions → Release → Run workflow), em qualquer branch.
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths: [package.json]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Versão
+        id: versao
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          versao=$(node -p "require('./package.json').version")
+          echo "tag=v$versao" >> "$GITHUB_OUTPUT"
+          if gh release view "v$versao" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "A release v$versao já existe; nada a fazer."
+            echo "existe=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "existe=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # O package-lock.json aponta para um registro privado; no Actions as dependências vêm do npm público.
+      - name: Dependências
+        if: steps.versao.outputs.existe == 'false'
+        run: npm install --no-save --no-package-lock --no-audit --no-fund --registry=https://registry.npmjs.org
+
+      - name: Build
+        if: steps.versao.outputs.existe == 'false'
+        run: npm run build
+
+      - name: Notas da versão
+        if: steps.versao.outputs.existe == 'false'
+        run: |
+          versao="${{ steps.versao.outputs.tag }}"
+          awk -v cab="## ${versao#v}" '$0 == cab {f=1; next} /^## / {if (f) exit} f' CHANGELOG.md | sed '/./,$!d' > notas.md
+          if [ ! -s notas.md ]; then echo "Versão ${versao#v}." > notas.md; fi
+
+      - name: Publicar
+        if: steps.versao.outputs.existe == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.versao.outputs.tag }}" dist/module.zip dist/module.json \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "${{ steps.versao.outputs.tag }}" \
+            --notes-file notas.md

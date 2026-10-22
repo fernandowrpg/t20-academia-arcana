@@ -109,6 +109,7 @@ As regras estão na seção *Atividades extracurriculares* de [docs/regras-da-ac
 Abre pelo envelope no painel de alunos, pela Secretaria ou pela macro. À esquerda ficam os outros alunos (personagens e NPCs); à direita, a conversa com o histórico completo.
 
 - **Quem escreve**: cada jogador escreve pelos personagens que controla. O mestre escolhe em nome de qual aluno escrever, o que serve para responder como os NPCs, e consegue ler todas as conversas.
+- **Escrevendo como**: o botão no topo da lista mostra quem está escrevendo. Ao clicar, abre a lista de identidades, com busca quando há muitas: primeiro as que têm mensagens novas (com o número de cada uma), depois professores, NPCs e personagens dos jogadores. Quando outro personagem seu recebe mensagens, a faixa *Novas para* aparece acima das conversas com o retrato e o número de mensagens de cada um; um clique troca para ele e já abre a conversa mais recente com novidade. O topo da conversa e a caixa de texto mostram de quem para quem a mensagem vai.
 - **Grupos**: o botão ao lado do nome do remetente abre um grupo com nome e dois ou mais colegas. Todos os participantes veem as mensagens. O ícone de engrenagem no topo do grupo adiciona ou remove participantes: pode usá-lo quem criou o grupo (com o mestre conectado, que é quem ajusta os donos da nota) e o próprio mestre. A conversa registra quem entrou e quem saiu; quem sai deixa de ver a nota, e quem entra passa a ver o histórico inteiro. Quem criou o grupo não pode ser removido.
 - **Lida ou não lida**: cada mensagem que você enviou mostra um visto duplo e "lida" quando o destinatário abriu a conversa, ou um visto simples e "não lida". Em grupo, a marca diz quantos leram, e a dica lista quem leu e quem falta. As mensagens recebidas que você ainda não tinha visto aparecem com a marca "nova" até você trocar de conversa. O mestre vê a marca de leitura de todas as mensagens.
 - **Avisar quando eu ler**: a caixa abaixo do nome do remetente é de cada aluno. Desmarcada, os colegas veem "leitura não informada" nas mensagens enviadas a ele, mesmo as que ele já tinha lido antes. O aluno continua vendo normalmente o que ainda não leu. Quando o mestre lê uma conversa escrevendo como personagem de jogador, isso não conta como leitura do personagem.
@@ -151,6 +152,7 @@ Abre pela Secretaria, pelo ícone de calendário no painel de alunos ou pela mac
 - O filtro alterna entre as aulas dos personagens, as de um personagem só e todas as aulas da Academia.
 - Os horários são distribuídos evitando choque entre as aulas de um mesmo aluno e ficam salvos no mundo. O mestre muda o horário de uma turma no próprio cartão ou usa **Redistribuir**.
 - A grade se adapta à largura da janela: cinco colunas quando há espaço, um dia por linha em janelas médias e uma lista em janelas estreitas.
+- **Data de Arton**: o topo mostra a data da campanha (dia da semana, dia, mês e ano), a estação e o significado do mês. Cada coluna da grade traz a data daquele dia e o dia de hoje fica marcado. O ano tem 12 meses (Caravana, Pomo e Keenvia na primavera; Sirravia, Vigília e Prussvia no verão; Ceifa, Contenda e Clausura no outono; Pharstyth, Véu e Pyra no inverno), cada um com quatro semanas de Valk a Leen (28 dias). O mestre avança ou volta um dia ou uma semana pelas setas, define a data no ícone de calendário ou clica num dia em *Mês de …*.
 - **Resumo do mestre** (só para o mestre): lista, em ordem de dia e turno, as aulas em que dois ou mais personagens estão juntos, ou, pelo filtro, as aulas que os personagens dividem com um aluno NPC ou um professor específico. Marca quando todos os personagens estão na mesma aula.
 - A configuração **Jogadores veem o calendário** controla o acesso dos jogadores.
 
@@ -242,7 +244,11 @@ O repositório é `fernandowrpg/t20-academia-arcana`, já configurado em `packag
 5. Confira se a URL do manifesto abre o JSON:
    `https://github.com/fernandowrpg/t20-academia-arcana/releases/latest/download/module.json`
 
-### Novas versões
+### Novas versões (automático)
+
+O workflow `.github/workflows/release.yml` publica a release sozinho: quando um push na `main` muda o `package.json` para uma versão que ainda não tem a tag `v<versão>`, ele roda o build, cria a release com essa tag, usa a seção da versão no `CHANGELOG.md` como notas e anexa `module.json` e `module.zip`. Também dá para rodar à mão em **Actions → Release → Run workflow**. Basta atualizar `version` no `package.json` e o `CHANGELOG.md`.
+
+### Novas versões (manual)
 
 1. Atualize `version` em `package.json` (ex.: `1.1.0`) e registre as mudanças no `CHANGELOG.md`.
 2. Rode `npm run build`.

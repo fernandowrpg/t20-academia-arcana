@@ -1,5 +1,23 @@
 import { DIAS_DE_FOLGA, DIAS_LETIVOS, TURNOS } from "../data/alunos.mjs";
-import { TOTAL_HORARIOS, choquesDeHorario, colegasDeTurma, distribuirHorarios, encontrosDaSemana, montarTurmas, rotuloHorario, semestreVigente } from "../calendario.mjs";
+import {
+	DEUSES_DOS_DIAS,
+	DIAS_DA_SEMANA,
+	DIAS_POR_MES,
+	MESES,
+	TOTAL_HORARIOS,
+	choquesDeHorario,
+	colegasDeTurma,
+	diaDaSemana,
+	distribuirHorarios,
+	encontrosDaSemana,
+	montarTurmas,
+	normalizarData,
+	rotuloData,
+	rotuloHorario,
+	semanaDe,
+	semestreVigente,
+	somarDias
+} from "../calendario.mjs";
 import { descricaoNpc, descricaoParceiro } from "../gerador.mjs";
 import { nomePericia } from "../logica.mjs";
 import { MODULO, contextoCatalogo, ehAluno, lerAluno, nomesDeProfessor, opcao } from "../config.mjs";
@@ -51,7 +69,10 @@ export class CalendarioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		position: { width: 1080, height: 720 },
 		actions: {
 			abrirAluno: CalendarioApp.#abrirAluno,
-			redistribuir: CalendarioApp.#redistribuir
+			redistribuir: CalendarioApp.#redistribuir,
+			mudarDia: CalendarioApp.#mudarDia,
+			escolherDia: CalendarioApp.#escolherDia,
+			definirData: CalendarioApp.#definirData
 		}
 	};
 
@@ -63,6 +84,9 @@ export class CalendarioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	/* Filtro do resumo do mestre: "juntos", "aluno:<id>" ou "prof:<nome>". */
 	resumo = "juntos";
+
+	/* O mês inteiro aberto abaixo da data. */
+	mesAberto = false;
 
 	async _onClose(options) {
 		await super._onClose(options);
@@ -105,13 +129,36 @@ export class CalendarioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			choque: [...new Set(choques.get(t.id) ?? [])].join(", "),
 			horarios: Array.from({ length: TOTAL_HORARIOS }, (_, h) => ({ valor: h, rotulo: rotuloHorario(h), selecionado: h === horarios[t.id] }))
 		});
+		const hoje = normalizarData(opcao("dataArton"));
+		const semana = semanaDe(hoje);
+		const mesmaData = (a, b) => a.ano === b.ano && a.mes === b.mes && a.dia === b.dia;
+		const curta = (d) => `${d.dia} de ${MESES[d.mes].nome}`;
 		const dias = DIAS_LETIVOS.map((nome, d) => {
 			const turnos = TURNOS.map((turno, t) => ({
 				nome: turno,
 				turmas: visiveis.filter((x) => horarios[x.id] === d * TURNOS.length + t).map(cartao)
 			}));
-			return { nome, turnos, vazio: turnos.every((t) => !t.turmas.length) };
+			return { nome, data: curta(semana[d].data), deus: DEUSES_DOS_DIAS[nome], hoje: mesmaData(semana[d].data, hoje), turnos, vazio: turnos.every((t) => !t.turmas.length) };
 		});
+		const folgas = semana.slice(DIAS_LETIVOS.length).map((d) => ({ nome: d.nome, data: curta(d.data), deus: DEUSES_DOS_DIAS[d.nome], hoje: mesmaData(d.data, hoje) }));
+		const mes = MESES[hoje.mes];
+		const calendario = {
+			rotulo: rotuloData(hoje),
+			diaDaSemana: DIAS_DA_SEMANA[diaDaSemana(hoje)],
+			deus: DEUSES_DOS_DIAS[DIAS_DA_SEMANA[diaDaSemana(hoje)]],
+			mes: mes.nome,
+			estacao: mes.estacao,
+			sobre: mes.sobre,
+			folga: diaDaSemana(hoje) >= DIAS_LETIVOS.length,
+			aberto: this.mesAberto,
+			cabecalho: DIAS_DA_SEMANA.map((nome, i) => ({ nome, folga: i >= DIAS_LETIVOS.length })),
+			semanas: Array.from({ length: DIAS_POR_MES / DIAS_DA_SEMANA.length }, (_, w) =>
+				DIAS_DA_SEMANA.map((_, i) => {
+					const dia = w * DIAS_DA_SEMANA.length + i + 1;
+					return { dia, hoje: dia === hoje.dia, folga: i >= DIAS_LETIVOS.length, semana: semana.some((s) => s.data.mes === hoje.mes && s.data.dia === dia) };
+				})
+			)
+		};
 		const colegas = colegasDeTurma(visiveis).map((c) => ({
 			id: c.id,
 			nome: c.nome,
@@ -126,6 +173,8 @@ export class CalendarioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			gm,
 			dias,
 			folga: DIAS_DE_FOLGA.join(" e "),
+			folgas,
+			calendario,
 			resumo: gm ? this.#resumoDoMestre(turmas, horarios, catalogo, aluno) : null,
 			colegas,
 			vazio: !visiveis.length,
@@ -191,6 +240,7 @@ export class CalendarioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			this.filtro = ev.target.value;
 			this.render();
 		});
+		this.element.querySelector("details.aa-cal-mes")?.addEventListener("toggle", (ev) => (this.mesAberto = ev.target.open));
 		this.element.querySelector("select[name='aa-cal-mestre']")?.addEventListener("change", (ev) => {
 			this.resumo = ev.target.value;
 			this.render();
@@ -206,6 +256,34 @@ export class CalendarioApp extends HandlebarsApplicationMixin(ApplicationV2) {
 	static #abrirAluno(event, alvo) {
 		const actor = game.actors.get(alvo.dataset.actor);
 		if (actor && (game.user.isGM || actor.isOwner)) VidaAcademicaApp.abrir(actor);
+	}
+
+	static async #mudarDia(event, alvo) {
+		if (!game.user.isGM) return;
+		await game.settings.set(MODULO, "dataArton", somarDias(opcao("dataArton"), Number(alvo.dataset.dias) || 0));
+	}
+
+	static async #escolherDia(event, alvo) {
+		if (!game.user.isGM) return;
+		await game.settings.set(MODULO, "dataArton", normalizarData({ ...normalizarData(opcao("dataArton")), dia: Number(alvo.dataset.dia) }));
+	}
+
+	static async #definirData() {
+		if (!game.user.isGM) return;
+		const atual = normalizarData(opcao("dataArton"));
+		const meses = MESES.map((m, i) => `<option value="${i}" ${i === atual.mes ? "selected" : ""}>${m.nome} (${m.estacao.toLowerCase()})</option>`).join("");
+		const data = await DialogV2.prompt({
+			window: { title: "Data em Arton" },
+			content: `<div style="display:grid;grid-template-columns:5rem 1fr 6rem;gap:.5rem">
+				<label>Dia<input type="number" name="dia" min="1" max="${DIAS_POR_MES}" step="1" value="${atual.dia}"></label>
+				<label>Mês<select name="mes">${meses}</select></label>
+				<label>Ano<input type="number" name="ano" step="1" value="${atual.ano}"></label>
+			</div>
+			<p class="hint">Cada mês tem ${DIAS_POR_MES} dias (quatro semanas de Valk a Leen).</p>`,
+			ok: { label: "Salvar", callback: (ev, botao) => ({ dia: botao.form.elements.dia.value, mes: botao.form.elements.mes.value, ano: botao.form.elements.ano.value }) },
+			rejectClose: false
+		});
+		if (data) await game.settings.set(MODULO, "dataArton", normalizarData(data));
 	}
 
 	static async #redistribuir() {
