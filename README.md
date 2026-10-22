@@ -244,7 +244,11 @@ O repositório é `fernandowrpg/t20-academia-arcana`, já configurado em `packag
 5. Confira se a URL do manifesto abre o JSON:
    `https://github.com/fernandowrpg/t20-academia-arcana/releases/latest/download/module.json`
 
-### Novas versões
+### Novas versões (automático)
+
+O workflow `.github/workflows/release.yml` publica a release sozinho: quando um push na `main` muda o `package.json` para uma versão que ainda não tem a tag `v<versão>`, ele roda o build, cria a release com essa tag, usa a seção da versão no `CHANGELOG.md` como notas e anexa `module.json` e `module.zip`. Também dá para rodar à mão em **Actions → Release → Run workflow**. Basta atualizar `version` no `package.json` e o `CHANGELOG.md`.
+
+### Novas versões (manual)
 
 1. Atualize `version` em `package.json` (ex.: `1.1.0`) e registre as mudanças no `CHANGELOG.md`.
 2. Rode `npm run build`.
