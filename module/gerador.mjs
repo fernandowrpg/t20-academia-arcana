@@ -159,6 +159,20 @@ export function periciasEstudadas(aluno) {
 	return [...chaves];
 }
 
+/* Perícias que ficam treinadas na ficha do NPC: as de todas as matrículas, passadas e atuais, mas só depois que o aluno já avançou algum semestre. */
+export function periciasTreinadas(aluno) {
+	if ((aluno?.semestres?.length ?? 0) < 2) return [];
+	const chaves = new Set();
+	for (const s of aluno.semestres) {
+		for (const d of s.disciplinas) {
+			if (d.situacao === "trancado") continue;
+			const chave = periciaEfetiva(d);
+			if (chave !== OFICIO_LIVRE) chaves.add(chave);
+		}
+	}
+	return [...chaves];
+}
+
 export function gerarAluno({
 	nivel = null,
 	raca = null,

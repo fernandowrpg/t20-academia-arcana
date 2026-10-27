@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.16.1
+
+- Gerador de alunos: a partir do 2º semestre, as perícias de todas as disciplinas em que o aluno se matriculou, nos semestres passados e no atual, ficam treinadas na ficha (inclusive as de disciplinas em que foi reprovado). No 1º semestre, nenhuma perícia é marcada. A mesma regra vale quando o NPC avança de semestre.
+
 ## 1.16.0
 
 - Correio, *Escrevendo como*: o seletor de remetente virou um botão com retrato e nome que abre a lista de identidades, com busca quando há muitas. Quem tem mensagens novas aparece primeiro, com o número de cada um; depois vêm professores, NPCs e personagens dos jogadores. O botão mostra quantas mensagens novas esperam em outras identidades.
