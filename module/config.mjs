@@ -1,6 +1,6 @@
 import { DISCIPLINAS } from "./data/disciplinas.mjs";
 import { configPadrao, montarCatalogo, normalizarPersonalizada, novoAluno, periciasDoCatalogo } from "./logica.mjs";
-import { atualizarResumoNpc, periciasEstudadas } from "./gerador.mjs";
+import { atualizarResumoNpc, periciasTreinadas } from "./gerador.mjs";
 
 export const MODULO = "t20-academia-arcana";
 export const FLAG = "aluno";
@@ -351,11 +351,11 @@ export function ehNpcGerado(actor) {
 	return !!actor?.getFlag(MODULO, FLAG)?.npc;
 }
 
-/* Marca como treinadas, na ficha do NPC, as perícias das disciplinas aprovadas ou em curso. */
+/* Marca como treinadas, na ficha do NPC, as perícias das matrículas passadas e atuais, a partir do 2º semestre. */
 export async function sincronizarPericias(actor, aluno) {
 	const pericias = actor.system?.pericias ?? {};
 	const mudancas = {};
-	for (const chave of periciasEstudadas(aluno)) {
+	for (const chave of periciasTreinadas(aluno)) {
 		if (pericias[chave] && !pericias[chave].treinado) mudancas[`system.pericias.${chave}.treinado`] = true;
 	}
 	if (Object.keys(mudancas).length) await actor.update(mudancas);

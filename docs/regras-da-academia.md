@@ -195,7 +195,7 @@ O Teste do Fogo costuma ser feito no último semestre. Em Tormenta20, o mestre a
 - **Parceiro:** cada colega tem um tipo de parceiro de Tormenta20 conforme a classe e pode acompanhar um personagem de jogador pelas regras de parceiros do livro básico. (Módulo)
 - Os NPCs se matriculam sozinhos quando o mestre abre as matrículas em lote e tendem a escolher disciplinas que os personagens cursam. (Módulo)
 - Ao encerrar o semestre em lote, cada NPC recebe notas sorteadas: a aptidão do aluno (entre 5,5 e 8,5) mais ou menos 2,5 pontos. Nota 6 ou mais aprova; abaixo disso, reprova. (Módulo)
-- As perícias das disciplinas aprovadas ou em curso ficam treinadas na ficha do NPC. (Módulo)
+- A partir do 2º semestre, as perícias de todas as disciplinas em que o NPC se matriculou, nos semestres passados e no atual, ficam treinadas na ficha. No 1º semestre, nenhuma é marcada. (Módulo)
 
 ### Grau do parceiro
 
