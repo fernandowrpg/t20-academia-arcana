@@ -752,12 +752,77 @@
 	cursor: grabbing;
 }
 
+/* Minimizado, o painel vira um ícone redondo que flutua, pode ser arrastado e preso num canto.
+   As regras usam !important porque os temas (Scriptorium e planos) mexem na mesma moldura com seletores mais fortes. */
 .aa-painel.minimizado .aa-painel-conteudo > :not(.aa-painel-topo) {
 	display: none;
 }
 
+.academia-arcana.aa-painel.minimizado {
+	box-sizing: border-box !important;
+	width: 44px !important;
+	height: 44px !important;
+	padding: 0 !important;
+	overflow: visible !important;
+	border-width: 2px !important;
+	border-style: solid !important;
+	border-radius: 50% !important;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+	transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.academia-arcana.aa-painel.minimizado:hover {
+	transform: scale(1.08);
+}
+
+.academia-arcana.aa-painel.minimizado .aa-painel-conteudo {
+	height: 100%;
+}
+
 .aa-painel.minimizado .aa-painel-topo {
-	border-bottom: none;
+	position: relative !important;
+	justify-content: center;
+	height: 100%;
+	padding: 0 !important;
+	border: none !important;
+	border-radius: 50% !important;
+	cursor: pointer;
+}
+
+.aa-painel.minimizado .aa-painel-topo > :not(:first-child, .aa-icone-selo) {
+	display: none !important;
+}
+
+.aa-painel.minimizado .aa-painel-topo::before,
+.aa-painel.minimizado .aa-painel-topo::after {
+	display: none !important;
+}
+
+.aa-painel.minimizado .aa-painel-topo > i:first-child {
+	font-size: 1.2rem;
+}
+
+.aa-painel.minimizado .aa-icone-selo {
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	min-width: 18px;
+	height: 18px;
+	padding: 0 4px;
+	border-radius: 9px;
+	background: #c0392b;
+	color: #fff;
+	font-size: 0.68rem;
+	font-weight: bold;
+	line-height: 18px;
+	text-align: center;
+	text-shadow: none;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* Perto de um canto durante o arraste: avisa que o ícone vai ficar preso ali. */
+.academia-arcana.aa-painel.minimizado.ima {
+	box-shadow: 0 0 0 3px var(--aa-ouro), 0 0 14px var(--aa-ouro) !important;
 }
 
 .aa-painel .aa-painel-topo strong {

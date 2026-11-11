@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.19.0
+
+- Painéis flutuantes (alunos, ameaças, grêmios e plano): minimizado, o painel vira um ícone redondo em vez de uma barra de título. Clique no ícone para abrir o painel de novo; arraste para movê-lo.
+- Solte o ícone perto de um canto da tela para prendê-lo ali: ele brilha durante o arraste para avisar. Ícones presos no mesmo canto ficam em fila e continuam no canto quando a janela muda de tamanho. Arraste de novo para soltá-lo.
+- O ícone do painel de alunos mostra o número de cartas novas do correio; o do plano usa as cores do plano atual.
+
 ## 1.18.0
 
 - Painel do plano na Academia: enquanto a turma não está em nenhum plano, o painel mostra as anotações da Academia, para cenas e eventos (um baile, uma prova, um toque de recolher). O mestre define um título (que vira o nome do painel), anotações que todos veem e notas só dele, e pode anunciá-las no chat.
