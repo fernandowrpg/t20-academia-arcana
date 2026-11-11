@@ -23,8 +23,7 @@ export class PainelPlanoApp extends PainelFlutuante {
 		actions: {
 			anterior: PainelPlanoApp.#anterior,
 			proximo: PainelPlanoApp.#proximo,
-			editar: PainelPlanoApp.#editar,
-			wiki: PainelPlanoApp.#wiki
+			editar: PainelPlanoApp.#editar
 		}
 	};
 
@@ -70,10 +69,5 @@ export class PainelPlanoApp extends PainelFlutuante {
 
 	static #editar() {
 		PlanosApp.abrir(lerExpedicao().atual || undefined);
-	}
-
-	static #wiki() {
-		const url = planoAtual()?.wiki;
-		if (url) window.open(url, "_blank", "noopener");
 	}
 }

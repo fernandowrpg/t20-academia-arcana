@@ -74,7 +74,7 @@ Os dois painéis ficam flutuando sobre a mesa. Arraste pelo título para mover (
 
 Para campanhas em que a turma visita os reinos dos deuses (o Roteiro da Expedição da Wiki Divina, de Magika a Pyra).
 
-- **Painel do plano**: mostra o plano em que a turma está, o deus, o ato, a parada no roteiro, o nível sugerido, a CD dos desafios de perícia (18 + nível), o perigo, a regra planar e as anotações da mesa. Arraste, recolha (fica só a faixa do plano) e minimize como os outros painéis. O mestre vê também as notas secretas e um atalho para a página do deus na wiki; o painel do mestre aparece mesmo na Academia, para escolher o destino.
+- **Painel do plano**: mostra o plano em que a turma está, o deus, o ato, a parada no roteiro, o nível sugerido, a CD dos desafios de perícia (18 + nível), o perigo, a regra planar e as anotações da mesa. Arraste, recolha (fica só a faixa do plano) e minimize como os outros painéis. O mestre vê também as notas secretas; o painel do mestre aparece mesmo na Academia, para escolher o destino.
 - **Planos da expedição** (mestre): abre pelo lápis do painel, pela Secretaria ou pela macro. Escolha o plano atual, edite o título e as regras (uma por linha; `**negrito**` e `*itálico*`), escreva anotações que todos veem e notas só do mestre, restaure as regras originais e anuncie a chegada no chat. As setas do painel andam pelo roteiro.
 - **Tema de cada plano**: cores, emblema e desenho próprios para os 20 mundos. Em *Tema do plano*, cada usuário escolhe o alcance: só o painel do plano, também os outros painéis ou ainda uma moldura nas bordas da tela.
 - *Jogadores veem o plano atual* (mundo): desmarcada, só o mestre vê o painel e o tema. Os jogadores nunca veem as notas do mestre.

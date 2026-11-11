@@ -14,8 +14,6 @@ export const ATOS = {
 	5: "Ato V: A Era dos Ascendidos"
 };
 
-const NOTION = "https://app.notion.com/p/";
-
 export const PLANOS = [
 	{
 		id: "magika",
@@ -27,7 +25,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Médio",
 		icone: "fa-solid fa-wand-sparkles",
-		wiki: `${NOTION}4136758b4ce08151b981d37d47b203af`,
 		regraTitulo: "Feitiço Inacabado",
 		regras: [
 			"**Magias arcanas: –1 PM** (mínimo 1). O limite de PM para magias arcanas conta como +1.",
@@ -46,7 +43,6 @@ export const PLANOS = [
 		sobe: false,
 		perigo: "Baixo",
 		icone: "fa-solid fa-scale-balanced",
-		wiki: `${NOTION}4136758b4ce081f88008e7876c10e274`,
 		regraTitulo: "Lei do Mais Provável",
 		regras: [
 			"**Todo d20 é tratado como 10.** Não há críticos nem falhas automáticas; rerrolagens e poderes de sorte não funcionam.",
@@ -65,7 +61,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Imprevisível",
 		icone: "fa-solid fa-dice",
-		wiki: `${NOTION}4136758b4ce0816babc5f85b4224bf0a`,
 		regraTitulo: "Dados da Casa",
 		regras: [
 			"**Ao lançar uma magia, role 1d6:** 1 = custa o dobro de PM; 6 = não custa PM; 2–5 = normal.",
@@ -84,7 +79,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Alto",
 		icone: "fa-solid fa-sun",
-		wiki: `${NOTION}4136758b4ce081fd8176fa23caf33cf2`,
 		regraTitulo: "Sem Sombra",
 		regras: [
 			"**Magias de fogo ou luz: –1 PM e +1 na CD.** Ilusão e magias de trevas: +2 PM.",
@@ -105,7 +99,6 @@ export const PLANOS = [
 		sobe: false,
 		perigo: "Alto",
 		icone: "fa-solid fa-moon",
-		wiki: `${NOTION}4136758b4ce081f1b7bff2e3f809299e`,
 		regraTitulo: "Noite Eterna",
 		regras: [
 			"**Necromancia e Ilusão: –1 PM.** Magias de luz: +2 PM e alcance reduzido em uma categoria.",
@@ -125,7 +118,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Baixo (emocional)",
 		icone: "fa-solid fa-seedling",
-		wiki: `${NOTION}4136758b4ce08166b18ed512bce51175`,
 		regraTitulo: "Vida Transbordante",
 		regras: [
 			"**Curas:** +1 PV por dado. Descanso recupera o dobro de PV.",
@@ -145,7 +137,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Alto",
 		icone: "fa-solid fa-water",
-		wiki: `${NOTION}4136758b4ce0812a882cd2de6106fb1b`,
 		regraTitulo: "Sob as Ondas",
 		regras: [
 			"**Magias de fogo submersas: +2 PM** e metade do dano.",
@@ -166,7 +157,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Alto",
 		icone: "fa-solid fa-tree",
-		wiki: `${NOTION}4136758b4ce081c7a551c851eaa2d7a6`,
 		regraTitulo: "O Grande Ciclo",
 		regras: [
 			"**Convocação de animais ou plantas e magias de druida: –1 PM.**",
@@ -186,7 +176,6 @@ export const PLANOS = [
 		sobe: false,
 		perigo: "Extremo",
 		icone: "fa-solid fa-paw",
-		wiki: `${NOTION}4136758b4ce0814da7aadbe26c68e8fc`,
 		regraTitulo: "A Bênção de Megalokk",
 		regras: [
 			"**Fúria e poderes brutais (bárbaro e lutador): –1 PM.** A Fúria causa +2 de dano.",
@@ -205,7 +194,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Baixo/Médio",
 		icone: "fa-solid fa-book-open",
-		wiki: `${NOTION}4136758b4ce0815eaea6cc20b479cc59`,
 		regraTitulo: "Juramento da Verdade",
 		regras: [
 			"**Adivinhação: –1 PM.** Ilusão: +2 PM.",
@@ -225,7 +213,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Médio",
 		icone: "fa-solid fa-torii-gate",
-		wiki: `${NOTION}4136758b4ce081ea8a1ce912215f0f42`,
 		regraTitulo: "O Caminho da Honra",
 		regras: [
 			"**Desafio declarado:** poderes de combate e habilidades com custo em PM custam –1 PM contra um alvo desafiado abertamente antes do combate.",
@@ -245,7 +232,6 @@ export const PLANOS = [
 		sobe: false,
 		perigo: "Baixo (insidioso)",
 		icone: "fa-solid fa-dove",
-		wiki: `${NOTION}4136758b4ce0819eb819f2f7a8405222`,
 		regraTitulo: "A Paz Imposta",
 		regras: [
 			"**Magias que causam dano: +2 PM.** Encantamento e Cura: –1 PM.",
@@ -265,7 +251,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Médio/Alto",
 		icone: "fa-solid fa-compass",
-		wiki: `${NOTION}4136758b4ce081678bb5e95c2249b390`,
 		regraTitulo: "Sem Estagnação",
 		regras: [
 			"**Descanso longo só em Thellas.** Em qualquer outro lugar, um encontro interrompe o descanso.",
@@ -285,7 +270,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Extremo",
 		icone: "fa-solid fa-dragon",
-		wiki: `${NOTION}4136758b4ce081c6b9cff22d2da8ff89`,
 		regraTitulo: "Tributo ao Poder",
 		regras: [
 			"**Aprimoramentos de magias arcanas: –1 PM** no total por magia.",
@@ -305,7 +289,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Letal",
 		icone: "fa-solid fa-staff-snake",
-		wiki: `${NOTION}4136758b4ce081d094f7ca1e0514c894`,
 		regraTitulo: "Ar Envenenado",
 		regras: [
 			"**Necromancia e magias de veneno: –1 PM.** Venenos em geral: +2 na CD.",
@@ -325,7 +308,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Alto",
 		icone: "fa-solid fa-mask",
-		wiki: `${NOTION}4136758b4ce081c98509d8014d91e04b`,
 		regraTitulo: "Espaço de Masmorra",
 		regras: [
 			"**Teletransporte e visão no escuro** não funcionam para invasores.",
@@ -345,7 +327,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Alto",
 		icone: "fa-solid fa-gears",
-		wiki: `${NOTION}4136758b4ce08159a8e1c1536cef9f22`,
 		regraTitulo: "O Akzath",
 		regras: [
 			"**Engenhocas e itens tecnológicos funcionam sem falha.** Itens superiores ganham +1 melhoria temporária no plano.",
@@ -366,7 +347,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Extremo",
 		icone: "fa-solid fa-shield-halved",
-		wiki: `${NOTION}4136758b4ce0817eacd9ea5d3d7e810d`,
 		regraTitulo: "Disciplina de Guerra",
 		regras: [
 			"**Poderes de combate e habilidades marciais com custo em PM: –1 PM.**",
@@ -386,7 +366,6 @@ export const PLANOS = [
 		sobe: true,
 		perigo: "Extremo",
 		icone: "fa-solid fa-bolt",
-		wiki: `${NOTION}4136758b4ce081f7a30dff1c618f1247`,
 		regraTitulo: "Tudo É Lefeu",
 		regras: [
 			"**Insanidade da Tormenta** ao entrar e a cada 8 horas (Vontade CD 25).",
@@ -407,7 +386,6 @@ export const PLANOS = [
 		sobe: false,
 		perigo: "Alto",
 		icone: "fa-solid fa-fire",
-		wiki: `${NOTION}4136758b4ce081a1b98cdf6c3bcff885`,
 		regraTitulo: "Segunda Chance",
 		regras: [
 			"**Magias de fogo, de cura e de Adivinhação: –1 PM.**",
