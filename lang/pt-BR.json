@@ -48,7 +48,7 @@
 			},
 			"painelPlano": {
 				"Nome": "Exibir o painel do plano",
-				"Dica": "Painel flutuante com o plano em que a turma está na expedição aos mundos dos deuses: deus, nível sugerido, CD, regra planar e as anotações do mestre. Os jogadores só o veem com um plano ativo."
+				"Dica": "Painel flutuante com o plano em que a turma está na expedição aos mundos dos deuses (deus, nível sugerido, CD, regra planar e anotações) ou, na Academia, as anotações da cena ou evento. Os jogadores só o veem com um plano ativo ou com anotações da Academia."
 			},
 			"temaPlano": {
 				"Nome": "Tema do plano",
@@ -58,8 +58,8 @@
 				"Painel": "Somente o painel do plano"
 			},
 			"planoJogadores": {
-				"Nome": "Jogadores veem o plano atual",
-				"Dica": "Mostra aos jogadores o painel do plano (regras e anotações da mesa, nunca as notas do mestre) e aplica o tema do plano para eles. Desmarcado, só o mestre vê."
+				"Nome": "Jogadores veem o painel do plano",
+				"Dica": "Mostra aos jogadores o painel do plano (regras e anotações da mesa, nunca as notas do mestre), as anotações da Academia e o tema do plano. Desmarcado, só o mestre vê."
 			},
 			"pontosAprovacao": {
 				"Nome": "Placar: pontos por aprovação",

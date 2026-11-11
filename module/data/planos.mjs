@@ -14,6 +14,13 @@ export const ATOS = {
 	5: "Ato V: A Era dos Ascendidos"
 };
 
+/* A Academia, onde a turma está entre um plano e outro (ou antes da expedição). */
+export const ACADEMIA = {
+	id: "academia",
+	nome: "Grande Academia Arcana",
+	icone: "fa-solid fa-building-columns"
+};
+
 export const PLANOS = [
 	{
 		id: "magika",

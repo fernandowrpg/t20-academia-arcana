@@ -1,10 +1,10 @@
 import { MODULO } from "../config.mjs";
 import { ATOS, PLANOS } from "../data/planos.mjs";
-import { anunciarPlano, dadosDoPlano, definirPlanoAtual, lerExpedicao, restaurarRegrasDoPlano, salvarTextosDoPlano } from "../planos.mjs";
+import { anunciarPlano, dadosDaAcademia, dadosDoPlano, definirPlanoAtual, lerExpedicao, restaurarRegrasDoPlano, salvarTextosDoPlano } from "../planos.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 
-const CAMPOS = ["regraTitulo", "regras", "anotacoes", "segredo"];
+const CAMPOS = ["titulo", "regraTitulo", "regras", "anotacoes", "segredo"];
 
 /* Editor do mestre: escolhe em que plano a turma está e edita regras e anotações de cada um. */
 export class PlanosApp extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -29,7 +29,7 @@ export class PlanosApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		app.render();
 	}
 
-	selecionado = lerExpedicao().atual || PLANOS[0].id;
+	selecionado = lerExpedicao().atual || "academia";
 
 	static DEFAULT_OPTIONS = {
 		id: "academia-arcana-planos",
@@ -39,7 +39,6 @@ export class PlanosApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		actions: {
 			selecionar: PlanosApp.#selecionar,
 			irPara: PlanosApp.#irPara,
-			academia: PlanosApp.#academia,
 			anunciar: PlanosApp.#anunciar,
 			restaurar: PlanosApp.#restaurar
 		}
@@ -72,11 +71,15 @@ export class PlanosApp extends HandlebarsApplicationMixin(ApplicationV2) {
 				};
 			})
 		}));
-		const plano = dadosDoPlano(this.selecionado, expedicao);
+		const academia = dadosDaAcademia(expedicao);
+		const naAcademia = !expedicao.atual;
+		const plano = this.selecionado === "academia" ? { ...academia, atual: naAcademia } : { ...dadosDoPlano(this.selecionado, expedicao), atual: this.selecionado === expedicao.atual };
 		return {
 			atos,
-			naAcademia: !expedicao.atual,
-			plano: { ...plano, atual: plano.id === expedicao.atual }
+			naAcademia,
+			academiaSelecionada: this.selecionado === "academia",
+			academiaAnotada: !!academia.titulo || !!academia.anotacoes || !!academia.segredo,
+			plano
 		};
 	}
 
@@ -95,12 +98,9 @@ export class PlanosApp extends HandlebarsApplicationMixin(ApplicationV2) {
 		this.render();
 	}
 
+	/* "academia" não é um plano: definirPlanoAtual tira a turma dos planos. */
 	static async #irPara() {
 		await definirPlanoAtual(this.selecionado);
-	}
-
-	static async #academia() {
-		await definirPlanoAtual("");
 	}
 
 	static async #anunciar() {

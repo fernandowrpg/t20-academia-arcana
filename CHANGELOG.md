@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.18.0
+
+- Painel do plano na Academia: enquanto a turma não está em nenhum plano, o painel mostra as anotações da Academia, para cenas e eventos (um baile, uma prova, um toque de recolher). O mestre define um título (que vira o nome do painel), anotações que todos veem e notas só dele, e pode anunciá-las no chat.
+- Em *Planos da expedição*, a Academia é o primeiro item da lista, com os mesmos campos. Os jogadores veem o painel na Academia quando há anotações para eles; as anotações continuam guardadas durante a expedição.
+- A configuração *Jogadores veem o plano atual* passou a se chamar *Jogadores veem o painel do plano* e vale também para as anotações da Academia.
+
 ## 1.17.0
 
 - **Expedição aos mundos dos deuses**: novo painel flutuante do plano, igual aos de alunos e ameaças (arrastar, recolher, minimizar, desligar por usuário). Mostra o plano em que a turma está, o deus, o ato do roteiro, a parada (1 a 20), o nível sugerido, a CD dos desafios (18 + nível), o perigo, a regra planar e as anotações da mesa. O mestre vê também as próprias notas secretas e se o grupo sobe de nível ao sair.

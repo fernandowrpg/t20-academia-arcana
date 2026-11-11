@@ -5,6 +5,21 @@
    body.aa-plano-moldura: além disso, uma moldura do plano nas bordas da tela.
    Os seletores começam por body para vencer o Tema Scriptorium, que tem a mesma especificidade. */
 
+/* Academia: roxo e ouro da Grande Academia Arcana, com estrelas discretas. Só no painel, no editor e no chat. */
+[data-aa-plano="academia"] {
+	--aa-p-fundo: #1d1230;
+	--aa-p-fundo-2: #2a1a45;
+	--aa-p-topo: linear-gradient(120deg, #5b3a8c, #2d1b4e);
+	--aa-p-acento: #c9a227;
+	--aa-p-texto: #f4ecff;
+	--aa-p-suave: rgba(244, 236, 255, 0.7);
+	--aa-p-linha: rgba(201, 162, 39, 0.22);
+	--aa-p-vinheta: rgba(91, 58, 140, 0.5);
+	--aa-p-padrao:
+		radial-gradient(circle at 30% 40%, rgba(201, 162, 39, 0.3) 0 0.8px, transparent 1.5px) 0 0 / 33px 31px,
+		radial-gradient(ellipse at 50% -20%, rgba(185, 156, 240, 0.22), transparent 60%);
+}
+
 /* Magika (Wynna): feitiço inacabado, céu de runas */
 [data-aa-plano="magika"] {
 	--aa-p-fundo: #1b1140;
@@ -636,15 +651,6 @@ body.aa-plano-moldura[data-aa-plano]::after {
 .academia-arcana .aa-planos-marca {
 	font-size: 0.7rem;
 	color: var(--aa-texto-suave);
-}
-
-.academia-arcana .aa-planos-academia {
-	width: 100%;
-}
-
-.academia-arcana .aa-planos-academia.atual {
-	border-color: var(--aa-roxo);
-	font-weight: bold;
 }
 
 .academia-arcana .aa-planos-editor {

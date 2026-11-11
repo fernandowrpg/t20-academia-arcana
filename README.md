@@ -77,7 +77,8 @@ Para campanhas em que a turma visita os reinos dos deuses (o Roteiro da Expediç
 - **Painel do plano**: mostra o plano em que a turma está, o deus, o ato, a parada no roteiro, o nível sugerido, a CD dos desafios de perícia (18 + nível), o perigo, a regra planar e as anotações da mesa. Arraste, recolha (fica só a faixa do plano) e minimize como os outros painéis. O mestre vê também as notas secretas; o painel do mestre aparece mesmo na Academia, para escolher o destino.
 - **Planos da expedição** (mestre): abre pelo lápis do painel, pela Secretaria ou pela macro. Escolha o plano atual, edite o título e as regras (uma por linha; `**negrito**` e `*itálico*`), escreva anotações que todos veem e notas só do mestre, restaure as regras originais e anuncie a chegada no chat. As setas do painel andam pelo roteiro.
 - **Tema de cada plano**: cores, emblema e desenho próprios para os 20 mundos. Em *Tema do plano*, cada usuário escolhe o alcance: só o painel do plano, também os outros painéis ou ainda uma moldura nas bordas da tela.
-- *Jogadores veem o plano atual* (mundo): desmarcada, só o mestre vê o painel e o tema. Os jogadores nunca veem as notas do mestre.
+- **Na Academia**: sem plano ativo, o painel mostra as anotações da Academia, para cenas e eventos. Em *Planos da expedição*, o item *Academia* tem um título (o nome do painel), anotações que todos veem e notas só do mestre; os jogadores veem o painel quando há anotações para eles.
+- *Jogadores veem o painel do plano* (mundo): desmarcada, só o mestre vê o painel e o tema. Os jogadores nunca veem as notas do mestre.
 
 ### Placar dos grêmios
 

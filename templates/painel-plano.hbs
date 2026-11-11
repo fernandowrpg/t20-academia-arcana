@@ -1,15 +1,15 @@
 <div class="aa-painel-conteudo">
 	<header class="aa-painel-topo" data-tooltip="Arraste para mover; clique duplo para voltar à posição padrão">
 		{{#if plano}}<i class="{{plano.icone}}"></i>{{else}}<i class="fa-solid fa-building-columns"></i>{{/if}}
-		<strong>{{#if plano}}{{plano.nome}}{{else}}Na Academia{{/if}}</strong>
+		<strong>{{#if plano}}{{plano.nome}}{{else}}{{#if academia.titulo}}{{academia.titulo}}{{else}}Na Academia{{/if}}{{/if}}</strong>
 		{{#if plano}}<span class="aa-painel-rodada" data-tooltip="Parada do roteiro">{{plano.ordem}}/{{total}}</span>{{/if}}
 		<span class="aa-painel-acoes">
 			{{#if gm}}
 			{{#if plano}}<a data-action="anterior" data-tooltip="{{#if plano.primeiro}}Voltar à Academia{{else}}Voltar ao plano anterior do roteiro{{/if}}"><i class="fa-solid fa-backward-step"></i></a>{{/if}}
 			{{#unless plano.ultimo}}<a data-action="proximo" data-tooltip="{{#if plano}}Seguir para o próximo plano{{else}}Partir para o primeiro plano (Magika){{/if}}"><i class="fa-solid fa-forward-step"></i></a>{{/unless}}
-			<a data-action="editar" data-tooltip="Planos da expedição: escolher o plano e editar regras e anotações"><i class="fa-solid fa-pen-to-square"></i></a>
+			<a data-action="editar" data-tooltip="{{#if plano}}Planos da expedição: escolher o plano e editar regras e anotações{{else}}Editar as anotações da Academia ou escolher um plano{{/if}}"><i class="fa-solid fa-pen-to-square"></i></a>
 			{{/if}}
-			{{#if plano}}{{#unless minimizado}}<a data-action="recolher" data-tooltip="{{#if recolhido}}Mostrar regras e anotações{{else}}Mostrar só o plano{{/if}}"><i class="fa-solid {{#if recolhido}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i></a>{{/unless}}{{/if}}
+			{{#unless academia.vazia}}{{#unless minimizado}}<a data-action="recolher" data-tooltip="{{#if recolhido}}Mostrar regras e anotações{{else}}Mostrar só o título{{/if}}"><i class="fa-solid {{#if recolhido}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i></a>{{/unless}}{{/unless}}
 			<a data-action="minimizar" data-tooltip="{{#if minimizado}}Mostrar o painel{{else}}Minimizar o painel{{/if}}"><i class="fa-solid {{#if minimizado}}fa-window-maximize{{else}}fa-window-minimize{{/if}}"></i></a>
 		</span>
 	</header>
@@ -55,7 +55,30 @@
 	{{/if}}
 	{{else}}
 	<div class="aa-plano-corpo">
-		<p class="aa-painel-vazio">A turma está na Academia. Use <i class="fa-solid fa-forward-step"></i> para partir para Magika ou <i class="fa-solid fa-pen-to-square"></i> para escolher outro plano. Os jogadores só veem este painel quando há um plano ativo.</p>
+		<div class="aa-plano-faixa">
+			<i class="aa-plano-emblema {{academia.icone}}"></i>
+			<div>
+				<span class="aa-plano-nome">{{#if academia.titulo}}{{academia.titulo}}{{else}}Na Academia{{/if}}</span>
+				<span class="aa-plano-deus">{{academia.nome}}</span>
+			</div>
+		</div>
+		{{#if academia.anotacoes.length}}
+		<section class="aa-plano-notas aa-painel-detalhe">
+			<h3><i class="fa-solid fa-feather-pointed"></i> Anotações</h3>
+			{{#each academia.anotacoes}}<p>{{{this}}}</p>{{/each}}
+		</section>
+		{{/if}}
+		{{#if academia.segredo.length}}
+		<section class="aa-plano-notas aa-plano-segredo aa-painel-detalhe">
+			<h3><i class="fa-solid fa-eye-slash"></i> Só o mestre vê</h3>
+			{{#each academia.segredo}}<p>{{{this}}}</p>{{/each}}
+		</section>
+		{{/if}}
+		{{#if academia.vazia}}
+		<section>
+			<p class="aa-painel-vazio">A turma está na Academia. Use <i class="fa-solid fa-pen-to-square"></i> para anotar uma cena ou evento (os jogadores veem o painel quando houver anotações) ou <i class="fa-solid fa-forward-step"></i> para partir para Magika.</p>
+		</section>
+		{{/if}}
 	</div>
 	{{/if}}
 </div>

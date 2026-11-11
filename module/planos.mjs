@@ -1,16 +1,18 @@
 import { MODULO, opcao } from "./config.mjs";
-import { ATOS, PLANOS, PLANOS_POR_ID, cdDoPlano } from "./data/planos.mjs";
+import { ACADEMIA, ATOS, PLANOS, PLANOS_POR_ID, cdDoPlano } from "./data/planos.mjs";
 
 /*
  * Estado da expedição, gravado na configuração de mundo "expedicao":
  * { atual: id do plano em que a turma está ("" = na Academia),
- *   planos: { [id]: { regraTitulo?, regras?, anotacoes?, segredo? } } }
+ *   planos: { [id]: { regraTitulo?, regras?, anotacoes?, segredo? } },
+ *   academia: { titulo?, anotacoes?, segredo? } }
+ * A Academia tem anotações próprias para cenas e eventos de lá, mostradas no painel quando não há plano ativo.
  * regraTitulo e regras ausentes usam o texto padrão de data/planos.mjs.
  */
 
 export function lerExpedicao() {
 	const salvo = foundry.utils.deepClone(opcao("expedicao") ?? {});
-	return { atual: PLANOS_POR_ID.has(salvo.atual) ? salvo.atual : "", planos: salvo.planos ?? {} };
+	return { atual: PLANOS_POR_ID.has(salvo.atual) ? salvo.atual : "", planos: salvo.planos ?? {}, academia: salvo.academia ?? {} };
 }
 
 async function gravar(expedicao) {
@@ -39,6 +41,35 @@ export function dadosDoPlano(id, expedicao = lerExpedicao()) {
 	};
 }
 
+/* A Academia com o título e as anotações do mestre (cena, evento, avisos). */
+export function dadosDaAcademia(expedicao = lerExpedicao()) {
+	const a = expedicao.academia ?? {};
+	return {
+		...ACADEMIA,
+		academia: true,
+		titulo: a.titulo ?? "",
+		anotacoes: a.anotacoes ?? "",
+		segredo: a.segredo ?? ""
+	};
+}
+
+/* Os jogadores só veem a Academia no painel quando há anotações para eles. */
+export function academiaTemAnotacoes() {
+	return !!dadosDaAcademia().anotacoes.trim();
+}
+
+export async function salvarTextosDaAcademia(campos) {
+	const expedicao = lerExpedicao();
+	const atual = { ...expedicao.academia };
+	for (const [chave, valor] of Object.entries(campos)) {
+		const texto = String(valor ?? "");
+		if (texto.trim()) atual[chave] = texto;
+		else delete atual[chave];
+	}
+	expedicao.academia = atual;
+	return gravar(expedicao);
+}
+
 export async function definirPlanoAtual(id) {
 	const expedicao = lerExpedicao();
 	expedicao.atual = PLANOS_POR_ID.has(id) ? id : "";
@@ -54,6 +85,7 @@ export async function avancarPlano(passo) {
 }
 
 export async function salvarTextosDoPlano(id, campos) {
+	if (id === ACADEMIA.id) return salvarTextosDaAcademia(campos);
 	if (!PLANOS_POR_ID.has(id)) return;
 	const expedicao = lerExpedicao();
 	const base = PLANOS_POR_ID.get(id);
@@ -108,6 +140,7 @@ export function textoEmParagrafos(texto) {
 
 /* Cartão de chegada no chat, com as cores do plano. */
 export async function anunciarPlano(id) {
+	if (id === ACADEMIA.id) return anunciarAcademia();
 	const plano = dadosDoPlano(id);
 	if (!plano) return;
 	const regras = textoEmItens(plano.regras).map((r) => `<li>${r}</li>`).join("");
@@ -118,6 +151,16 @@ export async function anunciarPlano(id) {
 	<ul>${regras}</ul>${anotacoes}
 </div>`;
 	await ChatMessage.create({ content, speaker: { alias: "Expedição aos Mundos dos Deuses" } });
+}
+
+async function anunciarAcademia() {
+	const academia = dadosDaAcademia();
+	const anotacoes = textoEmParagrafos(academia.anotacoes).map((p) => `<p>${p}</p>`).join("");
+	const content = `<div class="aa-plano-chat" data-aa-plano="academia">
+	<header><i class="${academia.icone}"></i><div><strong>${escapar(academia.titulo || academia.nome)}</strong><small>${academia.titulo ? escapar(academia.nome) : "De volta à Academia"}</small></div></header>
+	${anotacoes}
+</div>`;
+	await ChatMessage.create({ content, speaker: { alias: "Grande Academia Arcana" } });
 }
 
 let ultimoPlano = null;

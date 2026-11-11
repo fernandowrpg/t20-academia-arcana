@@ -1,6 +1,6 @@
 import { MODULO, opcao } from "../config.mjs";
 import { PLANOS } from "../data/planos.mjs";
-import { avancarPlano, lerExpedicao, planoAtual, textoEmItens, textoEmParagrafos } from "../planos.mjs";
+import { academiaTemAnotacoes, avancarPlano, dadosDaAcademia, lerExpedicao, planoAtual, textoEmItens, textoEmParagrafos } from "../planos.mjs";
 import { PainelFlutuante } from "./painel.mjs";
 import { PlanosApp } from "./planos.mjs";
 
@@ -11,11 +11,12 @@ export class PainelPlanoApp extends PainelFlutuante {
 
 	static instancia = null;
 
-	/* O mestre sempre vê (para escolher o plano); o jogador, só com um plano ativo e se o mestre liberar. */
+	/* O mestre sempre vê (para escolher o plano); o jogador, se o mestre liberar e houver um plano ativo
+	   ou anotações da Academia. */
 	static deveExibir() {
 		if (!opcao("painelPlano")) return false;
 		if (game.user.isGM) return true;
-		return opcao("planoJogadores") && !!lerExpedicao().atual;
+		return opcao("planoJogadores") && (!!lerExpedicao().atual || academiaTemAnotacoes());
 	}
 
 	static DEFAULT_OPTIONS = {
@@ -39,8 +40,14 @@ export class PainelPlanoApp extends PainelFlutuante {
 	async _prepareContext() {
 		const gm = game.user.isGM;
 		const plano = planoAtual();
-		const contexto = { gm, recolhido: this.recolhido, minimizado: this.minimizado, total: PLANOS.length, plano: null };
-		if (!plano) return contexto;
+		const contexto = { gm, recolhido: this.recolhido, minimizado: this.minimizado, total: PLANOS.length, plano: null, academia: null };
+		if (!plano) {
+			const academia = dadosDaAcademia();
+			const anotacoes = textoEmParagrafos(academia.anotacoes);
+			const segredo = gm ? textoEmParagrafos(academia.segredo) : [];
+			contexto.academia = { ...academia, anotacoes, segredo, vazia: !anotacoes.length && !segredo.length };
+			return contexto;
+		}
 		contexto.plano = {
 			...plano,
 			regras: textoEmItens(plano.regras),
@@ -54,7 +61,7 @@ export class PainelPlanoApp extends PainelFlutuante {
 
 	async _onRender(context, options) {
 		await super._onRender(context, options);
-		const id = context.plano?.id;
+		const id = context.plano?.id ?? (context.academia ? "academia" : null);
 		if (id) this.element.dataset.aaPlano = id;
 		else delete this.element.dataset.aaPlano;
 	}
@@ -68,6 +75,6 @@ export class PainelPlanoApp extends PainelFlutuante {
 	}
 
 	static #editar() {
-		PlanosApp.abrir(lerExpedicao().atual || undefined);
+		PlanosApp.abrir(lerExpedicao().atual || "academia");
 	}
 }

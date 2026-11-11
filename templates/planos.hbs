@@ -1,8 +1,13 @@
 <div class="aa-janela aa-planos">
 	<nav class="aa-planos-lista">
-		<button type="button" class="aa-planos-academia {{#if naAcademia}}atual{{/if}}" data-action="academia" data-tooltip="Tirar a turma dos planos: os jogadores deixam de ver o painel e o tema volta ao normal">
-			<i class="fa-solid fa-building-columns"></i> Na Academia{{#if naAcademia}} <i class="fa-solid fa-location-dot"></i>{{/if}}
-		</button>
+		<ul>
+			<li data-plano="academia" data-aa-plano="academia" class="{{#if academiaSelecionada}}selecionado{{/if}} {{#if naAcademia}}atual{{/if}}" data-action="selecionar">
+				<span class="aa-planos-amostra"><i class="fa-solid fa-building-columns"></i></span>
+				<span class="aa-planos-rotulo"><strong>Academia</strong><small>Cenas e eventos</small></span>
+				{{#if academiaAnotada}}<i class="fa-solid fa-pen aa-planos-marca" data-tooltip="Com texto do mestre"></i>{{/if}}
+				{{#if naAcademia}}<i class="fa-solid fa-location-dot aa-planos-marca" data-tooltip="A turma está aqui"></i>{{/if}}
+			</li>
+		</ul>
 		{{#each atos}}
 		<h4>{{rotulo}}</h4>
 		<ul>
@@ -18,6 +23,34 @@
 		{{/each}}
 	</nav>
 	<section class="aa-planos-editor">
+		{{#if plano.academia}}
+		<header class="aa-plano-faixa">
+			<i class="aa-plano-emblema {{plano.icone}}"></i>
+			<div>
+				<span class="aa-plano-nome">{{#if plano.titulo}}{{plano.titulo}}{{else}}Na Academia{{/if}}</span>
+				<span class="aa-plano-deus">{{plano.nome}}</span>
+				<span class="aa-plano-ato">Entre um plano e outro, ou antes da expedição</span>
+			</div>
+		</header>
+		<div class="aa-botoes">
+			{{#if plano.atual}}
+			<button type="button" disabled><i class="fa-solid fa-location-dot"></i> A turma está aqui</button>
+			{{else}}
+			<button type="button" data-action="irPara"><i class="fa-solid fa-door-open"></i> Trazer a turma de volta à Academia</button>
+			{{/if}}
+			<button type="button" data-action="anunciar" data-tooltip="Mostra o título e as anotações no chat"><i class="fa-solid fa-bullhorn"></i> Anunciar no chat</button>
+		</div>
+		<label>Cena ou evento <small>(título do painel; vazio mostra "Na Academia")</small>
+			<input type="text" name="titulo" value="{{plano.titulo}}" maxlength="80" placeholder="Baile de inverno, prova de Misticismo, toque de recolher...">
+		</label>
+		<label>Anotações <small>(todos veem; linha em branco separa parágrafos; **negrito** e *itálico*)</small>
+			<textarea name="anotacoes" rows="9" placeholder="O que vale na cena: regras especiais, horários, quem está onde, o que a turma descobriu...">{{plano.anotacoes}}</textarea>
+		</label>
+		<label><span><i class="fa-solid fa-eye-slash"></i> Notas do mestre <small>(só o mestre vê)</small></span>
+			<textarea name="segredo" rows="6" placeholder="Pistas, segredos, ganchos...">{{plano.segredo}}</textarea>
+		</label>
+		<p class="aa-dica">Enquanto a turma está na Academia, o painel do plano mostra estas anotações. Os jogadores veem o painel quando há anotações para eles; as notas do mestre ficam só com você. As anotações continuam guardadas durante a expedição.</p>
+		{{else}}
 		<header class="aa-plano-faixa">
 			<i class="aa-plano-emblema {{plano.icone}}"></i>
 			<div>
@@ -48,5 +81,6 @@
 			<textarea name="segredo" rows="5" placeholder="Pistas, segredos, ganchos...">{{plano.segredo}}</textarea>
 		</label>
 		<p class="aa-dica">O texto é salvo ao sair de cada campo e aparece na hora no painel do plano. Cada plano tem cores e desenho próprios, aplicados ao painel e, conforme a configuração <em>Tema do plano</em> de cada usuário, aos outros painéis e à moldura da tela.</p>
+		{{/if}}
 	</section>
 </div>
