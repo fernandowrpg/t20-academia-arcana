@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.20.0
+
+- Painel de alunos: o retrato ganha o brasão do grêmio no canto, um escudo na cor do grêmio com o ícone dele (passe o mouse para ver o nome), além da borda colorida.
+- Painel de alunos: novo botão de ficha no título liga a versão detalhada, que mostra o grêmio e as perícias treinadas de cada aluno com o bônus total da ficha. Ofícios personalizados aparecem com o nome dado na ficha. A escolha fica salva por usuário, junto com a posição.
+
 ## 1.19.0
 
 - Painéis flutuantes (alunos, ameaças, grêmios e plano): minimizado, o painel vira um ícone redondo em vez de uma barra de título. Clique no ícone para abrir o painel de novo; arraste para movê-lo.

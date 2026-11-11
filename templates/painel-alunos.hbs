@@ -6,6 +6,7 @@
 			{{#if correio}}<a data-action="correio" class="aa-painel-correio" data-tooltip="Correio{{#if cartas}}: {{cartas}} mensagem(ns) nova(s){{/if}}"><i class="fa-solid fa-envelope"></i>{{#if cartas}}<sup>{{cartas}}</sup>{{/if}}</a>{{/if}}
 			{{#if calendario}}<a data-action="calendario" data-tooltip="Calendário do período letivo"><i class="fa-solid fa-calendar-week"></i></a>{{/if}}
 			{{#if gm}}<a data-action="secretaria" data-tooltip="Secretaria da Academia"><i class="fa-solid fa-building-columns"></i></a>{{/if}}
+			{{#unless minimizado}}<a data-action="detalhar" class="{{#if detalhado}}ativo{{/if}}" data-tooltip="{{#if detalhado}}Esconder o grêmio e as perícias{{else}}Mostrar o grêmio e as perícias treinadas{{/if}}"><i class="fa-solid fa-id-card"></i></a>{{/unless}}
 			{{#unless minimizado}}<a data-action="recolher" data-tooltip="{{#if recolhido}}Mostrar as notas{{else}}Mostrar só vida, mana e matrícula{{/if}}"><i class="fa-solid {{#if recolhido}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i></a>{{/unless}}
 			<a data-action="minimizar" data-tooltip="{{#if minimizado}}Mostrar o painel{{else}}Minimizar o painel{{/if}}"><i class="fa-solid {{#if minimizado}}fa-window-maximize{{else}}fa-window-minimize{{/if}}"></i></a>
 		</span>
@@ -13,7 +14,10 @@
 	<ul class="aa-painel-lista">
 		{{#each alunos}}
 		<li class="aa-painel-item" data-actor="{{id}}">
-			<img class="aa-painel-retrato" src="{{img}}" alt="" data-action="abrirFicha" data-tooltip="Abrir a ficha de {{nome}}"{{#if gremio}} style="--aa-cor: {{gremio.cor}}"{{/if}}>
+			<span class="aa-painel-foto"{{#if gremio}} style="--aa-cor: {{gremio.cor}}"{{/if}}>
+				<img class="aa-painel-retrato" src="{{img}}" alt="" data-action="abrirFicha" data-tooltip="Abrir a ficha de {{nome}}">
+				{{#if gremio}}<span class="aa-brasao" data-tooltip="{{gremio.nome}} ({{gremio.apelido}})"><i class="{{gremio.icone}}"></i></span>{{/if}}
+			</span>
 			<div class="aa-painel-corpo">
 				<div class="aa-painel-linha">
 					<a class="aa-painel-nome" data-action="abrirVida" data-tooltip="Abrir a Vida Acadêmica">{{nome}}</a>
@@ -26,6 +30,22 @@
 					<span class="aa-barra-valor">{{texto}}</span>
 				</div>
 				{{/each}}
+				{{#if @root.detalhado}}
+				<div class="aa-painel-ficha">
+					{{#if gremio}}
+					<div class="aa-painel-gremio" style="--aa-cor: {{gremio.cor}}"><i class="{{gremio.icone}}"></i> {{gremio.nome}} <span>· {{gremio.apelido}}</span></div>
+					{{else}}
+					<div class="aa-painel-gremio sem-gremio"><i class="fa-solid fa-flag"></i> Sem grêmio</div>
+					{{/if}}
+					{{#if pericias.length}}
+					<ul class="aa-painel-pericias" data-tooltip="Perícias treinadas">
+						{{#each pericias}}<li><span>{{nome}}</span>{{#if bonus}} <strong>{{bonus}}</strong>{{/if}}</li>{{/each}}
+					</ul>
+					{{else}}
+					<p class="aa-painel-vazio">Nenhuma perícia treinada na ficha.</p>
+					{{/if}}
+				</div>
+				{{/if}}
 				<div class="aa-painel-detalhe">
 					{{#if notas}}
 					<a class="aa-painel-notas" data-action="alternarNotas" data-tooltip="Mostrar ou ocultar as disciplinas">

@@ -898,6 +898,94 @@
 	cursor: pointer;
 }
 
+/* Retrato com o brasão do grêmio no canto: escudo na cor do grêmio com o ícone dele. */
+.aa-painel .aa-painel-foto {
+	position: relative;
+	flex: 0 0 36px;
+	align-self: flex-start;
+	width: 36px;
+	height: 36px;
+}
+
+.aa-painel .aa-painel-foto .aa-painel-retrato {
+	display: block;
+}
+
+.aa-painel .aa-brasao {
+	position: absolute;
+	right: -5px;
+	bottom: -6px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 17px;
+	height: 19px;
+	clip-path: polygon(0 0, 100% 0, 100% 58%, 50% 100%, 0 58%);
+	background: linear-gradient(160deg, color-mix(in srgb, var(--aa-cor) 70%, #fff6c9), var(--aa-cor) 55%, color-mix(in srgb, var(--aa-cor) 60%, #000));
+	color: #fff;
+	font-size: 0.55rem;
+	text-shadow: 0 1px 2px #000;
+	filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.8));
+	cursor: help;
+}
+
+.aa-painel .aa-brasao > i {
+	margin-bottom: 4px;
+}
+
+.aa-painel .aa-painel-acoes a.ativo {
+	color: var(--aa-ouro);
+}
+
+.aa-painel .aa-painel-ficha {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	margin-top: 0.1rem;
+	padding-top: 0.2rem;
+	border-top: 1px dashed var(--aa-linha);
+	font-size: 0.72rem;
+}
+
+.aa-painel .aa-painel-gremio {
+	color: color-mix(in srgb, var(--aa-cor) 55%, #fff);
+	font-weight: bold;
+}
+
+.aa-painel .aa-painel-gremio span {
+	font-weight: normal;
+	color: var(--aa-texto-suave);
+}
+
+.aa-painel .aa-painel-gremio.sem-gremio {
+	color: var(--aa-texto-suave);
+	font-weight: normal;
+	font-style: italic;
+}
+
+.aa-painel .aa-painel-pericias {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.2rem;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.aa-painel .aa-painel-pericias li {
+	margin: 0;
+	padding: 0 0.35rem;
+	border: 1px solid var(--aa-linha);
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.05);
+	white-space: nowrap;
+}
+
+.aa-painel .aa-painel-pericias strong {
+	color: var(--aa-ouro);
+	font-variant-numeric: tabular-nums;
+}
+
 .aa-painel .aa-painel-corpo {
 	flex: 1;
 	min-width: 0;

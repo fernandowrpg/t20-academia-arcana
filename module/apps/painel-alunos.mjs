@@ -1,6 +1,6 @@
 import { GREMIOS, SITUACOES, STATUS_SEMESTRE } from "../data/disciplinas.mjs";
-import { formatarNota, recurso, resumoNotas } from "../logica.mjs";
-import { MODULO, ehAluno, ehNpcGerado, lerAluno, opcao } from "../config.mjs";
+import { formatarNota, nomePericia, oficiosDisponiveis, recurso, resumoNotas } from "../logica.mjs";
+import { MODULO, ehAluno, ehNpcGerado, estadoPainel, lerAluno, opcao, salvarEstadoPainel } from "../config.mjs";
 import { PainelFlutuante, barra } from "./painel.mjs";
 import { totalNaoLidas } from "../correio.mjs";
 import { CalendarioApp } from "./calendario.mjs";
@@ -14,6 +14,21 @@ function alunosVisiveis() {
 	return game.actors
 		.filter((a) => ehAluno(a) && !ehNpcGerado(a) && a.testUserPermission(game.user, "OBSERVER") && !FORA_DO_PAINEL.has(lerAluno(a).situacaoCurso))
 		.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/* Perícias treinadas da ficha do T20, com o bônus total. Ofícios personalizados (ofi1…ofi9) usam o nome dado na ficha. */
+function periciasTreinadas(actor) {
+	const pericias = actor.system?.pericias ?? {};
+	const { rotulos } = oficiosDisponiveis(pericias);
+	return Object.entries(pericias)
+		.filter(([chave, dados]) => dados?.treinado && chave !== "oficio")
+		.map(([chave, dados]) => {
+			const nome = nomePericia(chave, rotulos) === chave ? dados.label || chave : nomePericia(chave, rotulos);
+			const valor = Number(dados.value);
+			const bonus = Number.isFinite(valor) ? (valor >= 0 ? `+${valor}` : `${valor}`) : "";
+			return { nome, bonus };
+		})
+		.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
 }
 
 export class PainelAlunosApp extends PainelFlutuante {
@@ -32,6 +47,7 @@ export class PainelAlunosApp extends PainelFlutuante {
 			abrirVida: PainelAlunosApp.#abrirVida,
 			abrirMatricula: PainelAlunosApp.#abrirMatricula,
 			alternarNotas: PainelAlunosApp.#alternarNotas,
+			detalhar: PainelAlunosApp.#detalhar,
 			secretaria: PainelAlunosApp.#secretaria,
 			calendario: PainelAlunosApp.#calendario,
 			correio: PainelAlunosApp.#correio
@@ -44,6 +60,11 @@ export class PainelAlunosApp extends PainelFlutuante {
 
 	notasAlternadas = new Set();
 
+	/* Detalhado, cada aluno mostra o grêmio e as perícias treinadas. Fica salvo por usuário. */
+	get detalhado() {
+		return !!estadoPainel(this.constructor.CHAVE).detalhado;
+	}
+
 	posicaoPadrao() {
 		const nav = document.getElementById("scene-navigation")?.getBoundingClientRect();
 		if (!nav?.width) return super.posicaoPadrao();
@@ -53,6 +74,7 @@ export class PainelAlunosApp extends PainelFlutuante {
 	async _prepareContext() {
 		const gm = game.user.isGM;
 		const usarNotas = opcao("usarNotas");
+		const detalhado = this.detalhado;
 		const alunos = alunosVisiveis().map((actor) => {
 			const aluno = lerAluno(actor);
 			const atual = aluno.semestres.at(-1) ?? null;
@@ -63,6 +85,7 @@ export class PainelAlunosApp extends PainelFlutuante {
 				nome: actor.name,
 				img: actor.img,
 				gremio: GREMIOS[aluno.gremio] ?? null,
+				pericias: detalhado ? periciasTreinadas(actor) : [],
 				barras: [
 					barra("pv", "PV", recurso(actor.system?.attributes?.pv)),
 					barra("pm", "PM", recurso(actor.system?.attributes?.pm))
@@ -86,7 +109,7 @@ export class PainelAlunosApp extends PainelFlutuante {
 				}
 			};
 		});
-		return { gm, usarNotas, calendario: gm || opcao("calendarioJogadores"), correio: gm || opcao("correioJogadores"), cartas: totalNaoLidas(), recolhido: this.recolhido, minimizado: this.minimizado, alunos };
+		return { gm, usarNotas, calendario: gm || opcao("calendarioJogadores"), correio: gm || opcao("correioJogadores"), cartas: totalNaoLidas(), recolhido: this.recolhido, minimizado: this.minimizado, detalhado, alunos };
 	}
 
 	#ator(alvo) {
@@ -109,6 +132,11 @@ export class PainelAlunosApp extends PainelFlutuante {
 		const id = alvo.closest("[data-actor]")?.dataset.actor;
 		if (this.notasAlternadas.has(id)) this.notasAlternadas.delete(id);
 		else this.notasAlternadas.add(id);
+		this.render();
+	}
+
+	static async #detalhar() {
+		await salvarEstadoPainel(this.constructor.CHAVE, { detalhado: !this.detalhado });
 		this.render();
 	}
 

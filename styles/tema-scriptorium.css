@@ -402,6 +402,15 @@ body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-retrato {
 	background: var(--aa-papel-2);
 }
 
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-gremio {
+	color: color-mix(in srgb, var(--aa-cor) 75%, var(--aa-tinta));
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-pericias li {
+	background: rgba(0, 0, 0, 0.05);
+	color: var(--aa-tinta);
+}
+
 body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-barra-trilho {
 	background: rgba(0, 0, 0, 0.2);
 }
