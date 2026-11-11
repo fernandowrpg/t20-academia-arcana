@@ -14,6 +14,7 @@ Módulo para **Foundry VTT v13** e o sistema **Tormenta20** que acompanha a vida
 - **Boletim**: um quadro por semestre com nota, situação (Cursando, Aprovado, Recuperação, Reprovado, Trancado), média, observações e um botão que rola a perícia de T20 do personagem (ou o ofício escolhido).
 - **Painel de alunos**: widget flutuante, sempre visível, com vida (PV), mana (PM), resumo das notas do semestre mais recente e atalho para a matrícula de cada aluno.
 - **Painel de ameaças**: widget separado que aparece durante o combate com PV, PM, ND, Defesa, iniciativa e condições de cada ameaça.
+- **Painel do plano**: para a expedição aos mundos dos deuses, um painel flutuante com o plano atual, deus, nível sugerido, CD, regra planar e anotações do mestre, com um tema visual próprio para cada um dos 20 planos.
 - **Secretaria** (mestre): admissão de personagens e ações em lote (abrir matrículas, iniciar e encerrar semestre).
 - **Catálogo editável** (mestre): trocar a perícia de T20 de qualquer disciplina, ocultar disciplinas, ofertar disciplinas especiais e criar disciplinas da mesa. Disciplinas com numeral romano encadeiam pré-requisitos automaticamente.
 - **Compêndio** *Academia Arcana: Compêndio* com 16 páginas: visão geral, acesso, período letivo, admissão, classes, campus, grêmios, disciplinas, Teste dos Quatro Elementos, corpo docente, Raschid, itens e guia de uso.
@@ -68,6 +69,15 @@ Os dois painéis ficam flutuando sobre a mesa. Arraste pelo título para mover (
 
 - **Alunos**: lista os alunos ativos ou com o curso trancado. O mestre vê todos; o jogador vê os personagens em que tem permissão de observador ou dono. Cada aluno mostra PV, PM, o semestre mais recente com notas (média, aprovações, reprovações, pendências e, ao clicar, as disciplinas) e o botão **Matrícula**, que abre direto a aba de matrícula e fica destacado enquanto a matrícula está aberta.
 - **Ameaças**: aparece quando o combate é iniciado e some quando ele termina. Lista os combatentes sem jogador dono cujo token não é amistoso, na ordem de iniciativa, com destaque para quem está na vez. Clicar no nome centraliza o token; clicar no retrato abre a ficha. Por padrão só o mestre vê; em **Painel de ameaças para jogadores** ele pode liberar o estado aproximado (sem números) ou os valores completos. Ameaças ocultas nunca aparecem para jogadores.
+
+### Expedição aos mundos dos deuses
+
+Para campanhas em que a turma visita os reinos dos deuses (o Roteiro da Expedição da Wiki Divina, de Magika a Pyra).
+
+- **Painel do plano**: mostra o plano em que a turma está, o deus, o ato, a parada no roteiro, o nível sugerido, a CD dos desafios de perícia (18 + nível), o perigo, a regra planar e as anotações da mesa. Arraste, recolha (fica só a faixa do plano) e minimize como os outros painéis. O mestre vê também as notas secretas e um atalho para a página do deus na wiki; o painel do mestre aparece mesmo na Academia, para escolher o destino.
+- **Planos da expedição** (mestre): abre pelo lápis do painel, pela Secretaria ou pela macro. Escolha o plano atual, edite o título e as regras (uma por linha; `**negrito**` e `*itálico*`), escreva anotações que todos veem e notas só do mestre, restaure as regras originais e anuncie a chegada no chat. As setas do painel andam pelo roteiro.
+- **Tema de cada plano**: cores, emblema e desenho próprios para os 20 mundos. Em *Tema do plano*, cada usuário escolhe o alcance: só o painel do plano, também os outros painéis ou ainda uma moldura nas bordas da tela.
+- *Jogadores veem o plano atual* (mundo): desmarcada, só o mestre vê o painel e o tema. Os jogadores nunca veem as notas do mestre.
 
 ### Placar dos grêmios
 

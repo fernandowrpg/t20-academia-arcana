@@ -10,6 +10,10 @@ import { ehConversa, migrarRegistroAntigo, registrarGuardas, registrarSocket, si
 import { PainelAlunosApp } from "./apps/painel-alunos.mjs";
 import { PainelAmeacasApp } from "./apps/painel-ameacas.mjs";
 import { PainelPlacarApp } from "./apps/painel-placar.mjs";
+import { PainelPlanoApp } from "./apps/painel-plano.mjs";
+import { PlanosApp } from "./apps/planos.mjs";
+import { aplicarTemaDoPlano, definirPlanoAtual, anunciarPlano } from "./planos.mjs";
+import * as planos from "./data/planos.mjs";
 import * as dados from "./data/disciplinas.mjs";
 import * as logica from "./logica.mjs";
 import * as geracao from "./gerador.mjs";
@@ -18,6 +22,11 @@ import { aplicarTema, registrarTema } from "./tema.mjs";
 const atualizarPainelAlunos = foundry.utils.debounce(() => PainelAlunosApp.sincronizar(), 100);
 const atualizarPainelAmeacas = foundry.utils.debounce(() => PainelAmeacasApp.sincronizar(), 100);
 const atualizarPainelPlacar = foundry.utils.debounce(() => PainelPlacarApp.sincronizar(), 100);
+const atualizarPlano = foundry.utils.debounce(() => {
+	aplicarTemaDoPlano();
+	PainelPlanoApp.sincronizar();
+	PlanosApp.atualizar();
+}, 100);
 
 let cartasPendentes = 0;
 
@@ -48,6 +57,7 @@ Hooks.once("init", () => {
 		atualizarPainelPlacar();
 		atualizarPainelAlunos();
 		atualizarPainelAmeacas();
+		if (game.ready) atualizarPlano();
 	});
 	game.modules.get(MODULO).api = {
 		abrir,
@@ -60,6 +70,11 @@ Hooks.once("init", () => {
 		painelAlunos: () => PainelAlunosApp.sincronizar(),
 		painelAmeacas: () => PainelAmeacasApp.sincronizar(),
 		painelPlacar: () => PainelPlacarApp.sincronizar(),
+		painelPlano: () => PainelPlanoApp.sincronizar(),
+		planos: (id) => PlanosApp.abrir(id),
+		irParaPlano: (id) => definirPlanoAtual(id),
+		anunciarPlano: (id) => anunciarPlano(id),
+		dadosPlanos: planos,
 		lerAluno,
 		contextoCatalogo,
 		dados,
@@ -79,6 +94,8 @@ Hooks.once("ready", () => {
 	PainelAlunosApp.sincronizar();
 	PainelAmeacasApp.sincronizar();
 	PainelPlacarApp.sincronizar();
+	aplicarTemaDoPlano();
+	PainelPlanoApp.sincronizar();
 });
 
 Hooks.on("updateActor", (actor, mudancas) => {

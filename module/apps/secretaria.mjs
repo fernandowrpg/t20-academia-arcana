@@ -20,6 +20,7 @@ import {
 } from "../config.mjs";
 import { AtividadesApp } from "./atividades.mjs";
 import { CalendarioApp } from "./calendario.mjs";
+import { PlanosApp } from "./planos.mjs";
 import { CorreioApp } from "./correio.mjs";
 import { GeradorAlunosApp } from "./gerador.mjs";
 import { definirAvulsos, encerrarPlacar, lerPlacar, nomesDosCampeoes, pontuacao } from "../placar.mjs";
@@ -70,6 +71,7 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 			catalogo: SecretariaApp.#catalogo,
 			gerador: SecretariaApp.#gerador,
 			calendario: SecretariaApp.#calendario,
+			planos: SecretariaApp.#planos,
 			correio: SecretariaApp.#correio,
 			criarFichaProfessor: SecretariaApp.#criarFichaProfessor,
 			cadastrarProfessor: SecretariaApp.#cadastrarProfessor,
@@ -213,6 +215,10 @@ export class SecretariaApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	static #gerador() {
 		GeradorAlunosApp.abrir();
+	}
+
+	static #planos() {
+		PlanosApp.abrir();
 	}
 
 	static #calendario() {

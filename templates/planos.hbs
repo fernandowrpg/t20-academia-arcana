@@ -1,0 +1,52 @@
+<div class="aa-janela aa-planos">
+	<nav class="aa-planos-lista">
+		<button type="button" class="aa-planos-academia {{#if naAcademia}}atual{{/if}}" data-action="academia" data-tooltip="Tirar a turma dos planos: os jogadores deixam de ver o painel e o tema volta ao normal">
+			<i class="fa-solid fa-building-columns"></i> Na Academia{{#if naAcademia}} <i class="fa-solid fa-location-dot"></i>{{/if}}
+		</button>
+		{{#each atos}}
+		<h4>{{rotulo}}</h4>
+		<ul>
+			{{#each planos}}
+			<li data-plano="{{id}}" data-aa-plano="{{id}}" class="{{#if selecionado}}selecionado{{/if}} {{#if atual}}atual{{/if}}" data-action="selecionar">
+				<span class="aa-planos-amostra"><i class="{{icone}}"></i></span>
+				<span class="aa-planos-rotulo"><strong>{{ordem}}. {{nome}}</strong><small>{{deus}}</small></span>
+				{{#if anotado}}<i class="fa-solid fa-pen aa-planos-marca" data-tooltip="Com texto do mestre"></i>{{/if}}
+				{{#if atual}}<i class="fa-solid fa-location-dot aa-planos-marca" data-tooltip="A turma está aqui"></i>{{/if}}
+			</li>
+			{{/each}}
+		</ul>
+		{{/each}}
+	</nav>
+	<section class="aa-planos-editor">
+		<header class="aa-plano-faixa">
+			<i class="aa-plano-emblema {{plano.icone}}"></i>
+			<div>
+				<span class="aa-plano-nome">{{plano.ordem}}. {{plano.nome}}</span>
+				<span class="aa-plano-deus">Mundo de {{plano.deus}} · {{plano.portfolio}}</span>
+				<span class="aa-plano-ato">{{plano.rotuloAto}} · Nível {{plano.nivel}} · CD {{plano.cd}} · Perigo {{plano.perigo}}{{#if plano.sobe}} · sobe de nível ao sair{{/if}}</span>
+			</div>
+		</header>
+		<div class="aa-botoes">
+			{{#if plano.atual}}
+			<button type="button" disabled><i class="fa-solid fa-location-dot"></i> A turma está aqui</button>
+			{{else}}
+			<button type="button" data-action="irPara"><i class="fa-solid fa-door-open"></i> Levar a turma para {{plano.nome}}</button>
+			{{/if}}
+			<button type="button" data-action="anunciar" data-tooltip="Mostra o plano, a regra planar e as anotações no chat"><i class="fa-solid fa-bullhorn"></i> Anunciar no chat</button>
+			<button type="button" data-action="restaurar" {{#unless plano.editado}}disabled{{/unless}}><i class="fa-solid fa-rotate-left"></i> Restaurar regras</button>
+		</div>
+		<label>Regra planar (título)
+			<input type="text" name="regraTitulo" value="{{plano.regraTitulo}}" maxlength="80">
+		</label>
+		<label>Regras do plano <small>(uma por linha; **negrito** e *itálico*; todos veem)</small>
+			<textarea name="regras" rows="9">{{plano.regras}}</textarea>
+		</label>
+		<label>Anotações da mesa <small>(todos veem; linha em branco separa parágrafos)</small>
+			<textarea name="anotacoes" rows="5" placeholder="Condições em jogo, relógios, o que a turma descobriu, quem está com o ovo de fênix...">{{plano.anotacoes}}</textarea>
+		</label>
+		<label><span><i class="fa-solid fa-eye-slash"></i> Notas do mestre <small>(só o mestre vê)</small></span>
+			<textarea name="segredo" rows="5" placeholder="Pistas, segredos, ganchos...">{{plano.segredo}}</textarea>
+		</label>
+		<p class="aa-dica">O texto é salvo ao sair de cada campo e aparece na hora no painel do plano. Cada plano tem cores e desenho próprios, aplicados ao painel e, conforme a configuração <em>Tema do plano</em> de cada usuário, aos outros painéis e à moldura da tela.</p>
+	</section>
+</div>

@@ -1,0 +1,62 @@
+<div class="aa-painel-conteudo">
+	<header class="aa-painel-topo" data-tooltip="Arraste para mover; clique duplo para voltar à posição padrão">
+		{{#if plano}}<i class="{{plano.icone}}"></i>{{else}}<i class="fa-solid fa-building-columns"></i>{{/if}}
+		<strong>{{#if plano}}{{plano.nome}}{{else}}Na Academia{{/if}}</strong>
+		{{#if plano}}<span class="aa-painel-rodada" data-tooltip="Parada do roteiro">{{plano.ordem}}/{{total}}</span>{{/if}}
+		<span class="aa-painel-acoes">
+			{{#if gm}}
+			{{#if plano}}<a data-action="anterior" data-tooltip="{{#if plano.primeiro}}Voltar à Academia{{else}}Voltar ao plano anterior do roteiro{{/if}}"><i class="fa-solid fa-backward-step"></i></a>{{/if}}
+			{{#unless plano.ultimo}}<a data-action="proximo" data-tooltip="{{#if plano}}Seguir para o próximo plano{{else}}Partir para o primeiro plano (Magika){{/if}}"><i class="fa-solid fa-forward-step"></i></a>{{/unless}}
+			<a data-action="editar" data-tooltip="Planos da expedição: escolher o plano e editar regras e anotações"><i class="fa-solid fa-pen-to-square"></i></a>
+			{{/if}}
+			{{#if plano}}{{#unless minimizado}}<a data-action="recolher" data-tooltip="{{#if recolhido}}Mostrar regras e anotações{{else}}Mostrar só o plano{{/if}}"><i class="fa-solid {{#if recolhido}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i></a>{{/unless}}{{/if}}
+			<a data-action="minimizar" data-tooltip="{{#if minimizado}}Mostrar o painel{{else}}Minimizar o painel{{/if}}"><i class="fa-solid {{#if minimizado}}fa-window-maximize{{else}}fa-window-minimize{{/if}}"></i></a>
+		</span>
+	</header>
+	{{#if plano}}
+	<div class="aa-plano-corpo">
+		<div class="aa-plano-faixa">
+			<i class="aa-plano-emblema {{plano.icone}}"></i>
+			<div>
+				<span class="aa-plano-nome">{{plano.nome}}</span>
+				<span class="aa-plano-deus">Mundo de {{plano.deus}} · {{plano.portfolio}}</span>
+				<span class="aa-plano-ato">{{plano.rotuloAto}}</span>
+			</div>
+		</div>
+		<div class="aa-plano-chips">
+			<span data-tooltip="Nível sugerido do grupo ao chegar"><i class="fa-solid fa-user-graduate"></i> Nível {{plano.nivel}}</span>
+			<span data-tooltip="CD de testes estendidos e desafios de perícia (18 + nível do plano)"><i class="fa-solid fa-bullseye"></i> CD {{plano.cd}}</span>
+			<span data-tooltip="Perigo do mundo"><i class="fa-solid fa-triangle-exclamation"></i> {{plano.perigo}}</span>
+			{{#if gm}}{{#if plano.sobe}}<span data-tooltip="O grupo sobe de nível ao concluir este plano (só o mestre vê)"><i class="fa-solid fa-arrow-up"></i> Sobe ao sair</span>{{/if}}{{/if}}
+		</div>
+		<section class="aa-plano-regra">
+			<h3><i class="fa-solid fa-scroll"></i> {{plano.regraTitulo}}</h3>
+			<ul class="aa-painel-detalhe">
+				{{#each plano.regras}}<li>{{{this}}}</li>{{else}}<li class="aa-painel-vazio">Sem regras anotadas.</li>{{/each}}
+			</ul>
+		</section>
+		{{#if plano.anotacoes.length}}
+		<section class="aa-plano-notas aa-painel-detalhe">
+			<h3><i class="fa-solid fa-feather-pointed"></i> Anotações</h3>
+			{{#each plano.anotacoes}}<p>{{{this}}}</p>{{/each}}
+		</section>
+		{{/if}}
+		{{#if plano.segredo.length}}
+		<section class="aa-plano-notas aa-plano-segredo aa-painel-detalhe">
+			<h3><i class="fa-solid fa-eye-slash"></i> Só o mestre vê</h3>
+			{{#each plano.segredo}}<p>{{{this}}}</p>{{/each}}
+		</section>
+		{{/if}}
+	</div>
+	{{#if gm}}
+	<footer class="aa-painel-rodape">
+		<span>{{#if plano.editado}}<i class="fa-solid fa-pen"></i> Regras editadas{{else}}Regras da Wiki Divina{{/if}}</span>
+		<a data-action="wiki" data-tooltip="Abrir a página do deus na Wiki Divina (Notion)"><i class="fa-solid fa-arrow-up-right-from-square"></i> Wiki</a>
+	</footer>
+	{{/if}}
+	{{else}}
+	<div class="aa-plano-corpo">
+		<p class="aa-painel-vazio">A turma está na Academia. Use <i class="fa-solid fa-forward-step"></i> para partir para Magika ou <i class="fa-solid fa-pen-to-square"></i> para escolher outro plano. Os jogadores só veem este painel quando há um plano ativo.</p>
+	</div>
+	{{/if}}
+</div>

@@ -1,0 +1,737 @@
+/* Expedição aos mundos dos deuses: um tema por plano.
+   Cada plano define variáveis em [data-aa-plano="id"]; quem tiver o atributo (o painel do plano,
+   o editor, o cartão do chat ou o body) herda as cores e o desenho.
+   body.aa-plano-paineis: os outros painéis do módulo também ganham as cores do plano.
+   body.aa-plano-moldura: além disso, uma moldura do plano nas bordas da tela.
+   Os seletores começam por body para vencer o Tema Scriptorium, que tem a mesma especificidade. */
+
+/* Magika (Wynna): feitiço inacabado, céu de runas */
+[data-aa-plano="magika"] {
+	--aa-p-fundo: #1b1140;
+	--aa-p-fundo-2: #0c2a44;
+	--aa-p-topo: linear-gradient(120deg, #4b2a9a, #0f5f86);
+	--aa-p-acento: #7fe7ff;
+	--aa-p-texto: #eef4ff;
+	--aa-p-suave: rgba(220, 235, 255, 0.72);
+	--aa-p-linha: rgba(127, 231, 255, 0.2);
+	--aa-p-vinheta: rgba(110, 80, 255, 0.55);
+	--aa-p-padrao:
+		radial-gradient(circle at 25% 35%, rgba(127, 231, 255, 0.4) 0 1px, transparent 1.6px) 0 0 / 26px 26px,
+		radial-gradient(circle at 70% 75%, rgba(200, 160, 255, 0.35) 0 1px, transparent 1.6px) 0 0 / 37px 37px,
+		radial-gradient(ellipse at 80% -10%, rgba(127, 231, 255, 0.2), transparent 60%);
+}
+
+/* Ordine (Khalmyr): mármore e jardins simétricos */
+[data-aa-plano="ordine"] {
+	--aa-p-titulo: #2b4a86;
+	--aa-p-fundo: #f3f1ea;
+	--aa-p-fundo-2: #dfe4ee;
+	--aa-p-topo: linear-gradient(120deg, #2b4a86, #16264a);
+	--aa-p-acento: #c9a227;
+	--aa-p-texto: #1d2433;
+	--aa-p-suave: rgba(29, 36, 51, 0.68);
+	--aa-p-linha: rgba(43, 74, 134, 0.2);
+	--aa-p-vinheta: rgba(201, 162, 39, 0.45);
+	--aa-p-padrao:
+		linear-gradient(rgba(43, 74, 134, 0.08) 1px, transparent 1px) 0 0 / 18px 18px,
+		linear-gradient(90deg, rgba(43, 74, 134, 0.08) 1px, transparent 1px) 0 0 / 18px 18px;
+}
+
+/* Al-Gazara (Nimb): tabuleiro de cores trocadas */
+[data-aa-plano="al-gazara"] {
+	--aa-p-fundo: #2a0f3a;
+	--aa-p-fundo-2: #0f3a2a;
+	--aa-p-topo: linear-gradient(120deg, #c2185b, #7b1fa2 50%, #00897b);
+	--aa-p-acento: #ffd54f;
+	--aa-p-texto: #fff6e6;
+	--aa-p-suave: rgba(255, 246, 230, 0.72);
+	--aa-p-linha: rgba(255, 213, 79, 0.2);
+	--aa-p-vinheta: rgba(233, 30, 99, 0.5);
+	--aa-p-padrao:
+		conic-gradient(from 45deg, rgba(255, 213, 79, 0.09) 25%, transparent 0 50%, rgba(0, 229, 255, 0.08) 0 75%, transparent 0) 0 0 / 22px 22px;
+}
+
+/* Solaris (Azgher): raios de sol sobre a areia */
+[data-aa-plano="solaris"] {
+	--aa-p-fundo: #4a2a06;
+	--aa-p-fundo-2: #7a4a0c;
+	--aa-p-topo: linear-gradient(120deg, #e8a317, #b5530d);
+	--aa-p-acento: #ffe08a;
+	--aa-p-texto: #fff7e0;
+	--aa-p-suave: rgba(255, 247, 224, 0.75);
+	--aa-p-linha: rgba(255, 224, 138, 0.25);
+	--aa-p-vinheta: rgba(255, 190, 60, 0.55);
+	--aa-p-padrao:
+		repeating-conic-gradient(from 0deg at 50% -30%, rgba(255, 224, 138, 0.13) 0 5deg, transparent 5deg 15deg),
+		radial-gradient(ellipse at 50% -20%, rgba(255, 240, 180, 0.35), transparent 65%);
+}
+
+/* Sombria (Tenebra): noite eterna e lua */
+[data-aa-plano="sombria"] {
+	--aa-p-fundo: #07070d;
+	--aa-p-fundo-2: #151024;
+	--aa-p-topo: linear-gradient(120deg, #2a2346, #050508);
+	--aa-p-acento: #9b8cff;
+	--aa-p-texto: #d9d4ee;
+	--aa-p-suave: rgba(217, 212, 238, 0.6);
+	--aa-p-linha: rgba(155, 140, 255, 0.15);
+	--aa-p-vinheta: rgba(0, 0, 0, 0.85);
+	--aa-p-padrao:
+		radial-gradient(circle at 88% 12%, rgba(225, 225, 255, 0.28) 0 9px, transparent 10px),
+		radial-gradient(circle at 20% 70%, rgba(255, 255, 255, 0.2) 0 0.8px, transparent 1.5px) 0 0 / 31px 29px,
+		radial-gradient(ellipse at 50% 120%, rgba(90, 60, 140, 0.3), transparent 60%);
+}
+
+/* Vitalia (Lena): brotos e flores */
+[data-aa-plano="vitalia"] {
+	--aa-p-fundo: #0f2e1a;
+	--aa-p-fundo-2: #1f4a22;
+	--aa-p-topo: linear-gradient(120deg, #3f9b4f, #1d5e2c);
+	--aa-p-acento: #c8f07a;
+	--aa-p-texto: #f0ffe8;
+	--aa-p-suave: rgba(240, 255, 232, 0.72);
+	--aa-p-linha: rgba(200, 240, 122, 0.2);
+	--aa-p-vinheta: rgba(130, 220, 120, 0.45);
+	--aa-p-padrao:
+		radial-gradient(circle at 30% 30%, rgba(200, 240, 122, 0.17) 0 4px, transparent 5px) 0 0 / 34px 34px,
+		radial-gradient(circle at 70% 60%, rgba(255, 200, 230, 0.15) 0 3px, transparent 4px) 0 0 / 27px 27px;
+}
+
+/* Pelágia (Oceano): ondas e profundezas */
+[data-aa-plano="pelagia"] {
+	--aa-p-fundo: #04263f;
+	--aa-p-fundo-2: #021526;
+	--aa-p-topo: linear-gradient(120deg, #0f6aa6, #073a63);
+	--aa-p-acento: #6fe0ff;
+	--aa-p-texto: #e6f8ff;
+	--aa-p-suave: rgba(230, 248, 255, 0.7);
+	--aa-p-linha: rgba(111, 224, 255, 0.18);
+	--aa-p-vinheta: rgba(10, 80, 140, 0.6);
+	--aa-p-padrao:
+		repeating-radial-gradient(circle at 50% 130%, rgba(111, 224, 255, 0.09) 0 5px, transparent 5px 14px),
+		linear-gradient(rgba(111, 224, 255, 0.1), transparent 40%);
+}
+
+/* Arbória (Allihanna): madeira e copas */
+[data-aa-plano="arboria"] {
+	--aa-p-fundo: #1e2a12;
+	--aa-p-fundo-2: #33230f;
+	--aa-p-topo: linear-gradient(120deg, #4f7a28, #3b2a14);
+	--aa-p-acento: #e2c06b;
+	--aa-p-texto: #f4f0dc;
+	--aa-p-suave: rgba(244, 240, 220, 0.7);
+	--aa-p-linha: rgba(226, 192, 107, 0.2);
+	--aa-p-vinheta: rgba(60, 110, 30, 0.55);
+	--aa-p-padrao:
+		repeating-linear-gradient(92deg, rgba(226, 192, 107, 0.07) 0 2px, transparent 2px 11px),
+		radial-gradient(ellipse at 50% 0, rgba(140, 200, 80, 0.2), transparent 60%);
+}
+
+/* Chacina (Megalokk): marcas de garra */
+[data-aa-plano="chacina"] {
+	--aa-p-fundo: #2a0d08;
+	--aa-p-fundo-2: #3d2410;
+	--aa-p-topo: linear-gradient(120deg, #8e1b10, #3e1a08);
+	--aa-p-acento: #ff7a3d;
+	--aa-p-texto: #fbe9dc;
+	--aa-p-suave: rgba(251, 233, 220, 0.7);
+	--aa-p-linha: rgba(255, 122, 61, 0.2);
+	--aa-p-vinheta: rgba(140, 20, 10, 0.6);
+	--aa-p-padrao:
+		repeating-linear-gradient(-62deg, transparent 0 22px, rgba(255, 80, 40, 0.17) 22px 24px, transparent 24px 28px, rgba(255, 80, 40, 0.1) 28px 29px);
+}
+
+/* Terápolis (Tanna-Toh): página pautada */
+[data-aa-plano="terapolis"] {
+	--aa-p-titulo: #6b4a1d;
+	--aa-p-fundo: #f4ead2;
+	--aa-p-fundo-2: #e6d6ad;
+	--aa-p-topo: linear-gradient(120deg, #6b4a1d, #3a2a12);
+	--aa-p-acento: #2f6fc4;
+	--aa-p-texto: #2b2214;
+	--aa-p-suave: rgba(43, 34, 20, 0.68);
+	--aa-p-linha: rgba(107, 74, 29, 0.22);
+	--aa-p-vinheta: rgba(160, 120, 50, 0.45);
+	--aa-p-padrao:
+		repeating-linear-gradient(transparent 0 17px, rgba(58, 123, 213, 0.12) 17px 18px),
+		linear-gradient(90deg, transparent 22px, rgba(200, 60, 60, 0.2) 22px 23px, transparent 23px);
+}
+
+/* Sora (Lin-Wu): pétalas de cerejeira e sol nascente */
+[data-aa-plano="sora"] {
+	--aa-p-fundo: #2a0c18;
+	--aa-p-fundo-2: #14142e;
+	--aa-p-topo: linear-gradient(120deg, #b3122e, #3a0f2a);
+	--aa-p-acento: #ffb7c9;
+	--aa-p-texto: #fff0f4;
+	--aa-p-suave: rgba(255, 240, 244, 0.72);
+	--aa-p-linha: rgba(255, 183, 201, 0.2);
+	--aa-p-vinheta: rgba(255, 140, 170, 0.45);
+	--aa-p-padrao:
+		radial-gradient(circle at 88% 10%, rgba(255, 80, 80, 0.32) 0 13px, transparent 14px),
+		radial-gradient(ellipse 5px 3px at 30% 30%, rgba(255, 183, 201, 0.45), transparent) 0 0 / 38px 34px,
+		radial-gradient(ellipse 4px 2.5px at 70% 70%, rgba(255, 210, 220, 0.35), transparent) 0 0 / 29px 31px;
+}
+
+/* Serena (Marah): névoa rosada e serena */
+[data-aa-plano="serena"] {
+	--aa-p-titulo: #9d2a6a;
+	--aa-p-fundo: #fbeef3;
+	--aa-p-fundo-2: #ecdff5;
+	--aa-p-topo: linear-gradient(120deg, #c96894, #8a5cb8);
+	--aa-p-acento: #c2185b;
+	--aa-p-texto: #3a2333;
+	--aa-p-suave: rgba(58, 35, 51, 0.66);
+	--aa-p-linha: rgba(194, 24, 91, 0.15);
+	--aa-p-vinheta: rgba(255, 180, 210, 0.5);
+	--aa-p-padrao:
+		radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.75) 0 5px, transparent 14px) 0 0 / 40px 40px,
+		radial-gradient(ellipse at 50% 0, rgba(255, 200, 225, 0.6), transparent 70%);
+}
+
+/* Odisseia (Valkaria): carta de navegação */
+[data-aa-plano="odisseia"] {
+	--aa-p-fundo: #10243b;
+	--aa-p-fundo-2: #2a1f10;
+	--aa-p-topo: linear-gradient(120deg, #1f5c99, #a57a26);
+	--aa-p-acento: #ffd27a;
+	--aa-p-texto: #f6efe0;
+	--aa-p-suave: rgba(246, 239, 224, 0.72);
+	--aa-p-linha: rgba(255, 210, 122, 0.2);
+	--aa-p-vinheta: rgba(255, 200, 100, 0.45);
+	--aa-p-padrao:
+		radial-gradient(circle at 88% 14%, transparent 15px, rgba(255, 210, 122, 0.3) 16px 17px, transparent 18px),
+		repeating-linear-gradient(45deg, rgba(255, 210, 122, 0.06) 0 1px, transparent 1px 12px),
+		repeating-linear-gradient(-45deg, rgba(120, 180, 255, 0.06) 0 1px, transparent 1px 12px);
+}
+
+/* Drashantyr (Kallyadranoch): escamas de dragão */
+[data-aa-plano="drashantyr"] {
+	--aa-p-fundo: #2a0606;
+	--aa-p-fundo-2: #1a1208;
+	--aa-p-topo: linear-gradient(120deg, #9b1c1c, #5a0d0d 60%, #a87a0b);
+	--aa-p-acento: #ffcc33;
+	--aa-p-texto: #fff1d6;
+	--aa-p-suave: rgba(255, 241, 214, 0.7);
+	--aa-p-linha: rgba(255, 204, 51, 0.2);
+	--aa-p-vinheta: rgba(200, 40, 20, 0.55);
+	--aa-p-padrao:
+		radial-gradient(circle at 50% 0, transparent 8px, rgba(255, 204, 51, 0.18) 9px 10px, transparent 11px) 0 0 / 20px 12px,
+		radial-gradient(circle at 50% 0, transparent 8px, rgba(255, 204, 51, 0.18) 9px 10px, transparent 11px) 10px 6px / 20px 12px;
+}
+
+/* Venomia (Sszzaas): bolhas de veneno */
+[data-aa-plano="venomia"] {
+	--aa-p-fundo: #0b1f10;
+	--aa-p-fundo-2: #1d0f24;
+	--aa-p-topo: linear-gradient(120deg, #2e7d32, #4a148c);
+	--aa-p-acento: #b6ff3b;
+	--aa-p-texto: #eaffd8;
+	--aa-p-suave: rgba(234, 255, 216, 0.7);
+	--aa-p-linha: rgba(182, 255, 59, 0.18);
+	--aa-p-vinheta: rgba(80, 200, 40, 0.5);
+	--aa-p-padrao:
+		radial-gradient(circle at 30% 70%, transparent 5px, rgba(182, 255, 59, 0.22) 6px 7px, transparent 8px) 0 0 / 36px 36px,
+		radial-gradient(circle at 70% 30%, transparent 3px, rgba(182, 255, 59, 0.16) 4px 5px, transparent 6px) 0 0 / 23px 23px,
+		linear-gradient(transparent 50%, rgba(120, 255, 60, 0.12));
+}
+
+/* Ramknal (Hyninn): tijolos de masmorra */
+[data-aa-plano="ramknal"] {
+	--aa-p-fundo: #1f1a14;
+	--aa-p-fundo-2: #2c2318;
+	--aa-p-topo: linear-gradient(120deg, #5a4630, #1d1712);
+	--aa-p-acento: #ffc93c;
+	--aa-p-texto: #f3e9d6;
+	--aa-p-suave: rgba(243, 233, 214, 0.7);
+	--aa-p-linha: rgba(255, 201, 60, 0.18);
+	--aa-p-vinheta: rgba(30, 20, 10, 0.75);
+	--aa-p-padrao:
+		linear-gradient(rgba(0, 0, 0, 0.35) 2px, transparent 2px) 0 0 / 40px 20px,
+		linear-gradient(90deg, rgba(0, 0, 0, 0.35) 2px, transparent 2px) 0 0 / 40px 40px,
+		linear-gradient(90deg, rgba(0, 0, 0, 0.35) 2px, transparent 2px) 20px 20px / 40px 40px;
+}
+
+/* Thworakkar (Thwor): faixas de perigo e engrenagens */
+[data-aa-plano="thworakkar"] {
+	--aa-p-fundo: #22252a;
+	--aa-p-fundo-2: #3a2d1a;
+	--aa-p-topo: linear-gradient(120deg, #5d6670, #2b2f35);
+	--aa-p-acento: #ffb300;
+	--aa-p-texto: #f1f3f5;
+	--aa-p-suave: rgba(241, 243, 245, 0.7);
+	--aa-p-linha: rgba(255, 179, 0, 0.2);
+	--aa-p-vinheta: rgba(255, 140, 0, 0.45);
+	--aa-p-padrao:
+		radial-gradient(circle at 88% 88%, transparent 13px, rgba(200, 210, 220, 0.18) 14px 19px, transparent 20px),
+		repeating-linear-gradient(45deg, rgba(255, 179, 0, 0.1) 0 8px, transparent 8px 22px);
+}
+
+/* Werra (Arsenal): aço cruzado */
+[data-aa-plano="werra"] {
+	--aa-p-fundo: #1c1d22;
+	--aa-p-fundo-2: #331012;
+	--aa-p-topo: linear-gradient(120deg, #7a1015, #2e3036);
+	--aa-p-acento: #d8dde3;
+	--aa-p-texto: #f0f2f5;
+	--aa-p-suave: rgba(240, 242, 245, 0.7);
+	--aa-p-linha: rgba(216, 221, 227, 0.18);
+	--aa-p-vinheta: rgba(160, 20, 20, 0.5);
+	--aa-p-padrao:
+		repeating-linear-gradient(135deg, rgba(216, 221, 227, 0.07) 0 2px, transparent 2px 14px),
+		repeating-linear-gradient(45deg, rgba(216, 221, 227, 0.07) 0 2px, transparent 2px 14px);
+}
+
+/* Shand'krar (Aharadak): tempestade rubra */
+[data-aa-plano="shandkrar"] {
+	--aa-p-fundo: #1a0306;
+	--aa-p-fundo-2: #33060c;
+	--aa-p-topo: linear-gradient(120deg, #c1121f, #3d0008);
+	--aa-p-acento: #ff4d5e;
+	--aa-p-texto: #ffe3e6;
+	--aa-p-suave: rgba(255, 227, 230, 0.7);
+	--aa-p-linha: rgba(255, 77, 94, 0.22);
+	--aa-p-vinheta: rgba(220, 0, 30, 0.6);
+	--aa-p-padrao:
+		repeating-conic-gradient(from 10deg at 30% 40%, rgba(255, 77, 94, 0.13) 0 3deg, transparent 3deg 29deg),
+		radial-gradient(ellipse at 50% 0, rgba(255, 0, 40, 0.3), transparent 60%);
+}
+
+/* Pyra (Thyatis): brasas e chamas */
+[data-aa-plano="pyra"] {
+	--aa-p-fundo: #2b0a02;
+	--aa-p-fundo-2: #5a1a04;
+	--aa-p-topo: linear-gradient(120deg, #ff6a00, #b31b00);
+	--aa-p-acento: #ffd166;
+	--aa-p-texto: #fff3e0;
+	--aa-p-suave: rgba(255, 243, 224, 0.75);
+	--aa-p-linha: rgba(255, 209, 102, 0.22);
+	--aa-p-vinheta: rgba(255, 100, 0, 0.6);
+	--aa-p-padrao:
+		radial-gradient(circle at 20% 80%, rgba(255, 209, 102, 0.55) 0 1px, transparent 2px) 0 0 / 29px 31px,
+		radial-gradient(circle at 70% 40%, rgba(255, 120, 40, 0.5) 0 1.2px, transparent 2px) 0 0 / 23px 37px,
+		linear-gradient(to top, rgba(255, 90, 0, 0.35), transparent 60%);
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Faixa com emblema, nome e deus (painel, editor e chat)              */
+/* ------------------------------------------------------------------ */
+[data-aa-plano] .aa-plano-faixa {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	padding: 0.55rem 0.65rem;
+	color: #fff;
+	background: var(--aa-p-padrao), var(--aa-p-topo);
+	border-bottom: 2px solid var(--aa-p-acento);
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+[data-aa-plano] .aa-plano-faixa > div {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+[data-aa-plano] .aa-plano-emblema {
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: 42px;
+	height: 42px;
+	font-size: 1.25rem;
+	color: var(--aa-p-acento);
+	background: rgba(0, 0, 0, 0.35);
+	border: 2px solid var(--aa-p-acento);
+	border-radius: 50%;
+	box-shadow: 0 0 10px var(--aa-p-acento);
+	animation: aa-plano-pulso 4s ease-in-out infinite;
+}
+
+[data-aa-plano] .aa-plano-nome {
+	font-family: var(--aa-fonte-titulo, "Modesto Condensed", "Palatino Linotype", serif);
+	font-size: 1.15rem;
+	font-weight: bold;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	line-height: 1.1;
+}
+
+[data-aa-plano] .aa-plano-deus,
+[data-aa-plano] .aa-plano-ato {
+	font-size: 0.72rem;
+	opacity: 0.9;
+}
+
+[data-aa-plano] .aa-plano-ato {
+	font-style: italic;
+}
+
+@keyframes aa-plano-pulso {
+	50% {
+		box-shadow: 0 0 18px var(--aa-p-acento);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	[data-aa-plano] .aa-plano-emblema {
+		animation: none;
+	}
+}
+
+/* ------------------------------------------------------------------ */
+/* Painel do plano                                                     */
+/* ------------------------------------------------------------------ */
+.academia-arcana.aa-painel.aa-painel-plano {
+	width: 310px;
+}
+
+.aa-painel-plano .aa-plano-corpo {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+}
+
+.aa-painel-plano .aa-plano-corpo > .aa-painel-vazio {
+	padding: 0.5rem 0.6rem;
+}
+
+body .academia-arcana.aa-painel.aa-painel-plano[data-aa-plano] {
+	color: var(--aa-p-texto);
+	background: var(--aa-p-padrao), linear-gradient(170deg, var(--aa-p-fundo), var(--aa-p-fundo-2));
+	border: 1px solid var(--aa-p-acento);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 14px var(--aa-p-vinheta);
+	--aa-texto-suave: var(--aa-p-suave);
+	--aa-linha: var(--aa-p-linha);
+}
+
+body .aa-painel.aa-painel-plano[data-aa-plano] .aa-painel-topo {
+	color: #fff;
+	background: var(--aa-p-topo);
+	border-bottom: 2px solid var(--aa-p-acento);
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+body .aa-painel.aa-painel-plano[data-aa-plano] .aa-painel-topo :is(.aa-painel-rodada, i) {
+	color: inherit;
+}
+
+body .aa-painel.aa-painel-plano[data-aa-plano] a:hover {
+	text-shadow: 0 0 6px var(--aa-p-acento);
+}
+
+.aa-painel-plano .aa-plano-faixa {
+	border-bottom: 1px solid var(--aa-p-linha);
+}
+
+.aa-painel-plano .aa-plano-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.3rem;
+	padding: 0.45rem 0.6rem 0.2rem;
+}
+
+.aa-painel-plano .aa-plano-chips span {
+	padding: 0.05rem 0.45rem;
+	font-size: 0.72rem;
+	white-space: nowrap;
+	border: 1px solid var(--aa-p-linha, var(--aa-linha));
+	border-radius: 999px;
+	background: rgba(0, 0, 0, 0.12);
+}
+
+.aa-painel-plano .aa-plano-chips i {
+	color: var(--aa-p-acento, var(--aa-ouro));
+}
+
+.aa-painel-plano section {
+	padding: 0.35rem 0.6rem 0.45rem;
+}
+
+/* Véu translúcido atrás do texto: o desenho do plano aparece, mas não briga com as regras. */
+body .aa-painel.aa-painel-plano[data-aa-plano] section {
+	margin: 0.3rem 0.4rem;
+	border-radius: 6px;
+	background: color-mix(in srgb, var(--aa-p-fundo) 78%, transparent);
+}
+
+.aa-painel-plano section + section {
+	border-top: 1px dashed var(--aa-p-linha, var(--aa-linha));
+}
+
+body .aa-painel.aa-painel-plano[data-aa-plano] section + section {
+	border-top: none;
+}
+
+.aa-painel-plano section h3 {
+	margin: 0 0 0.25rem;
+	padding: 0;
+	border: none;
+	font-size: 0.85rem;
+	font-weight: bold;
+	letter-spacing: 0.03em;
+	color: var(--aa-p-titulo, var(--aa-p-acento, inherit));
+	font-family: var(--aa-fonte-titulo, inherit);
+}
+
+.aa-painel-plano section ul {
+	margin: 0;
+	padding-left: 1rem;
+}
+
+.aa-painel-plano section li {
+	margin: 0.15rem 0;
+	line-height: 1.3;
+}
+
+.aa-painel-plano section li::marker {
+	color: var(--aa-p-acento, var(--aa-ouro));
+}
+
+.aa-painel-plano section p {
+	margin: 0.15rem 0;
+	line-height: 1.3;
+}
+
+body .aa-painel.aa-painel-plano[data-aa-plano] .aa-plano-segredo {
+	background: color-mix(in srgb, var(--aa-p-fundo-2) 85%, #000 15%);
+	border: 1px dashed var(--aa-p-linha);
+}
+
+.aa-painel-plano .aa-plano-segredo h3 {
+	color: inherit;
+	opacity: 0.85;
+}
+
+.aa-painel.aa-painel-plano .aa-painel-detalhe {
+	font-size: 0.78rem;
+}
+
+/* Recolhido: só a faixa, os números e o nome da regra planar. */
+.aa-painel.aa-painel-plano.recolhido section.aa-painel-detalhe {
+	display: none;
+}
+
+/* Planos claros (Ordine, Terápolis, Serena): a faixa escura continua com texto branco. */
+body .academia-arcana.aa-painel.aa-painel-plano:is([data-aa-plano="ordine"], [data-aa-plano="terapolis"], [data-aa-plano="serena"]) .aa-plano-chips span {
+	background: rgba(255, 255, 255, 0.5);
+}
+
+/* ------------------------------------------------------------------ */
+/* Os outros painéis com as cores do plano                             */
+/* ------------------------------------------------------------------ */
+body.aa-plano-paineis[data-aa-plano] .academia-arcana.aa-painel:not(.aa-painel-plano) {
+	border-color: var(--aa-p-acento);
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.55), 0 0 10px var(--aa-p-vinheta);
+}
+
+body.aa-plano-paineis[data-aa-plano] .aa-painel:not(.aa-painel-plano) .aa-painel-topo {
+	color: #fff;
+	background: var(--aa-p-padrao), var(--aa-p-topo);
+	border-bottom-color: var(--aa-p-acento);
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+body.aa-plano-paineis[data-aa-plano] .aa-painel:not(.aa-painel-plano) .aa-painel-topo .aa-painel-rodada {
+	color: inherit;
+}
+
+/* ------------------------------------------------------------------ */
+/* Moldura da tela                                                     */
+/* ------------------------------------------------------------------ */
+body.aa-plano-moldura[data-aa-plano]::after {
+	content: "";
+	position: fixed;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+	box-shadow:
+		inset 0 0 0 2px var(--aa-p-acento),
+		inset 0 0 110px 10px var(--aa-p-vinheta);
+	opacity: 0.85;
+	transition: box-shadow 1s ease;
+}
+
+/* ------------------------------------------------------------------ */
+/* Editor do mestre                                                    */
+/* ------------------------------------------------------------------ */
+.academia-arcana .aa-planos {
+	display: grid;
+	grid-template-columns: 220px 1fr;
+	height: 100%;
+	min-height: 0;
+}
+
+.academia-arcana .aa-planos-lista {
+	overflow-y: auto;
+	padding: 0.5rem;
+	border-right: 1px solid var(--aa-borda);
+}
+
+.academia-arcana .aa-planos-lista h4 {
+	margin: 0.6rem 0 0.25rem;
+	border: none;
+	font-size: 0.72rem;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-planos-lista ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.academia-arcana .aa-planos-lista li {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.2rem 0.3rem;
+	margin-bottom: 2px;
+	border: 1px solid transparent;
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+.academia-arcana .aa-planos-lista li:hover {
+	background: var(--aa-roxo-claro);
+}
+
+.academia-arcana .aa-planos-lista li.selecionado {
+	border-color: var(--aa-p-acento);
+	background: var(--aa-roxo-claro);
+}
+
+.academia-arcana .aa-planos-lista li.atual .aa-planos-rotulo strong {
+	color: var(--aa-roxo);
+}
+
+.academia-arcana .aa-planos-amostra {
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: 28px;
+	height: 28px;
+	color: var(--aa-p-acento);
+	background: var(--aa-p-padrao), var(--aa-p-topo);
+	border: 1px solid var(--aa-p-acento);
+	border-radius: 50%;
+	text-shadow: 0 1px 2px #000;
+}
+
+.academia-arcana .aa-planos-rotulo {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	line-height: 1.15;
+}
+
+.academia-arcana .aa-planos-rotulo small {
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-planos-marca {
+	font-size: 0.7rem;
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-planos-academia {
+	width: 100%;
+}
+
+.academia-arcana .aa-planos-academia.atual {
+	border-color: var(--aa-roxo);
+	font-weight: bold;
+}
+
+.academia-arcana .aa-planos-editor {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+	min-height: 0;
+	overflow-y: auto;
+	padding: 0 0.75rem 0.75rem;
+}
+
+.academia-arcana .aa-planos-editor .aa-plano-faixa {
+	margin: 0 -0.75rem;
+}
+
+.academia-arcana .aa-planos-editor label {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	font-weight: bold;
+}
+
+.academia-arcana .aa-planos-editor label small {
+	font-weight: normal;
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-planos-editor textarea {
+	resize: vertical;
+	font-family: inherit;
+}
+
+/* ------------------------------------------------------------------ */
+/* Cartão de chegada no chat                                           */
+/* ------------------------------------------------------------------ */
+.aa-plano-chat[data-aa-plano] {
+	overflow: hidden;
+	color: var(--aa-p-texto);
+	background: var(--aa-p-padrao), linear-gradient(170deg, var(--aa-p-fundo), var(--aa-p-fundo-2));
+	border: 1px solid var(--aa-p-acento);
+	border-radius: 6px;
+}
+
+.aa-plano-chat[data-aa-plano] header {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.4rem 0.5rem;
+	color: #fff;
+	background: var(--aa-p-topo);
+	border-bottom: 2px solid var(--aa-p-acento);
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.aa-plano-chat[data-aa-plano] header > i {
+	font-size: 1.4rem;
+	color: var(--aa-p-acento);
+}
+
+.aa-plano-chat[data-aa-plano] header div {
+	display: flex;
+	flex-direction: column;
+}
+
+.aa-plano-chat[data-aa-plano] header strong {
+	font-size: 1.05rem;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+}
+
+.aa-plano-chat[data-aa-plano] h4 {
+	margin: 0.4rem 0.5rem 0.2rem;
+	border: none;
+	font-weight: bold;
+	color: var(--aa-p-titulo, var(--aa-p-acento));
+}
+
+.aa-plano-chat[data-aa-plano] :is(ul, p) {
+	background: color-mix(in srgb, var(--aa-p-fundo) 78%, transparent);
+	border-radius: 4px;
+}
+
+.aa-plano-chat[data-aa-plano] ul {
+	margin: 0 0.5rem 0.4rem;
+	padding-left: 1rem;
+}
+
+.aa-plano-chat[data-aa-plano] p {
+	margin: 0.2rem 0.5rem 0.4rem;
+}

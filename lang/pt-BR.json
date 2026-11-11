@@ -7,6 +7,7 @@
 		"Correio": "Correio da Academia",
 		"Atividades": "Atividades Extracurriculares",
 		"Catalogo": "Catálogo de Disciplinas",
+		"Planos": "Planos da Expedição",
 		"BotaoFicha": "Academia",
 		"Config": {
 			"minDisciplinas": {
@@ -44,6 +45,21 @@
 			"painelPlacar": {
 				"Nome": "Exibir o placar dos grêmios",
 				"Dica": "Painel flutuante pequeno, sempre visível, com uma bandeira por grêmio que se enche conforme o grêmio pontua."
+			},
+			"painelPlano": {
+				"Nome": "Exibir o painel do plano",
+				"Dica": "Painel flutuante com o plano em que a turma está na expedição aos mundos dos deuses: deus, nível sugerido, CD, regra planar e as anotações do mestre. Os jogadores só o veem com um plano ativo."
+			},
+			"temaPlano": {
+				"Nome": "Tema do plano",
+				"Dica": "Cada plano tem cores e desenho próprios. Escolha até onde eles chegam neste navegador.",
+				"Moldura": "Painel do plano, outros painéis e moldura nas bordas da tela",
+				"Paineis": "Painel do plano e os outros painéis do módulo",
+				"Painel": "Somente o painel do plano"
+			},
+			"planoJogadores": {
+				"Nome": "Jogadores veem o plano atual",
+				"Dica": "Mostra aos jogadores o painel do plano (regras e anotações da mesa, nunca as notas do mestre) e aplica o tema do plano para eles. Desmarcado, só o mestre vê."
 			},
 			"pontosAprovacao": {
 				"Nome": "Placar: pontos por aprovação",
@@ -118,7 +134,9 @@
 			"Ignorados": "Semestre não encerrado (disciplinas pendentes): {lista}",
 			"CatalogoSalvo": "Catálogo de disciplinas salvo.",
 			"EscolhaOficio": "Escolha qual ofício será usado em {nome}.",
-			"SemOficio": "Estas disciplinas ainda não têm ofício escolhido: {lista}. Iniciar o semestre mesmo assim? O mestre pode definir depois no boletim."
+			"SemOficio": "Estas disciplinas ainda não têm ofício escolhido: {lista}. Iniciar o semestre mesmo assim? O mestre pode definir depois no boletim.",
+			"SomenteMestrePlanos": "Apenas o mestre edita os planos da expedição.",
+			"ChegadaPlano": "A expedição chegou a {nome}."
 		}
 	}
 }

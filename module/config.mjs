@@ -66,6 +66,41 @@ export function registrarConfiguracoes(CatalogoApp) {
 	painel("painelAlunos");
 	painel("painelAmeacas");
 	painel("painelPlacar");
+	painel("painelPlano");
+
+	game.settings.register(MODULO, "temaPlano", {
+		name: "ACADEMIA.Config.temaPlano.Nome",
+		hint: "ACADEMIA.Config.temaPlano.Dica",
+		scope: "client",
+		config: true,
+		type: String,
+		choices: {
+			moldura: "ACADEMIA.Config.temaPlano.Moldura",
+			paineis: "ACADEMIA.Config.temaPlano.Paineis",
+			painel: "ACADEMIA.Config.temaPlano.Painel"
+		},
+		default: "moldura",
+		onChange: notificar
+	});
+
+	game.settings.register(MODULO, "planoJogadores", {
+		name: "ACADEMIA.Config.planoJogadores.Nome",
+		hint: "ACADEMIA.Config.planoJogadores.Dica",
+		scope: "world",
+		config: true,
+		type: Boolean,
+		default: true,
+		onChange: notificar
+	});
+
+	/* Expedição aos mundos dos deuses: plano atual e o texto do mestre de cada plano (veja planos.mjs). */
+	game.settings.register(MODULO, "expedicao", {
+		scope: "world",
+		config: false,
+		type: Object,
+		default: { atual: "", planos: {} },
+		onChange: notificar
+	});
 
 	numero("pontosAprovacao", 10, 0, 1000);
 	numero("pontosAtividade", 15, 0, 1000);

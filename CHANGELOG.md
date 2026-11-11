@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.17.0
+
+- **Expedição aos mundos dos deuses**: novo painel flutuante do plano, igual aos de alunos e ameaças (arrastar, recolher, minimizar, desligar por usuário). Mostra o plano em que a turma está, o deus, o ato do roteiro, a parada (1 a 20), o nível sugerido, a CD dos desafios (18 + nível), o perigo, a regra planar e as anotações da mesa. O mestre vê também as próprias notas secretas, se o grupo sobe de nível ao sair e um atalho para a página do deus na Wiki Divina.
+- Os 20 planos vêm na ordem do Roteiro da Expedição (de Magika a Pyra), com as regras planares resumidas da Wiki Divina. Tudo é editável.
+- **Planos da expedição** (mestre): janela para escolher o plano atual, editar o título e as regras de cada plano (uma por linha, com negrito e itálico), escrever anotações que todos veem e notas só do mestre, restaurar as regras originais e anunciar a chegada no chat. Abre pelo painel, pela Secretaria ou pela macro. No painel, as setas levam a turma ao plano anterior ou ao próximo.
+- **Um tema por plano**: cada mundo tem cores, emblema e desenho próprios (runas em Magika, mármore em Ordine, tabuleiro em Al-Gazara, raios de sol em Solaris, escamas em Drashantyr, tempestade rubra em Shand'krar, brasas em Pyra e assim por diante). Em *Tema do plano*, cada usuário escolhe se o tema vale só para o painel do plano, também para os outros painéis ou ainda para uma moldura nas bordas da tela.
+- Configuração de mundo *Jogadores veem o plano atual*: desmarcada, só o mestre vê o painel e o tema.
+
 ## 1.16.1
 
 - Gerador de alunos: a partir do 2º semestre, as perícias de todas as disciplinas em que o aluno se matriculou, nos semestres passados e no atual, ficam treinadas na ficha (inclusive as de disciplinas em que foi reprovado). No 1º semestre, nenhuma perícia é marcada. A mesma regra vale quando o NPC avança de semestre.
