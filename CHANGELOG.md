@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.20.1
+
+- Painel de alunos, versão detalhada: letras maiores no grêmio e nas perícias, e o bônus de cada perícia numa pastilha de cor sólida com algarismos alinhados, legível nos dois temas. O brasão do grêmio no retrato ficou um pouco maior.
+- Tema Scriptorium: os números de PV e PM dos painéis usam algarismos alinhados e ficaram maiores.
+
 ## 1.20.0
 
 - Painel de alunos: o retrato ganha o brasão do grêmio no canto, um escudo na cor do grêmio com o ícone dele (passe o mouse para ver o nome), além da borda colorida.

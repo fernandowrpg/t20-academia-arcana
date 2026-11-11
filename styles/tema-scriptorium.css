@@ -406,9 +406,36 @@ body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-gremio {
 	color: color-mix(in srgb, var(--aa-cor) 75%, var(--aa-tinta));
 }
 
+/* Os algarismos da IM Fell são pequenos e irregulares; os números das barras usam algarismos alinhados. */
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-barra {
+	font-size: 0.8rem;
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-barra-valor {
+	font-family: system-ui, "Segoe UI", sans-serif;
+	font-size: 0.75rem;
+	font-weight: 600;
+	font-variant-numeric: lining-nums tabular-nums;
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-gremio {
+	font-size: 0.85rem;
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-gremio span {
+	color: var(--aa-tinta-suave);
+}
+
 body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-pericias li {
-	background: rgba(0, 0, 0, 0.05);
+	border-color: var(--aa-traco);
+	background: rgba(255, 255, 255, 0.35);
 	color: var(--aa-tinta);
+	font-size: 0.85rem;
+}
+
+body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-painel-pericias strong {
+	background: var(--aa-arcano);
+	color: #fff;
 }
 
 body:is(.aa-tema-tudo, .aa-tema-modulo) .aa-painel .aa-barra-trilho {
