@@ -43,6 +43,9 @@
 					{{#if plano}}<a data-action="cdDoPlano" data-tooltip="Usar a CD de {{plano.nome}} (18 + nível)"><i class="fa-solid fa-dungeon"></i></a>{{/if}}
 				</span>
 			</label>
+			<label class="aa-teste-cd-oculta" data-tooltip="Os jogadores veem &quot;?&quot; no lugar da CD do teste e das abordagens (também no chat). Você continua vendo os números.">Jogadores veem a CD?
+				<span><input type="checkbox" name="cdOculta" {{#if teste.cdOculta}}checked{{/if}}> Esconder</span>
+			</label>
 			<label>Sucessos necessários
 				<input type="number" name="sucessosNecessarios" value="{{teste.sucessosNecessarios}}" min="1" max="10">
 			</label>

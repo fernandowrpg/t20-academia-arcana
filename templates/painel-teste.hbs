@@ -10,7 +10,7 @@
 		</span>
 	</header>
 	<div class="aa-teste-cabeca">
-		<span class="aa-teste-cd" data-tooltip="{{cdDica}}">CD {{#if cd}}{{cd}}{{else}}—{{/if}}</span>
+		<span class="aa-teste-cd {{#if cdOculta}}oculta{{/if}}" data-tooltip="{{cdDica}}" {{#if gm}}data-action="cdOculta"{{/if}}>CD {{#if cd}}{{cd}}{{else}}—{{/if}}{{#if gm}}{{#if cdOculta}} <i class="fa-solid fa-eye-slash"></i>{{/if}}{{/if}}</span>
 		<span class="aa-teste-meta"><span><strong>{{sucessosNecessarios}} sucessos</strong> antes de <strong>{{falhasLimite}} falhas</strong></span>{{#if intervalo}}<small><i class="fa-regular fa-hourglass-half"></i> Cada teste: {{intervalo}}</small>{{/if}}</span>
 	</div>
 	<div class="aa-teste-contador">

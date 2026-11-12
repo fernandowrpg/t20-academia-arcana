@@ -5,6 +5,7 @@ import {
 	alternarVisibilidade,
 	anunciarTeste,
 	contextoDoTeste,
+	definirCdOculta,
 	excluirGuardado,
 	guardarTeste,
 	lerTeste,
@@ -83,6 +84,7 @@ export class TesteEstendidoApp extends HandlebarsApplicationMixin(ApplicationV2)
 		for (const campo of CAMPOS_TESTE) {
 			this.element.querySelector(`[name='${campo}']`)?.addEventListener("change", (ev) => salvarCamposDoTeste({ [campo]: ev.target.value }));
 		}
+		this.element.querySelector("[name='cdOculta']")?.addEventListener("change", (ev) => definirCdOculta(ev.target.checked));
 	}
 
 	static #visivel() {

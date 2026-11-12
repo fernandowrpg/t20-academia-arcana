@@ -24,6 +24,20 @@
 	background: rgba(0, 0, 0, 0.2);
 }
 
+.aa-painel-teste .aa-teste-cd[data-action] {
+	cursor: pointer;
+}
+
+/* Para o mestre, a CD escondida dos jogadores fica tracejada. */
+.aa-painel-teste .aa-teste-cd.oculta {
+	border-style: dashed;
+	opacity: 0.8;
+}
+
+.aa-painel-teste .aa-teste-cd i {
+	font-size: 0.7rem;
+}
+
 .aa-painel-teste .aa-teste-meta {
 	display: flex;
 	flex-direction: column;
@@ -382,6 +396,14 @@
 	display: flex;
 	align-items: center;
 	gap: 0.35rem;
+}
+
+.academia-arcana .aa-teste-cd-oculta span {
+	display: flex;
+	align-items: center;
+	gap: 0.3rem;
+	min-height: var(--input-height, 2rem);
+	font-weight: normal;
 }
 
 .academia-arcana .aa-teste-resultados {

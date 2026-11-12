@@ -4,7 +4,7 @@ import { planoAtual, textoEmItens, textoEmParagrafos } from "./planos.mjs";
 /*
  * Teste estendido (T20: "X sucessos antes de Y falhas"), no formato do template
  * "T20 - Teste Estendido" do Obsidian. Gravado na configuração de mundo "testeEstendido":
- * { visivel, atual: { titulo, contexto, cd, sucessosNecessarios, falhasLimite, intervalo,
+ * { visivel, atual: { titulo, contexto, cd, cdOculta, sucessosNecessarios, falhasLimite, intervalo,
  *   principais, alternativas, abordagens, regras, eventos, total, parcial, fracasso, segredo },
  *   sucessos, falhas, salvos: [teste] }
  * O mestre edita, mostra/esconde e marca o progresso; os jogadores só veem.
@@ -38,6 +38,7 @@ export function testeEmBranco() {
 		titulo: "",
 		contexto: "",
 		cd: null,
+		cdOculta: false,
 		sucessosNecessarios: 4,
 		falhasLimite: 3,
 		intervalo: "1 rodada",
@@ -96,6 +97,7 @@ function normalizarTeste(bruto = {}) {
 	for (const campo of CAMPOS_TESTE) if (!["cd", "sucessosNecessarios", "falhasLimite"].includes(campo)) teste[campo] = String(teste[campo] ?? "");
 	const cd = String(bruto.cd ?? "").trim();
 	teste.cd = cd === "" ? null : inteiro(cd, null, 0, 99);
+	teste.cdOculta = bruto.cdOculta === true || bruto.cdOculta === "true";
 	teste.sucessosNecessarios = inteiro(bruto.sucessosNecessarios, base.sucessosNecessarios, 1, MAX_MARCAS);
 	teste.falhasLimite = inteiro(bruto.falhasLimite, base.falhasLimite, 1, MAX_MARCAS);
 	return teste;
@@ -190,6 +192,17 @@ export async function marcarAte(tipo, indice) {
 	return gravar(dados);
 }
 
+/* Mostra ou esconde dos jogadores a CD do teste e a de cada abordagem. */
+export async function definirCdOculta(oculta) {
+	const dados = lerTeste();
+	dados.atual.cdOculta = !!oculta;
+	return gravar(dados);
+}
+
+export async function alternarCdOculta() {
+	return definirCdOculta(!lerTeste().atual.cdOculta);
+}
+
 export async function zerarTeste() {
 	const dados = lerTeste();
 	dados.sucessos = 0;
@@ -238,6 +251,8 @@ export async function excluirGuardado(indice) {
 export function contextoDoTeste({ gm = game.user.isGM, dados = lerTeste() } = {}) {
 	const { atual, sucessos, falhas } = dados;
 	const cd = cdDoTeste(atual);
+	/* CD oculta: o mestre continua vendo os números; os jogadores veem "?". */
+	const mostrarCd = gm || !atual.cdOculta;
 	const situacao = situacaoDoTeste(dados);
 	const eventos = textoEmItens(atual.eventos);
 	const caixas = (total, marcadas) => Array.from({ length: total }, (_, i) => ({ indice: i, marcada: i < marcadas }));
@@ -248,15 +263,19 @@ export function contextoDoTeste({ gm = game.user.isGM, dados = lerTeste() } = {}
 		definido: testeDefinido(dados),
 		titulo: atual.titulo.trim() || "Teste estendido",
 		contexto: emTexto(atual.contexto),
-		cd: cd.valor,
-		cdDica: cd.doPlano ? `CD do plano atual (${cd.plano}: 18 + nível)` : "CD dos testes",
+		cd: mostrarCd ? cd.valor : "?",
+		cdOculta: atual.cdOculta,
+		mostrarCd,
+		cdDica: !mostrarCd
+			? "O mestre não revelou a CD"
+			: `${cd.doPlano ? `CD do plano atual (${cd.plano}: 18 + nível)` : "CD dos testes"}${gm ? (atual.cdOculta ? ". Escondida dos jogadores: clique para mostrar" : ". Clique para esconder dos jogadores") : ""}`,
 		sucessosNecessarios: atual.sucessosNecessarios,
 		falhasLimite: atual.falhasLimite,
 		falhasParcial: Math.max(0, atual.falhasLimite - 1),
 		intervalo: atual.intervalo.trim(),
 		principais: emTexto(atual.principais),
 		alternativas: emTexto(atual.alternativas),
-		abordagens: abordagensEmLinhas(atual.abordagens, cd.valor),
+		abordagens: abordagensEmLinhas(atual.abordagens, cd.valor).map((a) => (mostrarCd ? a : { ...a, cd: "?" })),
 		regras: textoEmItens(atual.regras),
 		sucessos,
 		falhas,
@@ -288,9 +307,9 @@ export async function anunciarTeste() {
 	if (!game.user.isGM) return;
 	const c = contextoDoTeste({ gm: false });
 	const marcas = (caixas, classe) => caixas.map((x) => `<i class="fa-${x.marcada ? "solid" : "regular"} fa-square${x.marcada ? "-check" : ""} ${classe}"></i>`).join(" ");
-	const abordagens = c.abordagens.map((a) => `<li><strong>${a.pericia}</strong> (CD ${escapar(a.cd)})${a.descricao ? `: ${a.descricao}` : ""}</li>`).join("");
+	const abordagens = c.abordagens.map((a) => `<li><strong>${a.pericia}</strong>${c.mostrarCd ? ` (CD ${escapar(a.cd)})` : ""}${a.descricao ? `: ${a.descricao}` : ""}</li>`).join("");
 	const content = `<div class="aa-teste-chat">
-	<header><i class="fa-solid fa-dice-d20"></i><div><strong>${escapar(c.titulo)}</strong><small>Teste estendido${c.cd !== null ? ` · CD ${c.cd}` : ""} · ${c.sucessosNecessarios} sucessos antes de ${c.falhasLimite} falhas</small></div></header>
+	<header><i class="fa-solid fa-dice-d20"></i><div><strong>${escapar(c.titulo)}</strong><small>Teste estendido${c.mostrarCd && c.cd !== null ? ` · CD ${c.cd}` : ""} · ${c.sucessosNecessarios} sucessos antes de ${c.falhasLimite} falhas</small></div></header>
 	${c.contexto ? `<p><em>${c.contexto}</em></p>` : ""}
 	${abordagens ? `<ul>${abordagens}</ul>` : ""}
 	<p class="aa-teste-chat-placar">Sucessos ${marcas(c.caixasSucesso, "sucesso")} · Falhas ${marcas(c.caixasFalha, "falha")}</p>

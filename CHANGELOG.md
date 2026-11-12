@@ -6,6 +6,7 @@
 - Painel do plano: novo botão (claquete) para o mestre mostrar o cartão de transição a todos a qualquer momento.
 - **Teste estendido**: novo painel flutuante com o teste estendido da cena e um contador de sucessos e falhas, no formato do template *T20 - Teste Estendido*. Mostra a CD (vazia usa a do plano atual), "X sucessos antes de Y falhas", o que cada teste representa, perícias principais e alternativas, a tabela de abordagens, regras especiais, os eventos de cada falha (os jogadores veem quando a falha acontece) e o resultado quando o teste termina (sucesso total, parcial ou fracasso). Arrasta, recolhe e minimiza em ícone como os outros painéis; cada usuário pode desligá-lo nas configurações.
 - O mestre controla o teste pelo rodapé do painel do plano: o olho mostra ou esconde o painel para todos e o lápis abre o editor. No painel, marca sucessos e falhas clicando nas caixas ou em + e −.
+- A CD do teste estendido pode ser escondida dos jogadores: eles veem "?" no lugar da CD do teste e das abordagens (também no cartão do chat), e o mestre continua vendo os números. Liga e desliga clicando na CD do painel ou na opção *Esconder* do editor.
 - **Editor do teste estendido** (mestre): todos os campos do template, lista de testes guardados para reaproveitar, zerar o contador, anunciar no chat e um exemplo pronto (*A Rua que Andou*).
 
 ## 1.20.1

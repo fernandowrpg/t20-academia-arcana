@@ -1,5 +1,5 @@
 import { MODULO, opcao } from "../config.mjs";
-import { contextoDoTeste, lerTeste, marcar, marcarAte, zerarTeste } from "../teste-estendido.mjs";
+import { alternarCdOculta, contextoDoTeste, lerTeste, marcar, marcarAte, zerarTeste } from "../teste-estendido.mjs";
 import { PainelFlutuante } from "./painel.mjs";
 import { TesteEstendidoApp } from "./teste-estendido.mjs";
 
@@ -21,6 +21,7 @@ export class PainelTesteApp extends PainelFlutuante {
 			marcar: PainelTesteApp.#marcar,
 			caixa: PainelTesteApp.#caixa,
 			zerar: PainelTesteApp.#zerar,
+			cdOculta: PainelTesteApp.#cdOculta,
 			editar: PainelTesteApp.#editar
 		}
 	};
@@ -51,6 +52,10 @@ export class PainelTesteApp extends PainelFlutuante {
 	static #caixa(event, alvo) {
 		if (!game.user.isGM) return;
 		marcarAte(alvo.dataset.tipo, Number(alvo.dataset.indice));
+	}
+
+	static #cdOculta() {
+		if (game.user.isGM) alternarCdOculta();
 	}
 
 	static #zerar() {
