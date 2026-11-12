@@ -1,0 +1,455 @@
+/* Teste estendido: painel flutuante, editor do mestre e cartão do chat. */
+
+.academia-arcana.aa-painel.aa-painel-teste {
+	width: 300px;
+	--aa-sucesso: var(--aa-verde);
+	--aa-falha: var(--aa-vermelho);
+}
+
+.aa-painel-teste .aa-teste-cabeca {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	padding: 0.45rem 0.6rem 0.2rem;
+}
+
+.aa-painel-teste .aa-teste-cd {
+	flex: none;
+	padding: 0.15rem 0.55rem;
+	font-size: 1rem;
+	font-weight: bold;
+	color: var(--aa-ouro);
+	border: 1px solid var(--aa-ouro);
+	border-radius: 6px;
+	background: rgba(0, 0, 0, 0.2);
+}
+
+.aa-painel-teste .aa-teste-meta {
+	display: flex;
+	flex-direction: column;
+	line-height: 1.25;
+}
+
+.aa-painel-teste .aa-teste-meta small {
+	color: var(--aa-texto-suave);
+}
+
+.aa-painel-teste .aa-teste-contador {
+	display: flex;
+	flex-direction: column;
+	gap: 0.3rem;
+	padding: 0.35rem 0.6rem 0.5rem;
+	border-bottom: 1px solid var(--aa-linha);
+}
+
+.aa-painel-teste .aa-teste-linha {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.aa-painel-teste .aa-teste-rotulo {
+	flex: none;
+	width: 5.2rem;
+	font-weight: bold;
+}
+
+.aa-painel-teste .sucesso .aa-teste-rotulo i {
+	color: var(--aa-sucesso);
+}
+
+.aa-painel-teste .falha .aa-teste-rotulo i {
+	color: var(--aa-falha);
+}
+
+.aa-painel-teste .aa-teste-caixas {
+	flex: 1;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+.aa-painel-teste .aa-teste-caixa {
+	position: relative;
+	width: 20px;
+	height: 20px;
+	border: 2px solid var(--aa-texto-suave);
+	border-radius: 4px;
+	background: rgba(0, 0, 0, 0.25);
+	transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.aa-painel-teste .aa-teste-caixa[data-action] {
+	cursor: pointer;
+}
+
+.aa-painel-teste .aa-teste-caixa[data-action]:hover {
+	transform: scale(1.12);
+}
+
+.aa-painel-teste .aa-teste-caixa {
+	display: grid;
+	place-items: center;
+}
+
+.aa-painel-teste .aa-teste-caixa > i {
+	font-size: 0.75rem;
+	color: #fff;
+}
+
+.aa-painel-teste .sucesso .aa-teste-caixa.marcada {
+	border-color: var(--aa-sucesso);
+	background: var(--aa-sucesso);
+	box-shadow: 0 0 6px var(--aa-sucesso);
+}
+
+.aa-painel-teste .falha .aa-teste-caixa.marcada {
+	border-color: var(--aa-falha);
+	background: var(--aa-falha);
+	box-shadow: 0 0 6px var(--aa-falha);
+}
+
+.aa-painel-teste .aa-teste-botoes {
+	display: flex;
+	gap: 0.45rem;
+	font-size: 0.75rem;
+	color: var(--aa-texto-suave);
+}
+
+.aa-painel-teste .aa-teste-resultado {
+	display: flex;
+	flex-direction: column;
+	gap: 0.1rem;
+	margin-top: 0.2rem;
+	padding: 0.35rem 0.5rem;
+	text-align: center;
+	border: 1px solid currentColor;
+	border-radius: 6px;
+	background: rgba(0, 0, 0, 0.25);
+	animation: aa-teste-resultado 0.5s ease-out;
+}
+
+.aa-painel-teste .aa-teste-resultado strong {
+	font-size: 0.95rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.aa-painel-teste .aa-teste-resultado span {
+	color: #f4ecff;
+	font-size: 0.75rem;
+}
+
+.aa-painel-teste .aa-teste-resultado.sucesso {
+	color: var(--aa-sucesso);
+}
+
+.aa-painel-teste .aa-teste-resultado.parcial {
+	color: var(--aa-ambar);
+}
+
+.aa-painel-teste .aa-teste-resultado.fracasso {
+	color: var(--aa-falha);
+}
+
+@keyframes aa-teste-resultado {
+	from { opacity: 0; transform: scale(0.9); }
+}
+
+.aa-painel-teste .aa-teste-corpo {
+	min-height: 0;
+	overflow-y: auto;
+	padding: 0.35rem 0.6rem 0.5rem;
+	font-size: 0.75rem;
+}
+
+.aa-painel-teste .aa-teste-corpo p {
+	margin: 0.15rem 0;
+}
+
+.aa-painel-teste .aa-teste-contexto {
+	font-style: italic;
+	color: var(--aa-texto-suave);
+}
+
+.aa-painel-teste .aa-teste-abordagens {
+	width: 100%;
+	margin: 0.3rem 0;
+	border-collapse: collapse;
+	background: none;
+	border: none;
+}
+
+.aa-painel-teste .aa-teste-abordagens th {
+	padding: 0.1rem 0.25rem;
+	font-size: 0.68rem;
+	text-align: left;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--aa-texto-suave);
+	background: none;
+	border-bottom: 1px solid var(--aa-linha);
+}
+
+.aa-painel-teste .aa-teste-abordagens td {
+	padding: 0.15rem 0.25rem;
+	vertical-align: top;
+	border-bottom: 1px dashed var(--aa-linha);
+}
+
+.aa-painel-teste .aa-teste-abordagens tr:nth-child(even) {
+	background: none;
+}
+
+.aa-painel-teste .aa-teste-abordagens td:nth-child(2) {
+	font-weight: bold;
+	white-space: nowrap;
+	color: var(--aa-ouro);
+}
+
+.aa-painel-teste :is(.aa-teste-regras, .aa-teste-eventos ol, .aa-teste-segredo ul) {
+	margin: 0.25rem 0;
+	padding-left: 1rem;
+}
+
+.aa-painel-teste .aa-teste-eventos h3,
+.aa-painel-teste .aa-teste-segredo h3 {
+	margin: 0.4rem 0 0.15rem;
+	padding: 0;
+	border: none;
+	font-size: 0.78rem;
+	font-weight: bold;
+	color: var(--aa-ouro);
+}
+
+.aa-painel-teste .aa-teste-eventos li {
+	opacity: 0.65;
+}
+
+.aa-painel-teste .aa-teste-eventos li.ocorreu {
+	opacity: 1;
+	color: #ffb3b3;
+}
+
+.aa-painel-teste .aa-teste-segredo {
+	margin-top: 0.4rem;
+	padding: 0.1rem 0.4rem 0.3rem;
+	border: 1px dashed var(--aa-linha);
+	border-radius: 6px;
+	background: rgba(0, 0, 0, 0.25);
+}
+
+.aa-painel-teste .aa-teste-segredo h3 {
+	color: inherit;
+	opacity: 0.85;
+}
+
+.aa-painel-teste .aa-teste-segredo li.atual {
+	color: var(--aa-ouro);
+}
+
+.aa-painel .aa-painel-rodape a {
+	white-space: nowrap;
+}
+
+.aa-painel.recolhido .aa-teste-corpo {
+	display: none;
+}
+
+/* Rodapé do painel do plano com o controle do teste estendido. */
+.aa-painel-plano .aa-plano-teste {
+	align-items: center;
+}
+
+.aa-painel-plano .aa-plano-teste > span:first-child {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.aa-painel-plano .aa-plano-teste small {
+	opacity: 0.8;
+}
+
+/* ------------------------------------------------------------------ */
+/* Editor do mestre                                                    */
+/* ------------------------------------------------------------------ */
+.academia-arcana .aa-teste {
+	display: grid;
+	grid-template-columns: 200px 1fr;
+	height: 100%;
+	min-height: 0;
+}
+
+.academia-arcana .aa-teste-lista {
+	overflow-y: auto;
+	padding: 0.5rem;
+	border-right: 1px solid var(--aa-borda);
+}
+
+.academia-arcana .aa-teste-lista h4 {
+	margin: 0.6rem 0 0.25rem;
+	border: none;
+	font-size: 0.72rem;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-teste-lista ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.academia-arcana .aa-teste-lista li {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.2rem 0.3rem;
+	margin-bottom: 2px;
+	border: 1px solid transparent;
+	border-radius: 6px;
+}
+
+.academia-arcana .aa-teste-lista li:hover {
+	background: var(--aa-roxo-claro);
+}
+
+.academia-arcana .aa-teste-lista li.selecionado {
+	border-color: var(--aa-ouro);
+	background: var(--aa-roxo-claro);
+}
+
+.academia-arcana .aa-teste-guardado {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	line-height: 1.15;
+	cursor: pointer;
+}
+
+.academia-arcana .aa-teste-guardado small {
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-teste-novos {
+	display: flex;
+	gap: 0.3rem;
+}
+
+.academia-arcana .aa-teste-editor {
+	display: flex;
+	flex-direction: column;
+	gap: 0.55rem;
+	min-height: 0;
+	overflow-y: auto;
+	padding: 0.5rem 0.75rem 0.75rem;
+}
+
+.academia-arcana .aa-teste-editor label {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	font-weight: bold;
+}
+
+.academia-arcana .aa-teste-editor label small,
+.academia-arcana .aa-teste-editor legend small {
+	font-weight: normal;
+	color: var(--aa-texto-suave);
+}
+
+.academia-arcana .aa-teste-editor textarea {
+	resize: vertical;
+	font-family: inherit;
+}
+
+.academia-arcana .aa-teste-editor input,
+.academia-arcana .aa-teste-editor textarea {
+	font-weight: normal;
+}
+
+.academia-arcana .aa-teste-numeros {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+	gap: 0.5rem;
+}
+
+.academia-arcana .aa-teste-cd-campo {
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+}
+
+.academia-arcana .aa-teste-resultados {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+	border: 1px solid var(--aa-borda);
+	border-radius: 6px;
+}
+
+.academia-arcana .aa-teste-editor button.ativo {
+	border-color: var(--aa-ouro);
+	box-shadow: 0 0 6px var(--aa-ouro);
+}
+
+/* ------------------------------------------------------------------ */
+/* Cartão do chat                                                      */
+/* ------------------------------------------------------------------ */
+.aa-teste-chat {
+	overflow: hidden;
+	border: 1px solid var(--aa-ouro, #c9a227);
+	border-radius: 6px;
+}
+
+.aa-teste-chat header {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.35rem 0.5rem;
+	color: #fff;
+	background: linear-gradient(120deg, #5b3a8c, #2d1b4e);
+	border-bottom: 2px solid var(--aa-ouro, #c9a227);
+}
+
+.aa-teste-chat header > i {
+	font-size: 1.3rem;
+	color: var(--aa-ouro, #c9a227);
+}
+
+.aa-teste-chat header div {
+	display: flex;
+	flex-direction: column;
+}
+
+.aa-teste-chat :is(p, ul) {
+	margin: 0.3rem 0.5rem;
+}
+
+.aa-teste-chat ul {
+	padding-left: 1rem;
+}
+
+.aa-teste-chat .sucesso {
+	color: #2f7d4a;
+}
+
+.aa-teste-chat .falha {
+	color: #a83232;
+}
+
+.aa-teste-chat-resultado.sucesso {
+	color: #2f7d4a;
+}
+
+.aa-teste-chat-resultado.parcial {
+	color: #b7791f;
+}
+
+.aa-teste-chat-resultado.fracasso {
+	color: #a83232;
+}

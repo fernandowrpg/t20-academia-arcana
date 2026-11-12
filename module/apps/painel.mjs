@@ -26,7 +26,7 @@ export function barra(tipo, rotulo, rec, { numeros = true } = {}) {
 }
 
 /* Ordem fixa dos painéis para empilhar os ícones presos no mesmo canto. */
-const ORDEM_ICONES = ["alunos", "ameacas", "placar", "plano"];
+const ORDEM_ICONES = ["alunos", "ameacas", "placar", "plano", "teste"];
 const TAMANHO_ICONE = 44;
 const MARGEM_ICONE = 8;
 /* Soltar o ícone a esta distância de duas bordas prende-o no canto. */

@@ -7,6 +7,7 @@
 			{{#if gm}}
 			{{#if plano}}<a data-action="anterior" data-tooltip="{{#if plano.primeiro}}Voltar à Academia{{else}}Voltar ao plano anterior do roteiro{{/if}}"><i class="fa-solid fa-backward-step"></i></a>{{/if}}
 			{{#unless plano.ultimo}}<a data-action="proximo" data-tooltip="{{#if plano}}Seguir para o próximo plano{{else}}Partir para o primeiro plano (Magika){{/if}}"><i class="fa-solid fa-forward-step"></i></a>{{/unless}}
+			<a data-action="transicao" data-tooltip="Mostrar a todos o cartão de transição {{#if plano}}de {{plano.nome}}{{else}}da Academia{{/if}}"><i class="fa-solid fa-clapperboard"></i></a>
 			<a data-action="editar" data-tooltip="{{#if plano}}Planos da expedição: escolher o plano e editar regras e anotações{{else}}Editar as anotações da Academia ou escolher um plano{{/if}}"><i class="fa-solid fa-pen-to-square"></i></a>
 			{{/if}}
 			{{#unless academia.vazia}}{{#unless minimizado}}<a data-action="recolher" data-tooltip="{{#if recolhido}}Mostrar regras e anotações{{else}}Mostrar só o título{{/if}}"><i class="fa-solid {{#if recolhido}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i></a>{{/unless}}{{/unless}}
@@ -52,6 +53,13 @@
 	<footer class="aa-painel-rodape">
 		<span>{{#if plano.editado}}<i class="fa-solid fa-pen"></i> Regras editadas{{else}}Regras da Wiki Divina{{/if}}</span>
 	</footer>
+	<footer class="aa-painel-rodape aa-plano-teste">
+		<span><i class="fa-solid fa-dice-d20"></i> {{#if teste.definido}}{{teste.titulo}} <small>{{teste.sucessos}}/{{teste.sucessosNecessarios}} · {{teste.falhas}}/{{teste.falhasLimite}}</small>{{else}}Teste estendido{{/if}}</span>
+		<span class="aa-painel-acoes">
+			<a data-action="testeVisivel" class="{{#if teste.visivel}}ativo{{/if}}" data-tooltip="{{#if teste.visivel}}Esconder o painel do teste estendido{{else}}{{#if teste.definido}}Mostrar o painel do teste estendido a todos{{else}}Montar um teste estendido{{/if}}{{/if}}"><i class="fa-solid {{#if teste.visivel}}fa-eye{{else}}fa-eye-slash{{/if}}"></i></a>
+			<a data-action="testeEditar" data-tooltip="Editar o teste estendido"><i class="fa-solid fa-pen-to-square"></i></a>
+		</span>
+	</footer>
 	{{/if}}
 	{{else}}
 	<div class="aa-plano-corpo">
@@ -80,5 +88,14 @@
 		</section>
 		{{/if}}
 	</div>
+	{{#if gm}}
+	<footer class="aa-painel-rodape aa-plano-teste">
+		<span><i class="fa-solid fa-dice-d20"></i> {{#if teste.definido}}{{teste.titulo}} <small>{{teste.sucessos}}/{{teste.sucessosNecessarios}} · {{teste.falhas}}/{{teste.falhasLimite}}</small>{{else}}Teste estendido{{/if}}</span>
+		<span class="aa-painel-acoes">
+			<a data-action="testeVisivel" class="{{#if teste.visivel}}ativo{{/if}}" data-tooltip="{{#if teste.visivel}}Esconder o painel do teste estendido{{else}}{{#if teste.definido}}Mostrar o painel do teste estendido a todos{{else}}Montar um teste estendido{{/if}}{{/if}}"><i class="fa-solid {{#if teste.visivel}}fa-eye{{else}}fa-eye-slash{{/if}}"></i></a>
+			<a data-action="testeEditar" data-tooltip="Editar o teste estendido"><i class="fa-solid fa-pen-to-square"></i></a>
+		</span>
+	</footer>
+	{{/if}}
 	{{/if}}
 </div>

@@ -67,6 +67,7 @@ export function registrarConfiguracoes(CatalogoApp) {
 	painel("painelAmeacas");
 	painel("painelPlacar");
 	painel("painelPlano");
+	painel("painelTeste");
 
 	game.settings.register(MODULO, "temaPlano", {
 		name: "ACADEMIA.Config.temaPlano.Nome",
@@ -90,6 +91,25 @@ export function registrarConfiguracoes(CatalogoApp) {
 		config: true,
 		type: Boolean,
 		default: true,
+		onChange: notificar
+	});
+
+	game.settings.register(MODULO, "transicaoPlano", {
+		name: "ACADEMIA.Config.transicaoPlano.Nome",
+		hint: "ACADEMIA.Config.transicaoPlano.Dica",
+		scope: "world",
+		config: true,
+		type: Boolean,
+		default: true,
+		onChange: notificar
+	});
+
+	/* Teste estendido do painel flutuante: o teste atual, o progresso e os testes guardados (veja teste-estendido.mjs). */
+	game.settings.register(MODULO, "testeEstendido", {
+		scope: "world",
+		config: false,
+		type: Object,
+		default: { visivel: false, atual: {}, sucessos: 0, falhas: 0, salvos: [] },
 		onChange: notificar
 	});
 

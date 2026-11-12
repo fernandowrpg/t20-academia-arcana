@@ -8,6 +8,7 @@
 		"Atividades": "Atividades Extracurriculares",
 		"Catalogo": "Catálogo de Disciplinas",
 		"Planos": "Planos da Expedição",
+		"TesteEstendido": "Teste Estendido",
 		"BotaoFicha": "Academia",
 		"Config": {
 			"minDisciplinas": {
@@ -60,6 +61,14 @@
 			"planoJogadores": {
 				"Nome": "Jogadores veem o painel do plano",
 				"Dica": "Mostra aos jogadores o painel do plano (regras e anotações da mesa, nunca as notas do mestre), as anotações da Academia e o tema do plano. Desmarcado, só o mestre vê."
+			},
+			"transicaoPlano": {
+				"Nome": "Transição ao trocar de plano",
+				"Dica": "Quando o mestre leva a turma a outro plano (ou de volta à Academia), um cartão com o nome, o deus e a regra planar aparece no centro da tela de quem vê o painel do plano. O mestre também pode mostrá-lo a qualquer momento pelo painel do plano."
+			},
+			"painelTeste": {
+				"Nome": "Exibir o painel de teste estendido",
+				"Dica": "Painel flutuante com o teste estendido que o mestre está mostrando: CD, abordagens e o contador de sucessos e falhas. O mestre mostra, esconde e edita o teste pelo painel do plano."
 			},
 			"pontosAprovacao": {
 				"Nome": "Placar: pontos por aprovação",
@@ -136,7 +145,8 @@
 			"EscolhaOficio": "Escolha qual ofício será usado em {nome}.",
 			"SemOficio": "Estas disciplinas ainda não têm ofício escolhido: {lista}. Iniciar o semestre mesmo assim? O mestre pode definir depois no boletim.",
 			"SomenteMestrePlanos": "Apenas o mestre edita os planos da expedição.",
-			"ChegadaPlano": "A expedição chegou a {nome}."
+			"SomenteMestreTeste": "Apenas o mestre edita o teste estendido.",
+			"TesteSemTitulo": "Dê um título ao teste para guardá-lo."
 		}
 	}
 }

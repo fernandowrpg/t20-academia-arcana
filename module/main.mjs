@@ -12,6 +12,9 @@ import { PainelAmeacasApp } from "./apps/painel-ameacas.mjs";
 import { PainelPlacarApp } from "./apps/painel-placar.mjs";
 import { PainelPlanoApp } from "./apps/painel-plano.mjs";
 import { PlanosApp } from "./apps/planos.mjs";
+import { PainelTesteApp } from "./apps/painel-teste.mjs";
+import { TesteEstendidoApp } from "./apps/teste-estendido.mjs";
+import { mostrarTransicao, mostrarTransicaoATodos, registrarSocketTransicao } from "./transicao.mjs";
 import { aplicarTemaDoPlano, definirPlanoAtual, anunciarPlano } from "./planos.mjs";
 import * as planos from "./data/planos.mjs";
 import * as dados from "./data/disciplinas.mjs";
@@ -26,6 +29,8 @@ const atualizarPlano = foundry.utils.debounce(() => {
 	aplicarTemaDoPlano();
 	PainelPlanoApp.sincronizar();
 	PlanosApp.atualizar();
+	PainelTesteApp.sincronizar();
+	TesteEstendidoApp.atualizar();
 }, 100);
 
 let cartasPendentes = 0;
@@ -72,6 +77,10 @@ Hooks.once("init", () => {
 		painelPlacar: () => PainelPlacarApp.sincronizar(),
 		painelPlano: () => PainelPlanoApp.sincronizar(),
 		planos: (id) => PlanosApp.abrir(id),
+		painelTeste: () => PainelTesteApp.sincronizar(),
+		testeEstendido: () => TesteEstendidoApp.abrir(),
+		transicao: (id) => mostrarTransicao(id),
+		transicaoParaTodos: (id) => mostrarTransicaoATodos(id),
 		irParaPlano: (id) => definirPlanoAtual(id),
 		anunciarPlano: (id) => anunciarPlano(id),
 		dadosPlanos: planos,
@@ -88,6 +97,7 @@ Hooks.once("ready", () => {
 		console.warn(`${MODULO} | Este módulo foi feito para o sistema Tormenta20; sistema atual: ${game.system.id}`);
 	}
 	registrarSocket();
+	registrarSocketTransicao();
 	registrarGuardas();
 	migrarRegistroAntigo().then(() => sincronizarPermissoes());
 	cartasPendentes = totalNaoLidas();
@@ -96,6 +106,7 @@ Hooks.once("ready", () => {
 	PainelPlacarApp.sincronizar();
 	aplicarTemaDoPlano();
 	PainelPlanoApp.sincronizar();
+	PainelTesteApp.sincronizar();
 });
 
 Hooks.on("updateActor", (actor, mudancas) => {

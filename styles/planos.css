@@ -741,3 +741,143 @@ body.aa-plano-moldura[data-aa-plano]::after {
 .aa-plano-chat[data-aa-plano] p {
 	margin: 0.2rem 0.5rem 0.4rem;
 }
+
+/* ------------------------------------------------------------------ */
+/* Cartão de transição entre planos (centro da tela)                   */
+/* ------------------------------------------------------------------ */
+.aa-transicao {
+	position: fixed;
+	z-index: 100;
+	top: 18vh;
+	left: 50%;
+	min-width: 360px;
+	max-width: min(640px, 90vw);
+	padding: 1.4rem 2.6rem 1.3rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.3rem;
+	overflow: hidden;
+	text-align: center;
+	color: var(--aa-p-texto, #f4ecff);
+	background:
+		var(--aa-p-padrao, none),
+		linear-gradient(180deg, color-mix(in srgb, var(--aa-p-acento, #c9a227) 16%, transparent), transparent 70%),
+		linear-gradient(170deg, var(--aa-p-fundo, #1d1230), var(--aa-p-fundo-2, #2a1a45));
+	border: 1px solid var(--aa-p-acento, #c9a227);
+	border-radius: 10px;
+	box-shadow:
+		inset 0 0 0 4px color-mix(in srgb, var(--aa-p-fundo, #1d1230) 70%, transparent),
+		inset 0 0 0 5px var(--aa-p-linha, rgba(201, 162, 39, 0.3)),
+		0 0 40px var(--aa-p-vinheta, rgba(91, 58, 140, 0.5)),
+		0 24px 60px rgba(0, 0, 0, 0.6);
+	font-family: var(--aa-fonte-titulo, "Modesto Condensed", "Palatino Linotype", serif);
+	pointer-events: auto;
+	cursor: pointer;
+	transform: translateX(-50%);
+	animation: aa-transicao-entra 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.aa-transicao.saindo {
+	animation: aa-transicao-sai 0.4s ease-in forwards;
+}
+
+.aa-transicao .aa-transicao-emblema {
+	display: grid;
+	place-items: center;
+	width: 64px;
+	height: 64px;
+	margin-bottom: 0.3rem;
+	font-size: 1.9rem;
+	color: var(--aa-p-acento, #c9a227);
+	background: var(--aa-p-padrao, none), var(--aa-p-topo, #5b3a8c);
+	border: 2px solid var(--aa-p-acento, #c9a227);
+	border-radius: 50%;
+	box-shadow: 0 0 18px color-mix(in srgb, var(--aa-p-acento, #c9a227) 55%, transparent);
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+	animation: aa-plano-pulso 3.5s ease-in-out infinite;
+}
+
+.aa-transicao .aa-transicao-chamada {
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.4em;
+	text-transform: uppercase;
+	color: var(--aa-p-suave, rgba(244, 236, 255, 0.7));
+}
+
+.aa-transicao .aa-transicao-titulo {
+	font-size: 2.1rem;
+	font-weight: 800;
+	letter-spacing: 0.12em;
+	line-height: 1.1;
+	text-transform: uppercase;
+	color: var(--aa-p-titulo, var(--aa-p-texto, #fff));
+	text-shadow: 0 0 18px color-mix(in srgb, var(--aa-p-acento, #c9a227) 55%, transparent);
+}
+
+.aa-transicao .aa-transicao-subtitulo {
+	margin-top: 0.25rem;
+	padding-top: 0.4rem;
+	font-size: 0.8rem;
+	letter-spacing: 0.25em;
+	text-transform: uppercase;
+	color: var(--aa-p-suave, rgba(244, 236, 255, 0.7));
+	border-top: 1px solid var(--aa-p-acento, #c9a227);
+}
+
+.aa-transicao .aa-transicao-regra {
+	margin-top: 0.5rem;
+	padding: 0.2rem 0.8rem;
+	font-size: 0.95rem;
+	font-style: italic;
+	color: var(--aa-p-titulo, var(--aa-p-acento, #c9a227));
+	background: color-mix(in srgb, var(--aa-p-fundo, #1d1230) 75%, transparent);
+	border-radius: 999px;
+}
+
+.aa-transicao .aa-transicao-dados {
+	font-size: 0.72rem;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: var(--aa-p-suave, rgba(244, 236, 255, 0.7));
+}
+
+/* Barra que mostra quanto tempo falta; para enquanto o mouse está em cima. */
+.aa-transicao .aa-transicao-tempo {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	height: 3px;
+	width: 100%;
+	background: var(--aa-p-acento, #c9a227);
+	transform-origin: left;
+	animation: aa-transicao-tempo var(--aa-transicao-duracao, 7s) linear forwards;
+}
+
+.aa-transicao.parado .aa-transicao-tempo {
+	animation: none;
+	opacity: 0.4;
+}
+
+@keyframes aa-transicao-entra {
+	0% { opacity: 0; transform: translate(-50%, 16px) scale(0.96); filter: blur(4px); }
+	100% { opacity: 1; transform: translate(-50%, 0) scale(1); filter: blur(0); }
+}
+
+@keyframes aa-transicao-sai {
+	100% { opacity: 0; transform: translate(-50%, -10px); }
+}
+
+@keyframes aa-transicao-tempo {
+	from { transform: scaleX(1); }
+	to { transform: scaleX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.aa-transicao,
+	.aa-transicao.saindo,
+	.aa-transicao .aa-transicao-emblema {
+		animation: none;
+	}
+}

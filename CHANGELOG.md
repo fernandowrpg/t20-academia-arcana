@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.21.0
+
+- **Transição entre planos**: ao levar a turma a outro plano ou de volta à Academia, um cartão aparece no centro da tela, nas cores do plano, com o ato e a parada do roteiro, o nome, o deus, a regra planar, o nível, a CD e o perigo. Some sozinho (o mouse em cima segura o cartão; um clique fecha) e substitui o aviso de chegada. Aparece para quem vê o painel do plano e pode ser desligado na configuração *Transição ao trocar de plano*.
+- Painel do plano: novo botão (claquete) para o mestre mostrar o cartão de transição a todos a qualquer momento.
+- **Teste estendido**: novo painel flutuante com o teste estendido da cena e um contador de sucessos e falhas, no formato do template *T20 - Teste Estendido*. Mostra a CD (vazia usa a do plano atual), "X sucessos antes de Y falhas", o que cada teste representa, perícias principais e alternativas, a tabela de abordagens, regras especiais, os eventos de cada falha (os jogadores veem quando a falha acontece) e o resultado quando o teste termina (sucesso total, parcial ou fracasso). Arrasta, recolhe e minimiza em ícone como os outros painéis; cada usuário pode desligá-lo nas configurações.
+- O mestre controla o teste pelo rodapé do painel do plano: o olho mostra ou esconde o painel para todos e o lápis abre o editor. No painel, marca sucessos e falhas clicando nas caixas ou em + e −.
+- **Editor do teste estendido** (mestre): todos os campos do template, lista de testes guardados para reaproveitar, zerar o contador, anunciar no chat e um exemplo pronto (*A Rua que Andou*).
+
 ## 1.20.1
 
 - Painel de alunos, versão detalhada: letras maiores no grêmio e nas perícias, e o bônus de cada perícia numa pastilha de cor sólida com algarismos alinhados, legível nos dois temas. O brasão do grêmio no retrato ficou um pouco maior.

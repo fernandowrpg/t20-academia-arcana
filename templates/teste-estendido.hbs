@@ -1,0 +1,88 @@
+<div class="aa-janela aa-teste">
+	<nav class="aa-teste-lista">
+		<div class="aa-botoes aa-teste-novos">
+			<button type="button" data-action="novo"><i class="fa-solid fa-file"></i> Novo</button>
+			<button type="button" data-action="exemplo" data-tooltip="A Rua que Andou (Magika), para ver como fica"><i class="fa-solid fa-lightbulb"></i> Exemplo</button>
+		</div>
+		<h4>Testes guardados</h4>
+		<ul>
+			{{#each salvos}}
+			<li data-indice="{{indice}}" class="{{#if atual}}selecionado{{/if}}">
+				<a data-action="carregar" class="aa-teste-guardado" data-tooltip="Usar este teste (zera o contador)">
+					<strong>{{titulo}}</strong>
+					<small>{{#if cd}}CD {{cd}} · {{/if}}{{meta}}</small>
+				</a>
+				<a data-action="excluir" data-tooltip="Excluir da lista"><i class="fa-solid fa-trash"></i></a>
+			</li>
+			{{else}}
+			<li class="aa-dica">Nenhum teste guardado. Monte um teste e use <em>Guardar</em> para reaproveitá-lo depois.</li>
+			{{/each}}
+		</ul>
+	</nav>
+	<section class="aa-teste-editor">
+		<div class="aa-botoes">
+			<button type="button" data-action="visivel" class="{{#if visivel}}ativo{{/if}}">
+				{{#if visivel}}<i class="fa-solid fa-eye-slash"></i> Esconder dos jogadores{{else}}<i class="fa-solid fa-eye"></i> Mostrar aos jogadores{{/if}}
+			</button>
+			<button type="button" data-action="zerar"><i class="fa-solid fa-rotate-left"></i> Zerar ({{resumo.sucessos}}/{{resumo.sucessosNecessarios}} · {{resumo.falhas}}/{{resumo.falhasLimite}})</button>
+			<button type="button" data-action="guardar" data-tooltip="Guarda uma cópia na lista à esquerda (substitui a de mesmo título)"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+			<button type="button" data-action="anunciar" data-tooltip="Mostra o teste e o progresso no chat"><i class="fa-solid fa-bullhorn"></i> Chat</button>
+		</div>
+		<p class="aa-dica">{{#if visivel}}<i class="fa-solid fa-eye"></i> O painel do teste está na tela de todos.{{else}}<i class="fa-solid fa-eye-slash"></i> O painel está escondido. Os jogadores não veem nada até você mostrar.{{/if}} O texto é salvo ao sair de cada campo.</p>
+
+		<label>Título
+			<input type="text" name="titulo" value="{{teste.titulo}}" maxlength="80" placeholder="A Rua que Andou, Fuga do Labirinto, Escalada da Torre...">
+		</label>
+		<label>O que está em jogo <small>(uma frase; todos veem)</small>
+			<input type="text" name="contexto" value="{{teste.contexto}}" maxlength="200">
+		</label>
+		<div class="aa-teste-numeros">
+			<label>CD <small>{{#if plano}}(vazio: CD do plano, {{plano.cd}}){{else}}(vazio: sem CD){{/if}}</small>
+				<span class="aa-teste-cd-campo">
+					<input type="number" name="cd" value="{{teste.cd}}" min="0" max="99" placeholder="{{#if plano}}{{plano.cd}}{{/if}}">
+					{{#if plano}}<a data-action="cdDoPlano" data-tooltip="Usar a CD de {{plano.nome}} (18 + nível)"><i class="fa-solid fa-dungeon"></i></a>{{/if}}
+				</span>
+			</label>
+			<label>Sucessos necessários
+				<input type="number" name="sucessosNecessarios" value="{{teste.sucessosNecessarios}}" min="1" max="10">
+			</label>
+			<label>Limite de falhas
+				<input type="number" name="falhasLimite" value="{{teste.falhasLimite}}" min="1" max="10">
+			</label>
+			<label>Cada teste representa
+				<input type="text" name="intervalo" value="{{teste.intervalo}}" maxlength="60" placeholder="1 rodada, 10 minutos, 1 hora, 1 dia">
+			</label>
+		</div>
+		<label>Perícias principais
+			<input type="text" name="principais" value="{{teste.principais}}" maxlength="200" placeholder="Perícia A, Perícia B">
+		</label>
+		<label>Perícias alternativas <small>(CD +5)</small>
+			<input type="text" name="alternativas" value="{{teste.alternativas}}" maxlength="200" placeholder="Perícia C">
+		</label>
+		<label>Abordagens <small>(uma por linha: <code>Perícia | CD | descrição</code>; sem CD usa a do teste; **negrito** e *itálico*)</small>
+			<textarea name="abordagens" rows="6">{{teste.abordagens}}</textarea>
+		</label>
+		<label>Regras especiais <small>(uma por linha; todos veem)</small>
+			<textarea name="regras" rows="3" placeholder="Mesma perícia em duas rodadas seguidas: +5 na CD...">{{teste.regras}}</textarea>
+		</label>
+		<label>Eventos por falha <small>(um por linha, na ordem: 1ª falha, 2ª falha, fracasso; os jogadores veem cada um quando a falha acontece)</small>
+			<textarea name="eventos" rows="4">{{teste.eventos}}</textarea>
+		</label>
+		<fieldset class="aa-teste-resultados">
+			<legend>Resultado <small>(aparece para todos quando o teste termina)</small></legend>
+			<label>Sucesso total
+				<input type="text" name="total" value="{{teste.total}}" maxlength="300">
+			</label>
+			<label>Sucesso parcial <small>(venceu com {{resumo.falhasParcial}} falha(s))</small>
+				<input type="text" name="parcial" value="{{teste.parcial}}" maxlength="300">
+			</label>
+			<label>Fracasso
+				<input type="text" name="fracasso" value="{{teste.fracasso}}" maxlength="300">
+			</label>
+		</fieldset>
+		<label><span><i class="fa-solid fa-eye-slash"></i> Notas do mestre <small>(só o mestre vê)</small></span>
+			<textarea name="segredo" rows="3">{{teste.segredo}}</textarea>
+		</label>
+		<p class="aa-dica">Formato do template <em>T20 - Teste Estendido</em>: em geral 4–5 sucessos antes de 3 falhas; na expedição, CD 18 + nível do plano. Ajudar (CD 10) dá +2 no próximo teste e não conta como sucesso.</p>
+	</section>
+</div>

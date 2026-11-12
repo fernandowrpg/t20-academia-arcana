@@ -1,5 +1,6 @@
 import { MODULO, opcao } from "./config.mjs";
 import { ACADEMIA, ATOS, PLANOS, PLANOS_POR_ID, cdDoPlano } from "./data/planos.mjs";
+import { transicaoAutomatica } from "./transicao.mjs";
 
 /*
  * Estado da expedição, gravado na configuração de mundo "expedicao":
@@ -181,9 +182,7 @@ export function aplicarTemaDoPlano() {
 	corpo.classList.toggle("aa-plano-paineis", visivel && (modo === "paineis" || modo === "moldura"));
 	corpo.classList.toggle("aa-plano-moldura", visivel && modo === "moldura");
 
-	/* Aviso de chegada quando o mestre troca de plano (não na carga do mundo). */
-	if (ultimoPlano !== null && atual !== ultimoPlano && visivel) {
-		ui.notifications.info(game.i18n.format("ACADEMIA.Aviso.ChegadaPlano", { nome: PLANOS_POR_ID.get(atual).nome }));
-	}
+	/* Cartão de transição quando o mestre troca de plano ou volta à Academia (não na carga do mundo). */
+	if (ultimoPlano !== null && atual !== ultimoPlano) transicaoAutomatica(atual);
 	ultimoPlano = atual;
 }

@@ -1,0 +1,77 @@
+<div class="aa-painel-conteudo">
+	<header class="aa-painel-topo" data-tooltip="Arraste para mover; clique duplo para voltar à posição padrão">
+		<i class="fa-solid fa-dice-d20"></i>
+		<strong>{{titulo}}</strong>
+		<span class="aa-painel-rodada" data-tooltip="Sucessos e falhas">{{sucessos}}/{{sucessosNecessarios}} · {{falhas}}/{{falhasLimite}}</span>
+		<span class="aa-painel-acoes">
+			{{#if gm}}<a data-action="editar" data-tooltip="Editar o teste estendido"><i class="fa-solid fa-pen-to-square"></i></a>{{/if}}
+			{{#unless minimizado}}<a data-action="recolher" data-tooltip="{{#if recolhido}}Mostrar abordagens e eventos{{else}}Mostrar só o contador{{/if}}"><i class="fa-solid {{#if recolhido}}fa-chevron-down{{else}}fa-chevron-up{{/if}}"></i></a>{{/unless}}
+			<a data-action="minimizar" data-tooltip="{{#if minimizado}}Mostrar o painel{{else}}Minimizar o painel{{/if}}"><i class="fa-solid {{#if minimizado}}fa-window-maximize{{else}}fa-window-minimize{{/if}}"></i></a>
+		</span>
+	</header>
+	<div class="aa-teste-cabeca">
+		<span class="aa-teste-cd" data-tooltip="{{cdDica}}">CD {{#if cd}}{{cd}}{{else}}—{{/if}}</span>
+		<span class="aa-teste-meta"><span><strong>{{sucessosNecessarios}} sucessos</strong> antes de <strong>{{falhasLimite}} falhas</strong></span>{{#if intervalo}}<small><i class="fa-regular fa-hourglass-half"></i> Cada teste: {{intervalo}}</small>{{/if}}</span>
+	</div>
+	<div class="aa-teste-contador">
+		<div class="aa-teste-linha sucesso">
+			<span class="aa-teste-rotulo"><i class="fa-solid fa-check"></i> Sucessos</span>
+			<span class="aa-teste-caixas">
+				{{#each caixasSucesso}}<span class="aa-teste-caixa {{#if marcada}}marcada{{/if}}" {{#if ../gm}}data-action="caixa" data-tipo="sucessos" data-indice="{{indice}}"{{/if}}>{{#if marcada}}<i class="fa-solid fa-check"></i>{{/if}}</span>{{/each}}
+			</span>
+			{{#if gm}}<span class="aa-teste-botoes"><a data-action="marcar" data-tipo="sucessos" data-delta="-1" data-tooltip="Desmarcar um sucesso"><i class="fa-solid fa-minus"></i></a><a data-action="marcar" data-tipo="sucessos" data-delta="1" data-tooltip="Marcar um sucesso"><i class="fa-solid fa-plus"></i></a></span>{{/if}}
+		</div>
+		<div class="aa-teste-linha falha">
+			<span class="aa-teste-rotulo"><i class="fa-solid fa-xmark"></i> Falhas</span>
+			<span class="aa-teste-caixas">
+				{{#each caixasFalha}}<span class="aa-teste-caixa {{#if marcada}}marcada{{/if}}" {{#if ../gm}}data-action="caixa" data-tipo="falhas" data-indice="{{indice}}"{{/if}}>{{#if marcada}}<i class="fa-solid fa-xmark"></i>{{/if}}</span>{{/each}}
+			</span>
+			{{#if gm}}<span class="aa-teste-botoes"><a data-action="marcar" data-tipo="falhas" data-delta="-1" data-tooltip="Desmarcar uma falha"><i class="fa-solid fa-minus"></i></a><a data-action="marcar" data-tipo="falhas" data-delta="1" data-tooltip="Marcar uma falha"><i class="fa-solid fa-plus"></i></a></span>{{/if}}
+		</div>
+		{{#if terminado}}
+		<div class="aa-teste-resultado {{situacao}}">
+			<strong>{{rotuloSituacao}}</strong>{{#if resultado}}<span>{{{resultado}}}</span>{{/if}}
+		</div>
+		{{/if}}
+	</div>
+	<div class="aa-teste-corpo aa-painel-detalhe">
+		{{#if contexto}}<p class="aa-teste-contexto">{{{contexto}}}</p>{{/if}}
+		{{#if principais}}<p><strong>Perícias principais:</strong> {{{principais}}}</p>{{/if}}
+		{{#if alternativas}}<p><strong>Alternativas (CD +5):</strong> {{{alternativas}}}</p>{{/if}}
+		{{#if abordagens.length}}
+		<table class="aa-teste-abordagens">
+			<thead><tr><th>Perícia</th><th>CD</th><th>Abordagem</th></tr></thead>
+			<tbody>
+				{{#each abordagens}}<tr><td>{{{pericia}}}</td><td>{{cd}}</td><td>{{{descricao}}}</td></tr>{{/each}}
+			</tbody>
+		</table>
+		{{/if}}
+		{{#if regras.length}}
+		<ul class="aa-teste-regras">{{#each regras}}<li>{{{this}}}</li>{{/each}}</ul>
+		{{/if}}
+		{{#if eventos.length}}
+		<section class="aa-teste-eventos">
+			<h3><i class="fa-solid fa-bolt"></i> {{#if gm}}Eventos por falha{{else}}O que deu errado{{/if}}</h3>
+			<ol>{{#each eventos}}<li class="{{#if ocorreu}}ocorreu{{/if}}" value="{{numero}}">{{{texto}}}</li>{{/each}}</ol>
+		</section>
+		{{/if}}
+		{{#if resultadosMestre.length}}
+		<section class="aa-teste-segredo">
+			<h3><i class="fa-solid fa-eye-slash"></i> Resultados (só o mestre vê)</h3>
+			<ul>{{#each resultadosMestre}}<li class="{{#if atual}}atual{{/if}}"><strong>{{rotulo}}:</strong> {{{texto}}}</li>{{/each}}</ul>
+			{{#each segredo}}<p>{{{this}}}</p>{{/each}}
+		</section>
+		{{else}}{{#if segredo.length}}
+		<section class="aa-teste-segredo">
+			<h3><i class="fa-solid fa-eye-slash"></i> Só o mestre vê</h3>
+			{{#each segredo}}<p>{{{this}}}</p>{{/each}}
+		</section>
+		{{/if}}{{/if}}
+	</div>
+	{{#if gm}}
+	<footer class="aa-painel-rodape">
+		<span>{{#if terminado}}{{rotuloSituacao}}{{else}}Clique nas caixas para marcar{{/if}}</span>
+		<a data-action="zerar" data-tooltip="Zerar sucessos e falhas"><i class="fa-solid fa-rotate-left"></i> Zerar</a>
+	</footer>
+	{{/if}}
+</div>

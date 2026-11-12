@@ -3,6 +3,9 @@ import { PLANOS } from "../data/planos.mjs";
 import { academiaTemAnotacoes, avancarPlano, dadosDaAcademia, lerExpedicao, planoAtual, textoEmItens, textoEmParagrafos } from "../planos.mjs";
 import { PainelFlutuante } from "./painel.mjs";
 import { PlanosApp } from "./planos.mjs";
+import { TesteEstendidoApp } from "./teste-estendido.mjs";
+import { mostrarTransicaoATodos } from "../transicao.mjs";
+import { alternarVisibilidade, lerTeste, testeDefinido } from "../teste-estendido.mjs";
 
 const LARGURA = 310;
 
@@ -24,7 +27,10 @@ export class PainelPlanoApp extends PainelFlutuante {
 		actions: {
 			anterior: PainelPlanoApp.#anterior,
 			proximo: PainelPlanoApp.#proximo,
-			editar: PainelPlanoApp.#editar
+			editar: PainelPlanoApp.#editar,
+			transicao: PainelPlanoApp.#transicao,
+			testeVisivel: PainelPlanoApp.#testeVisivel,
+			testeEditar: PainelPlanoApp.#testeEditar
 		}
 	};
 
@@ -41,6 +47,10 @@ export class PainelPlanoApp extends PainelFlutuante {
 		const gm = game.user.isGM;
 		const plano = planoAtual();
 		const contexto = { gm, recolhido: this.recolhido, minimizado: this.minimizado, total: PLANOS.length, plano: null, academia: null };
+		if (gm) {
+			const teste = lerTeste();
+			contexto.teste = { visivel: teste.visivel, definido: testeDefinido(teste), titulo: teste.atual.titulo.trim() || "Teste estendido", sucessos: teste.sucessos, falhas: teste.falhas, sucessosNecessarios: teste.atual.sucessosNecessarios, falhasLimite: teste.atual.falhasLimite };
+		}
 		if (!plano) {
 			const academia = dadosDaAcademia();
 			const anotacoes = textoEmParagrafos(academia.anotacoes);
@@ -76,5 +86,22 @@ export class PainelPlanoApp extends PainelFlutuante {
 
 	static #editar() {
 		PlanosApp.abrir(lerExpedicao().atual || "academia");
+	}
+
+	/* Mostra a todos o cartão de transição do lugar atual (plano ou Academia). */
+	static #transicao() {
+		mostrarTransicaoATodos(lerExpedicao().atual);
+	}
+
+	/* Sem teste montado, mostrar abre o editor em vez de pôr um painel vazio na tela. */
+	static #testeVisivel() {
+		if (!game.user.isGM) return;
+		const teste = lerTeste();
+		if (!teste.visivel && !testeDefinido(teste)) return TesteEstendidoApp.abrir();
+		alternarVisibilidade();
+	}
+
+	static #testeEditar() {
+		TesteEstendidoApp.abrir();
 	}
 }
