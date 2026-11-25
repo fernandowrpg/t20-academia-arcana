@@ -1,5 +1,6 @@
 import { MODULO, opcao } from "../config.mjs";
-import { alternarCdOculta, contextoDoTeste, lerTeste, marcar, marcarAte, zerarTeste } from "../teste-estendido.mjs";
+import { ajustarContador, alternarCdOculta, avancarRodada, contextoDoTeste, lerTeste, marcar, marcarAte, progressoAtual, rolarPericia, zerarTeste } from "../teste-estendido.mjs";
+import { macroDoTeste } from "../vault.mjs";
 import { PainelFlutuante } from "./painel.mjs";
 import { TesteEstendidoApp } from "./teste-estendido.mjs";
 
@@ -22,7 +23,11 @@ export class PainelTesteApp extends PainelFlutuante {
 			caixa: PainelTesteApp.#caixa,
 			zerar: PainelTesteApp.#zerar,
 			cdOculta: PainelTesteApp.#cdOculta,
-			editar: PainelTesteApp.#editar
+			editar: PainelTesteApp.#editar,
+			rodada: PainelTesteApp.#rodada,
+			contador: PainelTesteApp.#contador,
+			rolar: PainelTesteApp.#rolar,
+			copiarMacro: PainelTesteApp.#copiarMacro
 		}
 	};
 
@@ -64,5 +69,25 @@ export class PainelTesteApp extends PainelFlutuante {
 
 	static #editar() {
 		TesteEstendidoApp.abrir();
+	}
+
+	static #rodada(event, alvo) {
+		if (game.user.isGM) avancarRodada(Number(alvo.dataset.delta) || 0);
+	}
+
+	static #contador(event, alvo) {
+		if (game.user.isGM) ajustarContador(alvo.dataset.nome, Number(alvo.dataset.delta) || 0);
+	}
+
+	/* Qualquer usuário rola a perícia da abordagem com o token selecionado ou o próprio personagem. */
+	static #rolar(event, alvo) {
+		rolarPericia(alvo.dataset.pericia, Number(alvo.dataset.cd) || null, event);
+	}
+
+	static async #copiarMacro() {
+		if (!game.user.isGM) return;
+		const dados = lerTeste();
+		await game.clipboard.copyPlainText(macroDoTeste(dados.atual, progressoAtual(dados)));
+		ui.notifications.info("Macro do teste copiada.");
 	}
 }

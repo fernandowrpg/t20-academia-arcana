@@ -8,13 +8,16 @@ import {
 	definirCdOculta,
 	excluirGuardado,
 	guardarTeste,
+	importarTestes,
 	lerTeste,
+	progressoAtual,
 	salvarCamposDoTeste,
 	substituirTeste,
 	testeDeExemplo,
 	testeEmBranco,
 	zerarTeste
 } from "../teste-estendido.mjs";
+import { exportarNota, lerDoVault, macroDoTeste, nomeDeArquivo } from "../vault.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 
@@ -54,7 +57,10 @@ export class TesteEstendidoApp extends HandlebarsApplicationMixin(ApplicationV2)
 			guardar: TesteEstendidoApp.#guardar,
 			carregar: TesteEstendidoApp.#carregar,
 			excluir: TesteEstendidoApp.#excluir,
-			cdDoPlano: TesteEstendidoApp.#cdDoPlano
+			cdDoPlano: TesteEstendidoApp.#cdDoPlano,
+			importar: TesteEstendidoApp.#importar,
+			exportar: TesteEstendidoApp.#exportar,
+			copiarMacro: TesteEstendidoApp.#copiarMacro
 		}
 	};
 
@@ -84,6 +90,7 @@ export class TesteEstendidoApp extends HandlebarsApplicationMixin(ApplicationV2)
 		for (const campo of CAMPOS_TESTE) {
 			this.element.querySelector(`[name='${campo}']`)?.addEventListener("change", (ev) => salvarCamposDoTeste({ [campo]: ev.target.value }));
 		}
+		this.element.querySelector("[name='tipo']")?.addEventListener("change", () => this.render());
 		this.element.querySelector("[name='cdOculta']")?.addEventListener("change", (ev) => definirCdOculta(ev.target.checked));
 	}
 
@@ -140,6 +147,56 @@ export class TesteEstendidoApp extends HandlebarsApplicationMixin(ApplicationV2)
 			content: `<p>Excluir <strong>${foundry.utils.escapeHTML(teste.titulo)}</strong> da lista de testes guardados?</p>`
 		});
 		if (ok) await excluirGuardado(indice);
+	}
+
+	/* Notas do Vault (.md) ou texto colado: lê os blocos da macro ou o formato do template. */
+	static async #importar() {
+		const textos = await DialogV2.prompt({
+			window: { title: "Importar do Vault", icon: "fa-solid fa-file-import" },
+			position: { width: 520 },
+			content: `<p>Escolha notas do Vault (<code>.md</code>) ou cole o texto de uma nota ou da macro. O módulo lê o bloco da macro do Foundry ou, sem ele, a nota no formato do template <em>T20 - Teste Estendido</em>.</p>
+				<div class="form-group"><label>Notas</label><input type="file" name="arquivos" accept=".md,.json,.txt" multiple></div>
+				<div class="form-group stacked"><label>Ou cole aqui</label><textarea name="texto" rows="8"></textarea></div>`,
+			ok: {
+				label: "Importar",
+				callback: async (event, botao) => {
+					const form = botao.form;
+					const lidos = await Promise.all([...(form.elements.arquivos.files ?? [])].map(async (f) => ({ texto: await f.text(), origem: f.name })));
+					if (form.elements.texto.value.trim()) lidos.push({ texto: form.elements.texto.value, origem: "" });
+					return lidos;
+				}
+			},
+			rejectClose: false
+		});
+		if (!textos?.length) return;
+		const itens = [];
+		for (const { texto, origem } of textos) {
+			const r = lerDoVault(texto, origem);
+			itens.push(...r.testes);
+			for (const e of r.erros) ui.notifications.error(`Não consegui ler o teste de ${e}`);
+		}
+		if (!itens.length) return ui.notifications.warn("Nenhum teste encontrado. A nota precisa da macro do Foundry ou do formato do template T20 - Teste Estendido.");
+		const importados = await importarTestes(itens);
+		ui.notifications.info(`${importados.length} teste(s) importado(s) e guardado(s). Na tela: ${importados.at(-1).titulo || "sem título"}.`);
+		this.render();
+	}
+
+	static async #exportar() {
+		const dados = lerTeste();
+		const comProgresso = await DialogV2.confirm({
+			window: { title: "Exportar para o Vault" },
+			content: "<p>Incluir o progresso atual na macro da nota exportada?</p>",
+			yes: { label: "Com progresso" },
+			no: { label: "Só o teste" },
+			rejectClose: false
+		});
+		if (comProgresso === null) return;
+		foundry.utils.saveDataToFile(exportarNota(dados.atual, comProgresso ? progressoAtual(dados) : null), "text/markdown", nomeDeArquivo(dados.atual));
+	}
+
+	static async #copiarMacro() {
+		await game.clipboard.copyPlainText(macroDoTeste(lerTeste().atual));
+		ui.notifications.info("Macro do teste copiada.");
 	}
 
 	/* Deixa a CD em branco: o teste passa a usar a CD do plano atual (18 + nível). */

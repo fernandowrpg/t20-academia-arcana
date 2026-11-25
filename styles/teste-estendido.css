@@ -475,3 +475,54 @@
 .aa-teste-chat-resultado.fracasso {
 	color: #a83232;
 }
+
+/* ---------- Perigo complexo: rodada, trilhas e marcadores ---------- */
+
+.aa-painel-teste .aa-teste-linha.rodada .aa-teste-rotulo,
+.aa-painel-teste .aa-teste-linha.trilha .aa-teste-rotulo,
+.aa-painel-teste .aa-teste-linha.marcador .aa-teste-rotulo {
+	flex: 1;
+	width: auto;
+}
+
+.aa-painel-teste .aa-teste-linha.trilha .aa-teste-caixas,
+.aa-painel-teste .aa-teste-linha.marcador .aa-teste-contador-valor {
+	flex: none;
+}
+
+.aa-painel-teste .trilha .aa-teste-caixa.marcada {
+	border-color: var(--aa-azul, #5aa9e6);
+	background: var(--aa-azul, #5aa9e6);
+	box-shadow: 0 0 6px var(--aa-azul, #5aa9e6);
+}
+
+.aa-painel-teste .aa-teste-linha.trilha.completa {
+	border-radius: 4px;
+	box-shadow: inset 0 0 0 1px var(--aa-ouro);
+}
+
+.aa-painel-teste .aa-teste-contador-valor {
+	min-width: 1.5rem;
+	text-align: center;
+	color: var(--aa-ambar, #e0a84f);
+	font-size: 1rem;
+	font-variant-numeric: tabular-nums;
+}
+
+.aa-painel-teste .aa-teste-resultado.fim {
+	color: var(--aa-ambar, #e0a84f);
+}
+
+/* Perícias das abordagens que rolam com um clique. */
+.aa-painel-teste .aa-teste-rolar {
+	display: inline-block;
+	margin: 0 0.15rem 0.1rem 0;
+	padding: 0 0.3rem;
+	border: 1px solid var(--aa-linha, rgba(244, 236, 255, 0.14));
+	border-radius: 3px;
+	white-space: nowrap;
+}
+
+.aa-painel-teste .aa-teste-rolar:hover {
+	border-color: var(--aa-ouro);
+}

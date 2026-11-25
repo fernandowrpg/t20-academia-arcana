@@ -4,6 +4,9 @@
 			<button type="button" data-action="novo"><i class="fa-solid fa-file"></i> Novo</button>
 			<button type="button" data-action="exemplo" data-tooltip="A Rua que Andou (Magika), para ver como fica"><i class="fa-solid fa-lightbulb"></i> Exemplo</button>
 		</div>
+		<div class="aa-botoes aa-teste-novos">
+			<button type="button" data-action="importar" data-tooltip="Notas do Vault (.md): a macro do Foundry ou o formato do template"><i class="fa-solid fa-file-import"></i> Importar</button>
+		</div>
 		<h4>Testes guardados</h4>
 		<ul>
 			{{#each salvos}}
@@ -27,12 +30,35 @@
 			<button type="button" data-action="zerar"><i class="fa-solid fa-rotate-left"></i> Zerar ({{resumo.sucessos}}/{{resumo.sucessosNecessarios}} · {{resumo.falhas}}/{{resumo.falhasLimite}})</button>
 			<button type="button" data-action="guardar" data-tooltip="Guarda uma cópia na lista à esquerda (substitui a de mesmo título)"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
 			<button type="button" data-action="anunciar" data-tooltip="Mostra o teste e o progresso no chat"><i class="fa-solid fa-bullhorn"></i> Chat</button>
+			<button type="button" data-action="exportar" data-tooltip="Baixa a nota .md no formato do template, com a macro do Foundry"><i class="fa-solid fa-file-export"></i> Exportar</button>
+			<button type="button" data-action="copiarMacro" data-tooltip="Copia a macro do Foundry deste teste"><i class="fa-solid fa-copy"></i> Macro</button>
 		</div>
 		<p class="aa-dica">{{#if visivel}}<i class="fa-solid fa-eye"></i> O painel do teste está na tela de todos.{{else}}<i class="fa-solid fa-eye-slash"></i> O painel está escondido. Os jogadores não veem nada até você mostrar.{{/if}} O texto é salvo ao sair de cada campo.</p>
 
 		<label>Título
 			<input type="text" name="titulo" value="{{teste.titulo}}" maxlength="80" placeholder="A Rua que Andou, Fuga do Labirinto, Escalada da Torre...">
 		</label>
+		<div class="aa-teste-numeros">
+			<label>Tipo
+				<select name="tipo">
+					<option value="estendido" {{#unless resumo.complexo}}selected{{/unless}}>Teste estendido (sucessos e falhas)</option>
+					<option value="complexo" {{#if resumo.complexo}}selected{{/if}}>Perigo complexo (rodadas e trilhas)</option>
+				</select>
+			</label>
+			{{#if resumo.complexo}}
+			<label>Rodadas <small>(0: sem limite)</small>
+				<input type="number" name="rodadas" value="{{teste.rodadas}}" min="0" max="20">
+			</label>
+			{{/if}}
+		</div>
+		{{#if resumo.complexo}}
+		<label>Trilhas <small>(uma por linha: <code>Nome | meta | dica</code>; a primeira a completar é anunciada no chat)</small>
+			<textarea name="trilhas" rows="4" placeholder="Abjuração | 3&#10;Ilusão | 3">{{teste.trilhas}}</textarea>
+		</label>
+		<label>Marcadores <small>(uma por linha: <code>Nome | dica</code>; contadores livres)</small>
+			<textarea name="marcadores" rows="2" placeholder="Marcadores do Vazio | Repetir abordagem e falhar">{{teste.marcadores}}</textarea>
+		</label>
+		{{/if}}
 		<label>O que está em jogo <small>(uma frase; todos veem)</small>
 			<input type="text" name="contexto" value="{{teste.contexto}}" maxlength="200">
 		</label>

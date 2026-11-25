@@ -1,12 +1,16 @@
 import { MODULO, opcao } from "./config.mjs";
 import { planoAtual, textoEmItens, textoEmParagrafos } from "./planos.mjs";
+import { PERICIAS_T20 } from "./data/disciplinas.mjs";
 
 /*
  * Teste estendido (T20: "X sucessos antes de Y falhas"), no formato do template
  * "T20 - Teste Estendido" do Obsidian. Gravado na configuração de mundo "testeEstendido":
  * { visivel, atual: { titulo, contexto, cd, cdOculta, sucessosNecessarios, falhasLimite, intervalo,
- *   principais, alternativas, abordagens, regras, eventos, total, parcial, fracasso, segredo },
- *   sucessos, falhas, salvos: [teste] }
+ *   principais, alternativas, abordagens, regras, eventos, total, parcial, fracasso, segredo,
+ *   tipo, rodadas, trilhas, marcadores },
+ *   sucessos, falhas, rodada, contadores: { [nome]: valor }, salvos: [teste] }
+ * Tipo "complexo" (perigo complexo): rodadas, trilhas com meta ("Nome | meta | dica" por linha) e
+ * marcadores livres ("Nome | dica" por linha) no lugar das caixas de sucesso e falha.
  * O mestre edita, mostra/esconde e marca o progresso; os jogadores só veem.
  */
 
@@ -25,8 +29,14 @@ export const CAMPOS_TESTE = [
 	"total",
 	"parcial",
 	"fracasso",
-	"segredo"
+	"segredo",
+	"tipo",
+	"rodadas",
+	"trilhas",
+	"marcadores"
 ];
+
+const NUMERICOS = ["cd", "sucessosNecessarios", "falhasLimite", "rodadas"];
 
 const MAX_MARCAS = 10;
 
@@ -50,7 +60,11 @@ export function testeEmBranco() {
 		total: "",
 		parcial: "",
 		fracasso: "",
-		segredo: ""
+		segredo: "",
+		tipo: "estendido",
+		rodadas: 0,
+		trilhas: "",
+		marcadores: ""
 	};
 }
 
@@ -94,7 +108,9 @@ function normalizarTeste(bruto = {}) {
 	const base = testeEmBranco();
 	const teste = { ...base };
 	for (const campo of CAMPOS_TESTE) if (bruto[campo] !== undefined && bruto[campo] !== null) teste[campo] = bruto[campo];
-	for (const campo of CAMPOS_TESTE) if (!["cd", "sucessosNecessarios", "falhasLimite"].includes(campo)) teste[campo] = String(teste[campo] ?? "");
+	for (const campo of CAMPOS_TESTE) if (!NUMERICOS.includes(campo)) teste[campo] = String(teste[campo] ?? "");
+	teste.tipo = teste.tipo === "complexo" ? "complexo" : "estendido";
+	teste.rodadas = inteiro(bruto.rodadas, 0, 0, 20);
 	const cd = String(bruto.cd ?? "").trim();
 	teste.cd = cd === "" ? null : inteiro(cd, null, 0, 99);
 	teste.cdOculta = bruto.cdOculta === true || bruto.cdOculta === "true";
@@ -111,6 +127,8 @@ export function lerTeste() {
 		atual,
 		sucessos: inteiro(salvo.sucessos, 0, 0, atual.sucessosNecessarios),
 		falhas: inteiro(salvo.falhas, 0, 0, atual.falhasLimite),
+		rodada: inteiro(salvo.rodada, 1, 1, 99),
+		contadores: Object.fromEntries(Object.entries(salvo.contadores ?? {}).map(([k, v]) => [k, inteiro(v, 0, 0, 99)])),
 		salvos: Array.isArray(salvo.salvos) ? salvo.salvos.map(normalizarTeste) : []
 	};
 }
@@ -134,6 +152,11 @@ export function cdDoTeste(teste) {
 /* andamento | sucesso | parcial | fracasso. "Parcial": venceu com a falha anterior ao limite (ex.: 2 de 3). */
 export function situacaoDoTeste(dados = lerTeste()) {
 	const { atual, sucessos, falhas } = dados;
+	if (atual.tipo === "complexo") {
+		if (trilhasEmLinhas(atual.trilhas).some((t) => (dados.contadores?.[t.nome] ?? 0) >= t.meta)) return "sucesso";
+		if (atual.rodadas && dados.rodada > atual.rodadas) return "fim";
+		return "andamento";
+	}
 	if (falhas >= atual.falhasLimite) return "fracasso";
 	if (sucessos >= atual.sucessosNecessarios) return falhas > 0 && falhas === atual.falhasLimite - 1 ? "parcial" : "sucesso";
 	return "andamento";
@@ -143,8 +166,102 @@ export const ROTULOS_SITUACAO = {
 	andamento: "Em andamento",
 	sucesso: "Sucesso total",
 	parcial: "Sucesso parcial",
-	fracasso: "Fracasso"
+	fracasso: "Fracasso",
+	fim: "Rodadas encerradas"
 };
+
+/* ---------- Perigo complexo: trilhas e marcadores ---------- */
+
+function linhas(texto) {
+	return String(texto ?? "")
+		.split(/\r?\n/)
+		.map((l) => l.trim().replace(/^[-•*]\s+/, ""))
+		.filter(Boolean);
+}
+
+/* "Nome | meta | dica" por linha; meta padrão 3. */
+export function trilhasEmLinhas(texto) {
+	return linhas(texto).map((linha) => {
+		const [nome = "", meta = "", ...dica] = linha.split("|").map((p) => p.trim());
+		return { nome, meta: inteiro(meta, 3, 1, 20), dica: dica.join(" | ") };
+	});
+}
+
+/* "Nome | dica" por linha. */
+export function marcadoresEmLinhas(texto) {
+	return linhas(texto).map((linha) => {
+		const [nome = "", ...dica] = linha.split("|").map((p) => p.trim());
+		return { nome, dica: dica.join(" | ") };
+	});
+}
+
+export async function avancarRodada(delta) {
+	const dados = lerTeste();
+	dados.rodada = Math.max(1, dados.rodada + delta);
+	return gravar(dados);
+}
+
+/* Trilhas e marcadores; avisa no chat quando uma trilha chega à meta. */
+export async function ajustarContador(nome, delta) {
+	const dados = lerTeste();
+	const antes = situacaoDoTeste(dados);
+	dados.contadores[nome] = Math.max(0, (dados.contadores[nome] ?? 0) + delta);
+	await gravar(dados);
+	const trilha = trilhasEmLinhas(dados.atual.trilhas).find((t) => t.nome === nome);
+	if (delta > 0 && trilha && dados.contadores[nome] === trilha.meta && antes === "andamento") {
+		await ChatMessage.create({
+			speaker: { alias: dados.atual.titulo || "Perigo complexo" },
+			content: `<div class="aa-teste-chat"><p><strong>${escapar(nome)}</strong> chegou a ${trilha.meta}!</p></div>`
+		});
+	}
+}
+
+/* ---------- Perícias: nome do T20 para chave e rolagem ---------- */
+
+function normalizarNome(valor) {
+	return String(valor ?? "")
+		.replace(/<[^>]+>|\*+/g, "")
+		.normalize("NFD")
+		.replace(/[̀-ͯ]/g, "")
+		.toLowerCase()
+		.trim();
+}
+
+const POR_NOME = new Map(
+	Object.entries(PERICIAS_T20).flatMap(([chave, nome]) => [
+		[normalizarNome(nome), chave],
+		[normalizarNome(nome.replace("Ofício: ", "")), chave],
+		[chave, chave]
+	])
+);
+const OFICIOS_LIVRES = { alquimia: "alqu", alquimista: "alqu", armeiro: "arme", artesao: "arte", artesanato: "arte", cozinheiro: "cozi", culinaria: "cozi", alfaiate: "alfa", engenhoqueiro: "enge", engenharia: "enge" };
+
+export function chavePericia(nome) {
+	const n = normalizarNome(nome);
+	if (POR_NOME.has(n)) return POR_NOME.get(n);
+	const oficio = n.match(/^oficio\s*[:(]?\s*([a-z]+)/);
+	return oficio ? (OFICIOS_LIVRES[oficio[1]] ?? null) : null;
+}
+
+/* "Luta ou Atletismo", "Misticismo, Percepção" viram nomes separados. */
+export function periciasDoTexto(texto) {
+	return String(texto ?? "")
+		.replace(/<[^>]+>|\*+/g, "")
+		.split(/\s*(?:,|\/|\bou\b)\s*/i)
+		.map((p) => p.trim())
+		.filter(Boolean);
+}
+
+/* Rola com o token selecionado ou o personagem do usuário. */
+export async function rolarPericia(nome, cd, event) {
+	const actor = canvas?.tokens?.controlled[0]?.actor ?? game.user.character;
+	if (!actor) return ui.notifications.warn("Selecione um token ou defina o seu personagem para rolar.");
+	const chave = chavePericia(nome);
+	const pericias = actor.system?.pericias ?? {};
+	if (chave && typeof actor.rollPericia === "function" && pericias[chave]) return actor.rollPericia(chave, { event, message: true });
+	const roll = await new Roll(`1d20 + ${Number(pericias[chave]?.value ?? 0)}`).evaluate();
+	return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor: `${nome}${cd ? ` (CD ${cd})` : ""}` });
+}
 
 /* "Perícia | CD | descrição" por linha; CD e descrição são opcionais. */
 export function abordagensEmLinhas(texto, cdPadrao) {
@@ -207,6 +324,8 @@ export async function zerarTeste() {
 	const dados = lerTeste();
 	dados.sucessos = 0;
 	dados.falhas = 0;
+	dados.rodada = 1;
+	dados.contadores = {};
 	return gravar(dados);
 }
 
@@ -226,6 +345,8 @@ export async function substituirTeste(teste) {
 	dados.atual = normalizarTeste(teste);
 	dados.sucessos = 0;
 	dados.falhas = 0;
+	dados.rodada = 1;
+	dados.contadores = {};
 	return gravar(dados);
 }
 
@@ -239,6 +360,35 @@ export async function guardarTeste() {
 	dados.salvos.sort((a, b) => a.titulo.localeCompare(b.titulo, "pt-BR"));
 	await gravar(dados);
 	return true;
+}
+
+/* Testes vindos do Vault (macro ou nota): guarda cada um na lista (substitui o de mesmo título)
+   e põe o último na tela, com o progresso da nota se houver. */
+export async function importarTestes(itens, { mostrar = true } = {}) {
+	if (!game.user.isGM || !itens.length) return [];
+	const dados = lerTeste();
+	const importados = itens.map(({ teste, progresso }) => ({ teste: normalizarTeste(teste), progresso }));
+	for (const { teste } of importados) {
+		const titulo = teste.titulo.trim();
+		if (!titulo) continue;
+		dados.salvos = dados.salvos.filter((t) => t.titulo.trim() !== titulo);
+		dados.salvos.push(foundry.utils.deepClone(teste));
+	}
+	dados.salvos.sort((a, b) => a.titulo.localeCompare(b.titulo, "pt-BR"));
+	const { teste, progresso } = importados.at(-1);
+	dados.atual = teste;
+	dados.sucessos = inteiro(progresso?.sucessos, 0, 0, teste.sucessosNecessarios);
+	dados.falhas = inteiro(progresso?.falhas, 0, 0, teste.falhasLimite);
+	dados.rodada = inteiro(progresso?.rodada, 1, 1, 99);
+	dados.contadores = foundry.utils.deepClone(progresso?.contadores ?? {});
+	if (mostrar) dados.visivel = true;
+	await gravar(dados);
+	return importados.map((i) => i.teste);
+}
+
+/* Progresso atual, para exportar junto com o teste. */
+export function progressoAtual(dados = lerTeste()) {
+	return { sucessos: dados.sucessos, falhas: dados.falhas, rodada: dados.rodada, contadores: dados.contadores };
 }
 
 export async function excluirGuardado(indice) {
@@ -256,7 +406,7 @@ export function contextoDoTeste({ gm = game.user.isGM, dados = lerTeste() } = {}
 	const situacao = situacaoDoTeste(dados);
 	const eventos = textoEmItens(atual.eventos);
 	const caixas = (total, marcadas) => Array.from({ length: total }, (_, i) => ({ indice: i, marcada: i < marcadas }));
-	const resultados = { sucesso: atual.total, parcial: atual.parcial, fracasso: atual.fracasso };
+	const resultados = { sucesso: atual.total, parcial: atual.parcial, fracasso: atual.fracasso, fim: "" };
 	return {
 		gm,
 		visivel: dados.visivel,
@@ -275,7 +425,19 @@ export function contextoDoTeste({ gm = game.user.isGM, dados = lerTeste() } = {}
 		intervalo: atual.intervalo.trim(),
 		principais: emTexto(atual.principais),
 		alternativas: emTexto(atual.alternativas),
-		abordagens: abordagensEmLinhas(atual.abordagens, cd.valor).map((a) => (mostrarCd ? a : { ...a, cd: "?" })),
+		abordagens: abordagensEmLinhas(atual.abordagens, cd.valor).map((a) => {
+			const rolaveis = periciasDoTexto(a.pericia).map((nome) => ({ nome, rolavel: !!chavePericia(nome), cd: mostrarCd ? a.cd : "" }));
+			return { ...a, cd: mostrarCd ? a.cd : "?", rolaveis, temRolagem: rolaveis.some((r) => r.rolavel) };
+		}),
+		complexo: atual.tipo === "complexo",
+		rodada: dados.rodada,
+		rodadas: atual.rodadas,
+		rodadaTexto: atual.rodadas ? `${Math.min(dados.rodada, atual.rodadas)}/${atual.rodadas}` : `${dados.rodada}`,
+		trilhas: trilhasEmLinhas(atual.trilhas).map((t) => {
+			const valor = dados.contadores?.[t.nome] ?? 0;
+			return { ...t, valor, completa: valor >= t.meta, caixas: Array.from({ length: t.meta }, (_, i) => ({ marcada: i < valor })) };
+		}),
+		marcadores: marcadoresEmLinhas(atual.marcadores).map((m) => ({ ...m, valor: dados.contadores?.[m.nome] ?? 0 })),
 		regras: textoEmItens(atual.regras),
 		sucessos,
 		falhas,
@@ -309,10 +471,12 @@ export async function anunciarTeste() {
 	const marcas = (caixas, classe) => caixas.map((x) => `<i class="fa-${x.marcada ? "solid" : "regular"} fa-square${x.marcada ? "-check" : ""} ${classe}"></i>`).join(" ");
 	const abordagens = c.abordagens.map((a) => `<li><strong>${a.pericia}</strong>${c.mostrarCd ? ` (CD ${escapar(a.cd)})` : ""}${a.descricao ? `: ${a.descricao}` : ""}</li>`).join("");
 	const content = `<div class="aa-teste-chat">
-	<header><i class="fa-solid fa-dice-d20"></i><div><strong>${escapar(c.titulo)}</strong><small>Teste estendido${c.mostrarCd && c.cd !== null ? ` · CD ${c.cd}` : ""} · ${c.sucessosNecessarios} sucessos antes de ${c.falhasLimite} falhas</small></div></header>
+	<header><i class="fa-solid fa-dice-d20"></i><div><strong>${escapar(c.titulo)}</strong><small>${c.complexo ? "Perigo complexo" : "Teste estendido"}${c.mostrarCd && c.cd !== null ? ` · CD ${c.cd}` : ""} · ${c.complexo ? (c.rodadas ? `${c.rodadas} rodadas` : "sem limite de rodadas") : `${c.sucessosNecessarios} sucessos antes de ${c.falhasLimite} falhas`}</small></div></header>
 	${c.contexto ? `<p><em>${c.contexto}</em></p>` : ""}
 	${abordagens ? `<ul>${abordagens}</ul>` : ""}
-	<p class="aa-teste-chat-placar">Sucessos ${marcas(c.caixasSucesso, "sucesso")} · Falhas ${marcas(c.caixasFalha, "falha")}</p>
+	${c.complexo
+		? `<p class="aa-teste-chat-placar">Rodada ${c.rodadaTexto}${c.trilhas.map((t) => ` · ${escapar(t.nome)} ${t.valor}/${t.meta}`).join("")}${c.marcadores.map((m) => ` · ${escapar(m.nome)} ${m.valor}`).join("")}</p>`
+		: `<p class="aa-teste-chat-placar">Sucessos ${marcas(c.caixasSucesso, "sucesso")} · Falhas ${marcas(c.caixasFalha, "falha")}</p>`}
 	${c.terminado ? `<p class="aa-teste-chat-resultado ${c.situacao}"><strong>${c.rotuloSituacao}.</strong> ${c.resultado}</p>` : ""}
 </div>`;
 	await ChatMessage.create({ content, speaker: { alias: "Teste Estendido" } });

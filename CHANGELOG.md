@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.22.0
+
+- **Perigo complexo** no teste estendido: o tipo *Perigo complexo* troca as caixas de sucesso e falha por um contador de rodadas, trilhas com meta (a primeira a completar é anunciada no chat) e marcadores livres. O cartão do chat mostra a rodada, as trilhas e os marcadores.
+- **Rolagem pelas abordagens**: no painel, cada perícia reconhecida de uma abordagem vira um botão que rola com o token selecionado ou o personagem do jogador.
+- **Vault do Obsidian**: o editor importa notas `.md` (várias de uma vez) ou texto colado, exporta a nota no formato do template *T20 - Teste Estendido* (com ou sem o progresso) e copia a macro do teste; o rodapé do painel também copia a macro. A nota guarda o teste num bloco `js` que é ao mesmo tempo macro do Foundry e dado de importação, e o Obsidian copia o bloco com um clique. Notas sem o bloco, no formato do template, também são importadas.
+- API: `api.desafio(dados)` cria ou atualiza (pelo título) o teste, guarda na lista e o mostra a todos; `api.vault` traz o leitor e o exportador.
+
 ## 1.21.0
 
 - **Transição entre planos**: ao levar a turma a outro plano ou de volta à Academia, um cartão aparece no centro da tela, nas cores do plano, com o ato e a parada do roteiro, o nome, o deus, a regra planar, o nível, a CD e o perigo. Some sozinho (o mouse em cima segura o cartão; um clique fecha) e substitui o aviso de chegada. Aparece para quem vê o painel do plano e pode ser desligado na configuração *Transição ao trocar de plano*.

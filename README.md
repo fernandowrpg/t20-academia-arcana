@@ -15,7 +15,7 @@ Módulo para **Foundry VTT v13** e o sistema **Tormenta20** que acompanha a vida
 - **Painel de alunos**: widget flutuante, sempre visível, com vida (PV), mana (PM), resumo das notas do semestre mais recente e atalho para a matrícula de cada aluno. O retrato leva o brasão do grêmio, e o botão de ficha mostra uma versão detalhada com o grêmio e as perícias treinadas, com o bônus de cada uma.
 - **Painel de ameaças**: widget separado que aparece durante o combate com PV, PM, ND, Defesa, iniciativa e condições de cada ameaça.
 - **Painel do plano**: para a expedição aos mundos dos deuses, um painel flutuante com o plano atual, deus, nível sugerido, CD, regra planar e anotações do mestre, com um tema visual próprio para cada um dos 20 planos. Ao trocar de plano, um cartão de transição aparece no centro da tela.
-- **Teste estendido**: painel flutuante com o teste estendido da cena (CD, abordagens, eventos por falha) e um contador de sucessos e falhas, no formato do template de teste estendido de T20. O mestre mostra, esconde e edita pelo painel do plano.
+- **Teste estendido**: painel flutuante com o teste estendido da cena (CD, abordagens, eventos por falha) e um contador de sucessos e falhas, no formato do template de teste estendido de T20, também para **perigos complexos** (rodadas, trilhas com meta e marcadores). As perícias das abordagens rolam com um clique. O mestre mostra, esconde e edita pelo painel do plano e **importa e exporta notas do Vault do Obsidian**, com a macro do Foundry num bloco que o Obsidian copia com um clique.
 - **Secretaria** (mestre): admissão de personagens e ações em lote (abrir matrículas, iniciar e encerrar semestre).
 - **Catálogo editável** (mestre): trocar a perícia de T20 de qualquer disciplina, ocultar disciplinas, ofertar disciplinas especiais e criar disciplinas da mesa. Disciplinas com numeral romano encadeiam pré-requisitos automaticamente.
 - **Compêndio** *Academia Arcana: Compêndio* com 16 páginas: visão geral, acesso, período letivo, admissão, classes, campus, grêmios, disciplinas, Teste dos Quatro Elementos, corpo docente, Raschid, itens e guia de uso.
@@ -80,6 +80,25 @@ Para campanhas em que a turma visita os reinos dos deuses (o Roteiro da Expediç
 - **Tema de cada plano**: cores, emblema e desenho próprios para os 20 mundos. Em *Tema do plano*, cada usuário escolhe o alcance: só o painel do plano, também os outros painéis ou ainda uma moldura nas bordas da tela.
 - **Transição entre planos**: quando o mestre leva a turma a outro plano (pelas setas do painel ou por *Planos da expedição*) ou de volta à Academia, um cartão aparece no centro da tela de quem vê o painel do plano, nas cores do plano, com o ato e a parada, o nome, o deus, a regra planar, o nível, a CD e o perigo. Some sozinho em alguns segundos (passar o mouse segura o cartão; clicar fecha). O botão de claquete no painel do plano mostra o cartão a todos a qualquer momento. A configuração *Transição ao trocar de plano* desliga o cartão automático.
 - **Teste estendido**: no rodapé do painel do plano (só o mestre vê), o olho mostra ou esconde o painel do teste para todos e o lápis abre o editor. O editor segue o template *T20 - Teste Estendido*: título, o que está em jogo, CD (vazia usa a do plano atual, 18 + nível), sucessos necessários e limite de falhas, o que cada teste representa, perícias principais e alternativas (CD +5), abordagens (`Perícia | CD | descrição`, uma por linha), regras especiais, eventos por falha, resultados (sucesso total, parcial e fracasso) e notas do mestre. O painel mostra as caixas de sucessos e falhas: o mestre marca clicando nelas ou nos botões + e −; os jogadores só veem. Cada evento de falha aparece para os jogadores quando a falha acontece, e o resultado aparece para todos quando o teste termina. Para esconder a CD dos jogadores, clique na CD do painel ou marque *Esconder* no editor: eles veem "?" no lugar da CD do teste e das abordagens, e você continua vendo os números. O teste pode ser guardado numa lista para reaproveitar, anunciado no chat e minimizado em ícone como os outros painéis. O botão *Exemplo* carrega *A Rua que Andou* (Magika).
+- **Perigo complexo**: no editor, o tipo *Perigo complexo* troca as caixas de sucesso e falha por um contador de **rodadas**, **trilhas** com meta (`Nome | meta | dica`, uma por linha; por exemplo, Pistas por escola de magia) e **marcadores** livres (`Nome | dica`; por exemplo, Marcadores do Vazio). O mestre ajusta tudo com + e −; quando uma trilha chega à meta, o chat avisa.
+- **Rolagem**: no painel, cada perícia reconhecida de uma abordagem (`Misticismo`, `Luta ou Atletismo`, `Ofício (alquimia)`) vira um botão que rola com o token selecionado ou o personagem do jogador.
+- **Vault do Obsidian**: no editor, *Importar* lê notas `.md` (várias de uma vez) ou texto colado; *Exportar* baixa a nota no formato do template; *Macro* (também no rodapé do painel) copia a macro do teste. A nota guarda o teste num bloco `js` que é ao mesmo tempo **macro do Foundry** e **dado de importação**: no modo de leitura, o Obsidian mostra um botão de copiar no canto do bloco; cole numa macro do tipo Script e execute para pôr o teste na tela de todos. Notas sem o bloco, no formato do template *T20 - Teste Estendido*, também são importadas. Importar guarda o teste na lista (substitui o de mesmo título) e o mostra a todos.
+
+```js
+game.modules.get("t20-academia-arcana")?.api.desafio({
+	"nome": "O Torneio da Grande Academia Arcana",
+	"tipo": "estendido",
+	"cd": 20,
+	"sucessos": 5,
+	"falhas": 3,
+	"acoes": [
+		{"nome":"Contrafeitiço","pericias":["Misticismo"],"cd":22},
+		{"nome":"Atravessar o feitiço","pericias":["Luta","Atletismo"],"cd":18}
+	]
+});
+```
+
+  Campos da macro: `nome`, `tipo` (`estendido` ou `complexo`), `cd`, `cdOculta`, `sucessos`, `falhas`, `rodadas`, `intervalo`, `descricao`, `principais`, `alternativas`, `acoes` (`{"nome", "pericias", "cd", "nota"}`), `trilhas` (`{"nome", "meta", "dica"}`), `marcadores` (nomes ou `{"nome", "dica"}`), `regras` e `eventos` (listas de texto), `resultados` (`{"total", "parcial", "fracasso"}`), `notas` (só o mestre) e `progresso` (opcional, gravado ao exportar com progresso).
 - **Na Academia**: sem plano ativo, o painel mostra as anotações da Academia, para cenas e eventos. Em *Planos da expedição*, o item *Academia* tem um título (o nome do painel), anotações que todos veem e notas só do mestre; os jogadores veem o painel quando há anotações para eles.
 - *Jogadores veem o painel do plano* (mundo): desmarcada, só o mestre vê o painel e o tema. Os jogadores nunca veem as notas do mestre.
 
@@ -199,6 +218,9 @@ api.atividades();
 api.painelAlunos();
 api.painelAmeacas();
 api.painelPlacar();
+api.painelTeste();
+api.testeEstendido(); // editor (mestre)
+api.desafio(dados); // cria ou atualiza (pelo título) o teste estendido, guarda e mostra a todos
 api.lerAluno(actor);
 ```
 

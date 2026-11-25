@@ -14,6 +14,8 @@ import { PainelPlanoApp } from "./apps/painel-plano.mjs";
 import { PlanosApp } from "./apps/planos.mjs";
 import { PainelTesteApp } from "./apps/painel-teste.mjs";
 import { TesteEstendidoApp } from "./apps/teste-estendido.mjs";
+import { importarTestes } from "./teste-estendido.mjs";
+import { desafioParaTeste, exportarNota, lerDoVault, macroDoTeste, testeParaDesafio } from "./vault.mjs";
 import { mostrarTransicao, mostrarTransicaoATodos, registrarSocketTransicao } from "./transicao.mjs";
 import { aplicarTemaDoPlano, definirPlanoAtual, anunciarPlano } from "./planos.mjs";
 import * as planos from "./data/planos.mjs";
@@ -79,6 +81,14 @@ Hooks.once("init", () => {
 		planos: (id) => PlanosApp.abrir(id),
 		painelTeste: () => PainelTesteApp.sincronizar(),
 		testeEstendido: () => TesteEstendidoApp.abrir(),
+		/* Usada pelas macros das notas do Vault: cria ou atualiza (pelo título) o teste, guarda e mostra a todos. */
+		desafio: async (dados, { mostrar = true } = {}) => {
+			if (!game.user.isGM) return ui.notifications.warn(game.i18n.localize("ACADEMIA.Aviso.SomenteMestreTeste"));
+			const [teste] = await importarTestes([{ teste: desafioParaTeste(dados), progresso: dados?.progresso ?? null }], { mostrar });
+			if (teste) ui.notifications.info(`Teste estendido na tela: ${teste.titulo || "sem título"}.`);
+			return teste ?? null;
+		},
+		vault: { lerDoVault, exportarNota, macroDoTeste, desafioParaTeste, testeParaDesafio },
 		transicao: (id) => mostrarTransicao(id),
 		transicaoParaTodos: (id) => mostrarTransicaoATodos(id),
 		irParaPlano: (id) => definirPlanoAtual(id),
